@@ -1,6 +1,7 @@
+import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { exhaustMap, map } from 'rxjs/operators';
+import { of, throwError } from 'rxjs';
+import { catchError, map, switchMap, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class AuthService {
         }
         return {xsrfToken, csrfToken};
       }),
-      exhaustMap(tokens => {
+      switchMap(tokens => {
         return this.http.post(
           'https://portal.librus.pl/rodzina/login/action',
           {email, password},
@@ -42,12 +43,51 @@ export class AuthService {
               'Accept': 'Accept: application/json, text/plain, */*',
               'Content-type': 'application/json;charset=UTF-8'
             }),
+            observe: 'response',
+            responseType: 'text',
             withCredentials: true
           }
         )
       }),
+      catchError(err => {
+        console.log(err);
+        let errors = err.error?.errors;
+        if (errors) {
+          let errorMessage = Object.values(errors).join("<br>");
+          return throwError(errorMessage);
+        }
+        return throwError(err);
+      }),
+      switchMap(response => {
+        console.log(response);
+        return this.http.get(
+          'https://portal.librus.pl/rodzina/widget',
+          {
+            responseType: 'text',
+            withCredentials: true
+          }
+        )
+      }),
+      switchMap((response) => {
+        return this.http.get(
+          'https://portal.librus.pl/oauth2/authorize',
+          {
+            params: new HttpParams().appendAll({
+              'client_id': 'AyNzeNoSup7IkySMhBdUhSH4ucqc97Jn6DzVcqd5',
+              'redirect_uri': 'https://personalschedule.librus.pl/authorize',
+              'scope': 'my_data+synergia_integration',
+              'state': 'zx',
+              'response_type': 'code'
+            }),
+            withCredentials: true
+          }
+        )
+      })
     ).subscribe(response => {
         console.log('Final response', response);
+      },
+      error => {
+        console.log("Error:", error);
       });
   }
 }
