@@ -41,7 +41,8 @@ export class AuthService {
               'X-Requested-With': 'XMLHttpRequest',
               'Accept': 'Accept: application/json, text/plain, */*',
               'Content-type': 'application/json;charset=UTF-8'
-            })
+            }),
+            withCredentials: true
           }
         )
       }),

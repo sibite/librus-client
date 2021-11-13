@@ -16,8 +16,6 @@ export class CorsInterceptor implements HttpInterceptor {
     }
     const corsEnabledReq = req.clone({
       url: req.url.replace(reqHost, 'http://localhost:3000/portal-api/'),
-      headers: req.headers
-        .set('Cookies-Cors', document.cookie)
     })
     console.log('Request is matching', corsEnabledReq);
     return next.handle(corsEnabledReq);
