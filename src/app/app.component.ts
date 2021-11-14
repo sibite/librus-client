@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 @Component({
@@ -17,6 +18,10 @@ export class AppComponent implements OnInit {
   }
 
   onLogin(email: string, password: string) {
-    this.authService.auth(email, password);
+    this.authService.login(email, password)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.authService.auth();
+      });
   }
 }

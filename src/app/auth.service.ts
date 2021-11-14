@@ -2,6 +2,7 @@ import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from '@angular/com
 import { Injectable } from "@angular/core";
 import { of, throwError } from 'rxjs';
 import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { SynergiaAccountsType } from './data-storage/models/synergia-accounts.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,8 @@ export class AuthService {
     private http: HttpClient
   ) {}
 
-  auth(email: string, password: string) {
-    this.http.get(
+  login(email: string, password: string) {
+    return this.http.get(
       'https://portal.librus.pl/rodzina/login',
       {
         responseType: 'text',
@@ -25,7 +26,6 @@ export class AuthService {
         let responseDOM = parser.parseFromString(responseHTML, 'text/html');
         let csrfToken = (<HTMLMetaElement>responseDOM.head.querySelector('meta[name="csrf-token"]')).content;
         let xsrfToken = document.cookie.match(/XSRF-TOKEN=(.*)/)[1];
-        console.log(csrfToken, xsrfToken);
         if (!csrfToken || !xsrfToken) {
           throw new Error('Could not scrap tokens');
         }
@@ -50,25 +50,26 @@ export class AuthService {
         )
       }),
       catchError(err => {
-        console.log(err);
-        let errors = err.error?.errors;
+        let errorJSON = err?.error;
+        let errors = errorJSON ? JSON.parse(errorJSON)?.errors : ['Wystąpił nieznany błąd'];
         if (errors) {
           let errorMessage = Object.values(errors).join("<br>");
           return throwError(errorMessage);
         }
         return throwError(err);
-      }),
-      switchMap(response => {
-        console.log(response);
-        return this.http.get(
-          'https://portal.librus.pl/rodzina/widget',
-          {
-            responseType: 'text',
-            withCredentials: true
-          }
-        )
-      }),
-      switchMap((response) => {
+      })
+    );
+  }
+
+  auth() {
+    return this.http.get(
+      'https://portal.librus.pl/rodzina/widget',
+      {
+        responseType: 'text',
+        withCredentials: true
+      }
+    ).pipe(
+      switchMap(() => {
         return this.http.get(
           'https://portal.librus.pl/oauth2/authorize',
           {
@@ -81,14 +82,34 @@ export class AuthService {
             }),
             withCredentials: true
           }
-        )
+        );
+      }),
+      switchMap(() => {
+        return this.http.get<SynergiaAccountsType>(
+          'https://portal.librus.pl/api/v3/SynergiaAccounts',
+          {
+            withCredentials: true
+          }
+        );
+      }),
+      catchError(err => {
+        let errorJSON = err?.error;
+        let errors = errorJSON ? JSON.parse(errorJSON)?.errors : ['Wystąpił nieznany błąd'];
+        if (errors) {
+          let errorMessage = Object.values(errors).join("<br>");
+          return throwError(errorMessage);
+        }
+        return throwError(err);
       })
-    ).subscribe(response => {
-        console.log('Final response', response);
+    )
+    .subscribe((response: SynergiaAccountsType) => {
+        console.log('Token:', response.accounts[0].accessToken);
+        console.log('User name:', response.accounts[0].studentName);
       },
       error => {
         console.log("Error:", error);
-      });
+      }
+    );
   }
 }
 

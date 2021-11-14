@@ -1,4 +1,5 @@
 import { HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { environment } from "src/environments/environment";
 
 const corsHosts = {
   'https://portal.librus.pl/': 'portal-api',
@@ -24,7 +25,7 @@ export class CorsInterceptor implements HttpInterceptor {
     // if it is, then redirect the request to proxy server
     console.log('Request is CORS-allowed');
     const corsEnabledReq = req.clone({
-      url: req.url.replace(corsHost, `http://localhost:3000/${corsHosts[corsHost]}/`),
+      url: req.url.replace(corsHost, `${environment.proxyHost}/${corsHosts[corsHost]}/`),
     })
     return next.handle(corsEnabledReq);
   }
