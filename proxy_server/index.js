@@ -17,7 +17,7 @@ app.use(morgan('dev'));
 // Proxy options
 function getProxyOptions(routeAlias, host, protocol = 'https') {
   return {
-    target: `${protocol}://${host}/`, // https://host.pl/
+    target: `${protocol}://${host}/`, // https://host.com/
     changeOrigin: true,
     secure: true,
     pathRewrite: {
@@ -26,13 +26,21 @@ function getProxyOptions(routeAlias, host, protocol = 'https') {
     hostRewrite: `${HOST}:${PORT}/${routeAlias}`,
     protocolRewrite: 'http',
     headers: {
-      'Host': host, // host.pl
+      'Host': host, // host.com
       'Origin': 'https://portal.librus.pl',
       'Referer': 'https://portal.librus.pl/'
     },
     onProxyRes: function(proxyRes, req, res) {
+      const allowedHeaders = [
+        'x-xsrf-token',
+        'x-csrf-token',
+        'x-requested-with',
+        'content-type',
+        'accept',
+        'authorization'
+      ]
       proxyRes.headers['Access-Control-Allow-Origin'] = APP_HOST;
-      proxyRes.headers['Access-Control-Allow-Headers'] = 'x-xsrf-token, x-csrf-token, x-requested-with, content-type, accept';
+      proxyRes.headers['Access-Control-Allow-Headers'] = allowedHeaders.join(', ');
       proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
       // Rewrite cookies domain
       proxyRes.headers['set-cookie'] = proxyRes.headers['set-cookie']?.map(cookie => {
@@ -61,6 +69,11 @@ app.use('/portal-api', createProxyMiddleware(getProxyOptions(
 app.use('/personalschedule-api', createProxyMiddleware(getProxyOptions(
   'personalschedule-api',
   'personalschedule.librus.pl',
+  'https'
+)))
+app.use('/main-api', createProxyMiddleware(getProxyOptions(
+  'main-api',
+  'api.librus.pl',
   'https'
 )))
 

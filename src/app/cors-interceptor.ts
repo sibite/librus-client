@@ -3,7 +3,8 @@ import { environment } from "src/environments/environment";
 
 const corsHosts = {
   'https://portal.librus.pl/': 'portal-api',
-  'https://personalschedule.librus.pl/': 'personalschedule-api'
+  'https://personalschedule.librus.pl/': 'personalschedule-api',
+  'https://api.librus.pl/': 'main-api'
 }
 
 export class CorsInterceptor implements HttpInterceptor {
@@ -16,14 +17,13 @@ export class CorsInterceptor implements HttpInterceptor {
         break;
       }
     }
-    console.log(req.url);
     // if it is not, then do nothing
     if (!corsHost) {
-      console.log('Request is not in CORS-allowed list');
+      console.log('Request is not in CORS-allowed list', req.url);
       return next.handle(req.clone());
     }
     // if it is, then redirect the request to proxy server
-    console.log('Request is CORS-allowed');
+    console.log('Request is CORS-allowed', req.url);
     const corsEnabledReq = req.clone({
       url: req.url.replace(corsHost, `${environment.proxyHost}/${corsHosts[corsHost]}/`),
     })

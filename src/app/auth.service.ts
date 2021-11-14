@@ -1,16 +1,20 @@
-import { HttpClient, HttpEventType, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { of, throwError } from 'rxjs';
-import { catchError, map, switchMap, take } from 'rxjs/operators';
-import { SynergiaAccountsType } from './data-storage/models/synergia-accounts.model';
+import { throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { MeType } from './store/models/me.model';
+import { SynergiaAccountType } from './store/models/synergia-accounts.model';
+import { StoreService } from './store/store.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private unknownErrorMessage = 'Wystąpił nieznany błąd';
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private storeService: StoreService
   ) {}
 
   login(email: string, password: string) {
@@ -47,21 +51,15 @@ export class AuthService {
             responseType: 'text',
             withCredentials: true
           }
-        )
-      }),
-      catchError(err => {
-        let errorJSON = err?.error;
-        let errors = errorJSON ? JSON.parse(errorJSON)?.errors : ['Wystąpił nieznany błąd'];
-        if (errors) {
-          let errorMessage = Object.values(errors).join("<br>");
-          return throwError(errorMessage);
-        }
-        return throwError(err);
+        ).pipe(catchError(this.errorHandler.bind(this)));
       })
     );
   }
 
   auth() {
+    let account: SynergiaAccountType;
+    let me: MeType;
+
     return this.http.get(
       'https://portal.librus.pl/rodzina/widget',
       {
@@ -85,31 +83,43 @@ export class AuthService {
         );
       }),
       switchMap(() => {
-        return this.http.get<SynergiaAccountsType>(
+        return this.http.get(
           'https://portal.librus.pl/api/v3/SynergiaAccounts',
           {
             withCredentials: true
           }
-        );
+        ).pipe(catchError(this.errorHandler.bind(this)));
       }),
-      catchError(err => {
-        let errorJSON = err?.error;
-        let errors = errorJSON ? JSON.parse(errorJSON)?.errors : ['Wystąpił nieznany błąd'];
-        if (errors) {
-          let errorMessage = Object.values(errors).join("<br>");
-          return throwError(errorMessage);
-        }
-        return throwError(err);
+      tap(synergiaAccounts => {
+        account = synergiaAccounts.accounts[0];
+      }),
+      switchMap(synergiaAccounts => {
+        console.log(synergiaAccounts);
+        return this.http.get(
+          'https://api.librus.pl/2.0/Me',
+          {
+            withCredentials: true,
+            headers: new HttpHeaders({
+              'Authorization': 'Bearer ' + synergiaAccounts.accounts[0].accessToken
+            })
+          }
+        ).pipe(catchError(this.errorHandler.bind(this)));
+      }),
+      tap(response => {
+        me = response.Me;
+        this.storeService.setUser({account, me});
       })
-    )
-    .subscribe((response: SynergiaAccountsType) => {
-        console.log('Token:', response.accounts[0].accessToken);
-        console.log('User name:', response.accounts[0].studentName);
-      },
-      error => {
-        console.log("Error:", error);
-      }
     );
+  }
+
+  errorHandler(err) {
+    let errorJSON = err?.error;
+    let errors = errorJSON ? JSON.parse(errorJSON)?.errors : [this.unknownErrorMessage];
+    if (errors) {
+      let errorMessage = Object.values(errors)[0] || errors;
+      return throwError(errorMessage);
+    }
+    return throwError(err);
   }
 }
 
