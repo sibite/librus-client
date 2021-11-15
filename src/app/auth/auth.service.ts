@@ -1,24 +1,47 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { throwError } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { MeType } from './store/models/me.model';
-import { SynergiaAccountType } from './store/models/synergia-accounts.model';
-import { StoreService } from './store/store.service';
+import { BehaviorSubject, of, Subject, Subscription, throwError } from 'rxjs';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { SynergiaAccountType } from '../store/models/synergia-accounts.model';
+import { StoreService } from '../store/store.service';
+
+export type authState = {
+  account: SynergiaAccountType
+  loggedIn: boolean,
+  loading: boolean,
+  authorized: boolean,
+  error: string
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private unknownErrorMessage = 'Wystąpił nieznany błąd';
+  private authState: authState = {
+    account: null,
+    loggedIn: false,
+    loading: false,
+    authorized: false,
+    error: null,
+  };
+  public authStateSubject = new BehaviorSubject<authState>(this.authState);
 
   constructor(
     private http: HttpClient,
     private storeService: StoreService
-  ) {}
+  ) {
+    this.restoreAuthSession();
+    this.authStateSubject.subscribe(authState => {
+      this.saveLocalStorage();
+    });
+  }
 
   login(email: string, password: string) {
-    return this.http.get(
+    this.authState.loading = true;
+    this.authStateSubject.next(this.authState);
+
+    this.http.get(
       'https://portal.librus.pl/rodzina/login',
       {
         responseType: 'text',
@@ -53,35 +76,33 @@ export class AuthService {
           }
         ).pipe(catchError(this.errorHandler.bind(this)));
       })
-    );
+    ).subscribe(() => {
+      this.authState = {
+        ...this.authState,
+        loggedIn: true,
+        loading: false
+      };
+      this.authStateSubject.next(this.authState);
+    });
   }
 
   auth() {
-    let account: SynergiaAccountType;
-    let me: MeType;
+    this.authState.loading = true;
+    this.authStateSubject.next(this.authState);
 
-    return this.http.get(
-      'https://portal.librus.pl/rodzina/widget',
+    this.http.get(
+      'https://portal.librus.pl/oauth2/authorize',
       {
-        responseType: 'text',
+        params: new HttpParams().appendAll({
+          'client_id': 'AyNzeNoSup7IkySMhBdUhSH4ucqc97Jn6DzVcqd5',
+          'redirect_uri': 'https://personalschedule.librus.pl/authorize',
+          'scope': 'my_data+synergia_integration',
+          'state': 'zx',
+          'response_type': 'code'
+        }),
         withCredentials: true
       }
     ).pipe(
-      switchMap(() => {
-        return this.http.get(
-          'https://portal.librus.pl/oauth2/authorize',
-          {
-            params: new HttpParams().appendAll({
-              'client_id': 'AyNzeNoSup7IkySMhBdUhSH4ucqc97Jn6DzVcqd5',
-              'redirect_uri': 'https://personalschedule.librus.pl/authorize',
-              'scope': 'my_data+synergia_integration',
-              'state': 'zx',
-              'response_type': 'code'
-            }),
-            withCredentials: true
-          }
-        );
-      }),
       switchMap(() => {
         return this.http.get(
           'https://portal.librus.pl/api/v3/SynergiaAccounts',
@@ -91,7 +112,8 @@ export class AuthService {
         ).pipe(catchError(this.errorHandler.bind(this)));
       }),
       tap(synergiaAccounts => {
-        account = synergiaAccounts.accounts[0];
+        this.authState.account = synergiaAccounts.accounts[0];
+        this.authStateSubject.next(this.authState);
       }),
       switchMap(synergiaAccounts => {
         console.log(synergiaAccounts);
@@ -99,17 +121,39 @@ export class AuthService {
           'https://api.librus.pl/2.0/Me',
           {
             withCredentials: true,
+            responseType: 'json',
             headers: new HttpHeaders({
               'Authorization': 'Bearer ' + synergiaAccounts.accounts[0].accessToken
             })
           }
         ).pipe(catchError(this.errorHandler.bind(this)));
-      }),
-      tap(response => {
-        me = response.Me;
-        this.storeService.setUser({account, me});
       })
-    );
+    ).subscribe(response => {
+      this.storeService.setUser(response.Me);
+      this.authState = {
+        ...this.authState,
+        loading: false,
+        loggedIn: true,
+        authorized: true,
+        error: null
+      };
+      this.authStateSubject.next(this.authState);
+    });
+  }
+
+  getBearerToken() {
+    return this.authState.account?.accessToken || null;
+  }
+
+  saveLocalStorage() {
+    localStorage.setItem('app.authState', JSON.stringify(this.authState));
+  }
+
+  restoreAuthSession() {
+    console.log('restoring auth session');
+    this.authState = JSON.parse(localStorage.getItem('app.authState')) || this.authState;
+    console.log('localstorage', this.authState);
+    this.authStateSubject.next(this.authState);
   }
 
   errorHandler(err) {

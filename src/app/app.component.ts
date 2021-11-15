@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
-import { AuthService } from './auth.service';
+import { AuthService } from './auth/auth.service';
 import { StoreService } from './store/store.service';
 
 @Component({
@@ -16,24 +17,32 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-
+    this.authService.authStateSubject.subscribe(state => {
+      if (state.authorized) {
+        console.log('Login success');
+        console.log(this.storeService.getData());
+        this.onSubjectsFetch();
+      }
+      else if (state.loggedIn && !state.authorized && !state.loading) {
+        console.log('Logged In but not authorized => authorizing...')
+        this.authService.auth();
+      }
+      else if (state.error) {
+        console.error("Error:", state.error);
+      }
+    });
   }
 
   onLogin(email: string, password: string) {
-    this.authService.login(email, password)
-      .pipe(
-        take(1),
-        switchMap(() => {
-          return this.authService.auth();
-        })
+    this.authService.login(email, password);
+  }
+
+  onSubjectsFetch() {
+    this.storeService.fetchSubjects()
+      .subscribe(
+        subjects => {
+          console.log(subjects);
+        }
       )
-      .subscribe(() => {
-        console.log('Login success');
-        console.log(this.storeService.getData());
-      },
-      error => {
-        console.error("Error:", error);
-      }
-    );
   }
 }

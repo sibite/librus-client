@@ -4,7 +4,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { CorsInterceptor } from './cors-interceptor';
+import { CorsInterceptorService } from './interceptors/cors-interceptor.service';
+import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,12 @@ import { CorsInterceptor } from './cors-interceptor';
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: CorsInterceptor,
+      useClass: AuthInterceptorService,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CorsInterceptorService,
       multi: true
     }
   ],

@@ -1,21 +1,36 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { map, tap } from "rxjs/operators";
 import { MeType } from "./models/me.model";
-import { SynergiaAccountType } from "./models/synergia-accounts.model";
 
 export type StoreData = {
-  account?: SynergiaAccountType,
-  me?: MeType
+  me?: MeType,
+  subjects?: {[key: string]: any}
 };
 
 @Injectable({providedIn: 'root'})
 export class StoreService {
   data: StoreData = {};
 
-  constructor() {}
+  constructor(
+    private http: HttpClient
+  ) {}
 
-  setUser(user) {
-    this.data.account = user.account;
-    this.data.me = user.me;
+  setUser(me: MeType) {
+    this.data.me = me;
+  }
+
+  fetchSubjects() {
+    return this.http.get(
+      'https://api.librus.pl/2.0/Subjects'
+    ).pipe(
+      map(response => {
+        return response['Subjects'];
+      }),
+      tap(subjects => {
+        this.data.subjects = subjects;
+      })
+    );
   }
 
   getData() {

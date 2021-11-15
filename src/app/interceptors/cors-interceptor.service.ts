@@ -1,4 +1,5 @@
 import { HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
 
 const corsHosts = {
@@ -7,7 +8,8 @@ const corsHosts = {
   'https://api.librus.pl/': 'main-api'
 }
 
-export class CorsInterceptor implements HttpInterceptor {
+@Injectable()
+export class CorsInterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     // check if requested URL is in CORS-allowed list
     let corsHost: string = null;
@@ -20,7 +22,7 @@ export class CorsInterceptor implements HttpInterceptor {
     // if it is not, then do nothing
     if (!corsHost) {
       console.log('Request is not in CORS-allowed list', req.url);
-      return next.handle(req.clone());
+      return next.handle(req);
     }
     // if it is, then redirect the request to proxy server
     console.log('Request is CORS-allowed', req.url);
