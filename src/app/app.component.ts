@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { take, switchMap } from 'rxjs/operators';
@@ -13,7 +14,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -37,12 +39,23 @@ export class AppComponent implements OnInit {
     this.authService.login(email, password);
   }
 
+  onUrlRequest(url) {
+    this.http.get(url).subscribe(response => {
+      console.log(response);
+    });
+  }
+
   onSubjectsFetch() {
-    this.storeService.fetchSubjects()
-      .subscribe(
-        subjects => {
-          console.log(subjects);
-        }
-      )
+    this.storeService.fetchSubjects().subscribe(
+      subjects => {
+        console.log(subjects);
+      }
+    );
+    this.storeService.fetchUsers().subscribe(
+      users => {
+        console.log(users);
+        console.log(this.storeService.getData());
+      }
+    );
   }
 }

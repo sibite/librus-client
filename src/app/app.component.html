@@ -1,3 +1,6 @@
 <input type="text" #email>
 <input type="password" #password>
 <button (click)="onLogin(email.value, password.value)">Zaloguj</button>
+<br><br>
+<input type="text" style="width: 400px" #url>
+<button (click)="onUrlRequest(url.value)">Wyślij zapytanie</button>
