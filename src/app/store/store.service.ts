@@ -2,17 +2,19 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { forkJoin, of, throwError } from "rxjs";
 import { catchError, map, switchMap, tap } from "rxjs/operators";
+
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
+import { CalendarKinds, CalendarKindType, CalendarType } from "./models/calendar.type";
 import { CategoryType } from "./models/category.type";
-import { GradeKindType, GradeType, GRADE_KINDS } from "./models/grade.type";
+import { ClassroomType } from "./models/classroom.type";
+import { GradeKinds, GradeKindType, GradeType } from "./models/grade.type";
 import { LessonType } from "./models/lesson.type";
 import { LuckyNumberType } from "./models/lucky-number.type";
 import { MeType } from "./models/me.model";
-import { SubjectType } from "./models/subject.model";
+import { SubjectType } from "./models/subject.type";
 import { TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
-import { ClassroomType } from "./models/classroom.type";
 
 export type StoreData = {
   loading: boolean,
@@ -25,7 +27,8 @@ export type StoreData = {
   categories: {[key: number]: CategoryType},
   attendances: AttendanceType[],
   attendanceTypes: {[key: number]: AttendanceTypeType},
-  timetable: TimetableType
+  timetable: TimetableType,
+  calendar: CalendarType,
   luckyNumber: LuckyNumberType
 };
 
@@ -43,6 +46,7 @@ export class StoreService {
     attendances: [],
     attendanceTypes: {},
     timetable: {},
+    calendar: {},
     luckyNumber: null
   };
 
@@ -90,7 +94,7 @@ export class StoreService {
   fetchGrades() {
     let grades: GradeType[] = [];
 
-    let requests = GRADE_KINDS.map(gradeKind => {
+    let requests = GradeKinds.map(gradeKind => {
       return this.http.get<any>(`https://api.librus.pl/2.0/${gradeKind.name}`).pipe(
           catchError(this.errorHandler.bind),
           map(response => {
@@ -183,11 +187,11 @@ export class StoreService {
           tap(response => {
             let attendances: AttendanceType[] = response['Attendances'];
             for (let attendance of attendances) {
-              attendance.Type = this.data.attendanceTypes[attendance.Type.Id];
-              attendance.AddedBy = this.data.users[attendance.AddedBy.Id];
-              attendance.Lesson = this.data.lessons[attendance.Lesson.Id];
-              this.data.attendances.push(attendance);
+              delete attendance.Type.Url;
+              delete attendance.AddedBy.Url;
+              delete attendance.Lesson.Url;
             }
+            this.data.attendances = attendances;
           })
         );
       })
@@ -218,13 +222,67 @@ export class StoreService {
   fetchTimetable(fetchClassrooms: boolean = true, weekStart: string = '') { // YYYY-MM-DD
     return this.fetchClassrooms().pipe(
       switchMap(() => {
-        return this.http.get('https://api.librus.pl/2.0/Timetables?weekStart=' +  weekStart);
+        return this.http.get('https://api.librus.pl/2.0/Timetables', {params: { weekStart }});
       }),
       catchError(this.errorHandler.bind(this)),
       tap(response => {
         let timetable: TimetableType = response['Timetable'];
         for (const key in timetable) {
           this.data.timetable[key] = timetable[key];
+        }
+      })
+    );
+  }
+
+  fetchCalendar() {
+    let requests = CalendarKinds.map(calendarKind => {
+      return this.http.get<any>(`https://api.librus.pl/2.0/${calendarKind.name}`).pipe(
+          catchError(this.errorHandler.bind),
+          map(response => {
+            return {
+              kind: <CalendarKindType>calendarKind.propName,
+              entries: response[calendarKind.propName]
+            };
+          })
+        );
+    })
+
+    let homeworkCategories: {[key: number]: {Id: number, Name: string}} = {};
+    let classFreeDayTypes: {[key: number]: {Id: number, Name: string}} = {};
+
+    return forkJoin({
+      catList: this.http.get('https://api.librus.pl/2.0/HomeWorks/Categories').pipe(
+        catchError(this.errorHandler.bind),
+        map(response => response['Categories'])
+      ),
+      typesList: this.http.get('https://api.librus.pl/2.0/ClassFreeDays/Types').pipe(
+        catchError(this.errorHandler.bind),
+        map(response => response['Types'])
+      )
+    }).pipe(
+      switchMap(({catList, typesList}) => {
+        for (let category of catList) {
+          homeworkCategories[category.Id] = category;
+        }
+        for (let type of typesList) {
+          classFreeDayTypes[type.Id] = type;
+        }
+
+        return forkJoin(requests);
+      }),
+      tap(responses => {
+        let homeworks = responses.find(res => res.kind == 'HomeWorks').entries;
+        let classFreeDays = responses.find(res => res.kind == 'ClassFreeDays').entries;
+
+        for (let homework of homeworks) {
+          homework.Category = homeworkCategories[homework.Category.Id];
+        }
+        for (let classFreeDay of classFreeDays) {
+          classFreeDay.Type = classFreeDayTypes[classFreeDay.Type.Id];
+        }
+
+        for (let response of responses) {
+          this.data.calendar[response.kind] = response.entries;
         }
       })
     );

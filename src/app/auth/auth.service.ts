@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { SynergiaAccountType } from '../store/models/synergia-accounts.model';
+import { SynergiaAccountType } from '../store/models/synergia-accounts.type';
 import { StoreService } from '../store/store.service';
 
 export type authState = {
@@ -132,7 +132,6 @@ export class AuthService {
         this.authStateSubject.next(this.authState);
       }),
       switchMap(synergiaAccounts => {
-        console.log(synergiaAccounts);
         return this.http.get(
           'https://api.librus.pl/2.0/Me',
           {
@@ -174,7 +173,7 @@ export class AuthService {
   restoreAuthSession() {
     console.log('restoring auth session');
     this.authState = JSON.parse(localStorage.getItem('app.authState')) || this.authState;
-    console.log('localstorage', this.authState);
+    console.log('localStorage.app.authState', this.authState);
     this.authStateSubject.next(this.authState);
   }
 

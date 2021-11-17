@@ -1,5 +1,5 @@
 import { CategoryType } from "./category.type";
-import { SubjectType } from "./subject.model";
+import { SubjectType } from "./subject.type";
 import { UserType } from "./user.type";
 
 export interface GradeType {
@@ -31,36 +31,29 @@ export type GradeKindType = 'Grades'
   | 'BehaviourGrades/Points'
   | 'PointGrades';
 
-export const GRADE_KINDS = [
+export const GradeKinds = [
   {
     name: 'Grades',
     propName: 'Grades'
-  },
-  {
+  }, {
     name: 'DescriptiveGrades',
     propName: 'Grades'
-  },
-  {
+  }, {
     name: 'DescriptiveTextGrades',
     propName: 'Grades'
-  },
-  {
+  }, {
     name: 'TextGrades',
     propName: 'Grades'
-  },
-  {
+  }, {
     name: 'BehaviourGrades',
     propName: 'Grades'
-  },
-  {
+  }, {
     name: 'BehaviourGrades/SystemProposal',
     propName: 'SystemProposal'
-  },
-  {
+  }, {
     name: 'BehaviourGrades/Points',
     propName: 'Grades'
-  },
-  {
+  }, {
     name: 'PointGrades',
     propName: 'Grades'
   },

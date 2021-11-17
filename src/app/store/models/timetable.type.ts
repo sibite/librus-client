@@ -1,5 +1,5 @@
 import { LessonType } from "./lesson.type";
-import { SubjectType } from "./subject.model";
+import { SubjectType } from "./subject.type";
 import { UserType } from "./user.type";
 
 export interface TimetableEntryType {

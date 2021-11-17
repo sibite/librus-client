@@ -12,4 +12,5 @@ export interface AttendanceType {
   Semester: number,
   Student: any,
   Type: AttendanceTypeType
+  Url?: string
 }

@@ -10,4 +10,5 @@ export interface CategoryType {
   ObligationToPerform: boolean,
   Standard: boolean,
   Weight: number
+  Url?: string
 }

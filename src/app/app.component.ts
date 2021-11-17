@@ -53,7 +53,8 @@ export class AppComponent implements OnInit {
         return forkJoin([
           this.storeService.fetchGrades(),
           this.storeService.fetchAttendances(true),
-          this.storeService.fetchTimetable()
+          this.storeService.fetchTimetable(),
+          this.storeService.fetchCalendar()
         ]);
       })
       ).subscribe(() => {

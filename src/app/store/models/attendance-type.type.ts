@@ -7,4 +7,5 @@ export interface AttendanceTypeType {
   Order: number,
   Short: string,
   Standard: boolean
+  Url?: string
 }

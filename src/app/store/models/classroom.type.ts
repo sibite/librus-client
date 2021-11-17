@@ -4,4 +4,5 @@ export interface ClassroomType {
   SchoolCommonRoom: boolean,
   Size: number,
   Symbol: string
+  Url?: string
 }

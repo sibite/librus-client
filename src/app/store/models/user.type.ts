@@ -4,4 +4,5 @@ export interface UserType {
   Id: number
   IsEmployee: boolean
   LastName: string
+  Url?: string
 }
