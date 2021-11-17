@@ -7,9 +7,12 @@ import { AttendanceType } from "./models/attendance.type";
 import { CategoryType } from "./models/category.type";
 import { GradeKindType, GradeType, GRADE_KINDS } from "./models/grade.type";
 import { LessonType } from "./models/lesson.type";
+import { LuckyNumberType } from "./models/lucky-number.type";
 import { MeType } from "./models/me.model";
 import { SubjectType } from "./models/subject.model";
+import { TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
+import { ClassroomType } from "./models/classroom.type";
 
 export type StoreData = {
   loading: boolean,
@@ -17,10 +20,13 @@ export type StoreData = {
   me: MeType,
   subjects: {[key: number]: SubjectType},
   lessons: {[key: number]: LessonType},
+  classrooms: {[key: number]: ClassroomType}
   users: {[key: number]: UserType},
   categories: {[key: number]: CategoryType},
   attendances: AttendanceType[],
   attendanceTypes: {[key: number]: AttendanceTypeType},
+  timetable: TimetableType
+  luckyNumber: LuckyNumberType
 };
 
 @Injectable({providedIn: 'root'})
@@ -31,10 +37,13 @@ export class StoreService {
     me: null,
     subjects: {},
     lessons: {},
+    classrooms: {},
     users: {},
     categories: {},
     attendances: [],
-    attendanceTypes: {}
+    attendanceTypes: {},
+    timetable: {},
+    luckyNumber: null
   };
 
   constructor(
@@ -181,6 +190,42 @@ export class StoreService {
             }
           })
         );
+      })
+    );
+  }
+
+  fetchLuckyNumber() {
+    return this.http.get('https://api.librus.pl/2.0/LuckyNumbers').pipe(
+      catchError(this.errorHandler.bind(this)),
+      tap(response => {
+        this.data.luckyNumber = response['LuckyNumber'];
+      })
+    );
+  }
+
+  fetchClassrooms() {
+    return this.http.get('https://api.librus.pl/2.0/Classrooms').pipe(
+      catchError(this.errorHandler.bind(this)),
+      tap(response => {
+        let classrooms: ClassroomType[] = response['Classrooms'];
+        for (let classroom of classrooms) {
+          this.data.classrooms[classroom.Id] = classroom;
+        }
+      })
+    );
+  }
+
+  fetchTimetable(fetchClassrooms: boolean = true, weekStart: string = '') { // YYYY-MM-DD
+    return this.fetchClassrooms().pipe(
+      switchMap(() => {
+        return this.http.get('https://api.librus.pl/2.0/Timetables?weekStart=' +  weekStart);
+      }),
+      catchError(this.errorHandler.bind(this)),
+      tap(response => {
+        let timetable: TimetableType = response['Timetable'];
+        for (const key in timetable) {
+          this.data.timetable[key] = timetable[key];
+        }
       })
     );
   }

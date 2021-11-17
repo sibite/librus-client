@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { take, mergeMap, switchMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+import { switchMap, take } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
 import { StoreService } from './store/store.service';
 
@@ -48,12 +49,13 @@ export class AppComponent implements OnInit {
       switchMap(() => {
         return this.storeService.fetchUsers();
       }),
-      mergeMap(() => {
-        return this.storeService.fetchGrades();
-      }),
-      mergeMap(() => {
-        return this.storeService.fetchAttendances(true);
-      }),
+      switchMap(() => {
+        return forkJoin([
+          this.storeService.fetchGrades(),
+          this.storeService.fetchAttendances(true),
+          this.storeService.fetchTimetable()
+        ]);
+      })
       ).subscribe(() => {
         console.log(this.storeService.getData());
       });
