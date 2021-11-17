@@ -28,7 +28,6 @@ export class AppComponent implements OnInit {
     });
     this.authService.authSuccessSubject.pipe(take(1)).subscribe(() => {
       console.log('Login success');
-      this.fetchData();
     });
     this.authService.auth();
   }
@@ -51,7 +50,12 @@ export class AppComponent implements OnInit {
       }),
       mergeMap(() => {
         return this.storeService.fetchGrades();
-      })
-      ).subscribe();
+      }),
+      mergeMap(() => {
+        return this.storeService.fetchAttendances(true);
+      }),
+      ).subscribe(() => {
+        console.log(this.storeService.getData());
+      });
   }
 }
