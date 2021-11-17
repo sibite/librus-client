@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, of, Subject, Subscription, throwError } from 'rxjs';
-import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject, throwError } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { SynergiaAccountType } from '../store/models/synergia-accounts.model';
 import { StoreService } from '../store/store.service';
 
@@ -26,6 +26,7 @@ export class AuthService {
     error: null,
   };
   public authStateSubject = new BehaviorSubject<authState>(this.authState);
+  public authSuccessSubject = new Subject();
 
   constructor(
     private http: HttpClient,
@@ -74,13 +75,16 @@ export class AuthService {
             responseType: 'text',
             withCredentials: true
           }
-        ).pipe(catchError(this.errorHandler.bind(this)));
-      })
+        );
+      }),
+      catchError(this.errorHandler.bind(this))
     ).subscribe(() => {
       this.authState = {
         ...this.authState,
         loggedIn: true,
-        loading: false
+        loading: false,
+        authorized: false,
+        error: null
       };
       this.authStateSubject.next(this.authState);
     });
@@ -91,26 +95,38 @@ export class AuthService {
     this.authStateSubject.next(this.authState);
 
     this.http.get(
-      'https://portal.librus.pl/oauth2/authorize',
+      'https://portal.librus.pl/rodzina/widget',
       {
-        params: new HttpParams().appendAll({
-          'client_id': 'AyNzeNoSup7IkySMhBdUhSH4ucqc97Jn6DzVcqd5',
-          'redirect_uri': 'https://personalschedule.librus.pl/authorize',
-          'scope': 'my_data+synergia_integration',
-          'state': 'zx',
-          'response_type': 'code'
-        }),
-        withCredentials: true
+        withCredentials: true,
+        responseType: 'text'
       }
     ).pipe(
+      catchError(this.errorHandler.bind(this)),
+      switchMap(() => {
+        return this.http.get(
+          'https://portal.librus.pl/oauth2/authorize',
+          {
+            params: new HttpParams().appendAll({
+              'client_id': 'AyNzeNoSup7IkySMhBdUhSH4ucqc97Jn6DzVcqd5',
+              'redirect_uri': 'https://personalschedule.librus.pl/authorize',
+              'scope': 'my_data+synergia_integration',
+              'state': 'zx',
+              'response_type': 'code'
+            }),
+            withCredentials: true
+          }
+        );
+      }),
+      catchError(this.errorHandler.bind(this)),
       switchMap(() => {
         return this.http.get(
           'https://portal.librus.pl/api/v3/SynergiaAccounts',
           {
             withCredentials: true
           }
-        ).pipe(catchError(this.errorHandler.bind(this)));
+        );
       }),
+      catchError(this.errorHandler.bind(this)),
       tap(synergiaAccounts => {
         this.authState.account = synergiaAccounts.accounts[0];
         this.authStateSubject.next(this.authState);
@@ -126,8 +142,9 @@ export class AuthService {
               'Authorization': 'Bearer ' + synergiaAccounts.accounts[0].accessToken
             })
           }
-        ).pipe(catchError(this.errorHandler.bind(this)));
-      })
+        );
+      }),
+      catchError(this.errorHandler.bind(this))
     ).subscribe(response => {
       this.storeService.setUser(response.Me);
       this.authState = {
@@ -138,6 +155,7 @@ export class AuthService {
         error: null
       };
       this.authStateSubject.next(this.authState);
+      this.authSuccessSubject.next();
     });
   }
 
@@ -146,7 +164,11 @@ export class AuthService {
   }
 
   saveLocalStorage() {
-    localStorage.setItem('app.authState', JSON.stringify(this.authState));
+    localStorage.setItem('app.authState', JSON.stringify({
+      ...this.authState,
+      error: null,
+      loading: false
+    }));
   }
 
   restoreAuthSession() {

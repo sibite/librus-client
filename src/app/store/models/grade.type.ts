@@ -19,23 +19,49 @@ export interface GradeType {
   ShowInGradesView?: boolean,
   Student: any, // {Id: id, Url: "https://api.librus.pl/2.0/Users/id"}
   Subject: SubjectType, // {Id: id, Url: "https://api.librus.pl/2.0/Subjects/id"}
-  Kind: 'Grades'
-      | 'DescriptiveGrades'
-      | 'DescriptiveTextGrades'
-      | 'TextGrades'
-      | 'BehaviourGrades'
-      | 'SystemProposal'
-      | 'Points'
-      | 'PointGrades'
+  Kind: GradeKindType
 }
 
-export const GradeKinds = [
-  'Grades',
-  'DescriptiveGrades',
-  'DescriptiveTextGrades',
-  'TextGrades',
-  'BehaviourGrades',
-  'SystemProposal',
-  'Points',
-  'PointGrades'
+export type GradeKindType = 'Grades'
+  | 'DescriptiveGrades'
+  | 'DescriptiveTextGrades'
+  | 'TextGrades'
+  | 'BehaviourGrades'
+  | 'BehaviourGrades/SystemProposal'
+  | 'BehaviourGrades/Points'
+  | 'PointGrades';
+
+export const GRADE_KINDS = [
+  {
+    name: 'Grades',
+    propName: 'Grades'
+  },
+  {
+    name: 'DescriptiveGrades',
+    propName: 'Grades'
+  },
+  {
+    name: 'DescriptiveTextGrades',
+    propName: 'Grades'
+  },
+  {
+    name: 'TextGrades',
+    propName: 'Grades'
+  },
+  {
+    name: 'BehaviourGrades',
+    propName: 'Grades'
+  },
+  {
+    name: 'BehaviourGrades/SystemProposal',
+    propName: 'SystemProposal'
+  },
+  {
+    name: 'BehaviourGrades/Points',
+    propName: 'Grades'
+  },
+  {
+    name: 'PointGrades',
+    propName: 'Grades'
+  },
 ]
