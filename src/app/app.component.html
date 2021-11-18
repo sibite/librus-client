@@ -1,0 +1,8 @@
+<input type="text" #email>
+<input type="password" #password>
+<button type="submit" (click)="onLogin(email.value, password.value)">Zaloguj</button>
+<br><br>
+<button (click)="fetchData()">Pobierz dane do konsoli</button>
+<br><br>
+<input type="text" style="width: 400px" #url>
+<button (click)="onUrlRequest(url.value)">Wyślij zapytanie</button>
