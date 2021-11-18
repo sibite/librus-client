@@ -7,47 +7,59 @@ import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
 import { CalendarKinds, CalendarKindType, CalendarType } from "./models/calendar.type";
 import { CategoryType } from "./models/category.type";
+import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
 import { GradeKinds, GradeKindType, GradeType } from "./models/grade.type";
 import { LessonType } from "./models/lesson.type";
 import { LuckyNumberType } from "./models/lucky-number.type";
 import { MeType } from "./models/me.model";
+import { SchoolInfoType } from "./models/school-info.type";
 import { SubjectType } from "./models/subject.type";
 import { TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
 
 export type StoreData = {
+  // Status
   loading: boolean,
   error: string,
+  // Storage
   me: MeType,
   subjects: {[key: number]: SubjectType},
+  users: {[key: number]: UserType},
   lessons: {[key: number]: LessonType},
   classrooms: {[key: number]: ClassroomType}
-  users: {[key: number]: UserType},
   categories: {[key: number]: CategoryType},
   attendances: AttendanceType[],
   attendanceTypes: {[key: number]: AttendanceTypeType},
   timetable: TimetableType,
   calendar: CalendarType,
+  // Small information
+  schoolInfo: SchoolInfoType,
+  classInfo: ClassInfoType,
   luckyNumber: LuckyNumberType
 };
 
 @Injectable({providedIn: 'root'})
 export class StoreService {
   data: StoreData = {
+    // Status
     loading: false,
     error: null,
+    // Storage
     me: null,
     subjects: {},
+    users: {},
     lessons: {},
     classrooms: {},
-    users: {},
     categories: {},
     attendances: [],
     attendanceTypes: {},
     timetable: {},
     calendar: {},
-    luckyNumber: null
+    // Small information
+    schoolInfo: null,
+    classInfo: null,
+    luckyNumber: null,
   };
 
   constructor(
@@ -186,11 +198,6 @@ export class StoreService {
           catchError(this.errorHandler.bind(this)),
           tap(response => {
             let attendances: AttendanceType[] = response['Attendances'];
-            for (let attendance of attendances) {
-              delete attendance.Type.Url;
-              delete attendance.AddedBy.Url;
-              delete attendance.Lesson.Url;
-            }
             this.data.attendances = attendances;
           })
         );
@@ -205,6 +212,19 @@ export class StoreService {
         this.data.luckyNumber = response['LuckyNumber'];
       })
     );
+  }
+
+  fetchUnitInfo() {
+    return forkJoin({
+      schools: this.http.get('https://api.librus.pl/2.0/Schools'),
+      classes: this.http.get('https://api.librus.pl/2.0/Classes')
+    }).pipe(
+      catchError(this.errorHandler.bind(this)),
+      tap(({schools, classes}) => {
+        this.data.schoolInfo = schools['School'];
+        this.data.classInfo = classes['Class'];
+      })
+    )
   }
 
   fetchClassrooms() {

@@ -54,7 +54,8 @@ export class AppComponent implements OnInit {
           this.storeService.fetchGrades(),
           this.storeService.fetchAttendances(true),
           this.storeService.fetchTimetable(),
-          this.storeService.fetchCalendar()
+          this.storeService.fetchCalendar(),
+          this.storeService.fetchUnitInfo()
         ]);
       })
       ).subscribe(() => {
