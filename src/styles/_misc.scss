@@ -13,12 +13,15 @@
 body {
   --bg-color-1: #ffffff;
   --btn-color-default: #eeeeee;
-  --form-el-bg-color: #f5f5f5;
-  --form-el-bg-color-focus: #f2f2f2;
+  --btn-color-default-darker: #e1e1e1;
+  --link-color: #{vars.$accent};
+  --form-el-bg-color: #f0f0f0;
+  --form-el-bg-color-focus: #f9f9f9;
   --form-el-text-color: black;
   --form-el-border-color: rgba(0, 0, 0, 0.05);
   --title-color-main: black;
   --title-color-gray: #3f3f3f;
+  --shadow-color: rgba(0, 0, 0, 0.2);
   --ripple-color-light: rgba(255, 255, 255, 0.4);
   --ripple-color-dark: rgba(0, 0, 0, 0.3);
   --ripple-color: var(--ripple-color-light);
@@ -43,7 +46,7 @@ body {
 }
 
 a {
-  color: vars.$accent;
+  color: var(--link-color);
   text-decoration: none;
 
   &:active {
@@ -72,12 +75,15 @@ input {
   body:not(.light) {
     --bg-color-1: #000000;
     --btn-color-default: #333333;
+    --btn-color-default-darker: #3c3c3c;
+    --link-color: #{vars.$accent-lighter};
     --form-el-bg-color: #1e1e1e;
     --form-el-bg-color-focus: #2f2f2f;
     --form-el-text-color: #dddddd;
-    --form-el-border-color: rgba(255, 255, 255, 0.2);
+    --form-el-border-color: rgba(255, 255, 255, 0.3);
     --title-color-main: rgb(255, 255, 255);
     --title-color-gray: #eeeeee;
+    --shadow-color: rgba(255, 255, 255, 0.2);
     --ripple-color: var(--ripple-color-dark);
   }
 }

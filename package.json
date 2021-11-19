@@ -19,6 +19,7 @@
     "@angular/platform-browser": "~12.2.0",
     "@angular/platform-browser-dynamic": "~12.2.0",
     "@angular/router": "~12.2.0",
+    "bootstrap-icons": "^1.7.1",
     "cors-anywhere": "^0.4.4",
     "express": "^4.17.1",
     "http-proxy-middleware": "^2.0.1",

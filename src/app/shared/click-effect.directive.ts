@@ -1,4 +1,5 @@
 import { Directive, ElementRef, HostBinding, HostListener, Input, OnInit, Renderer2 } from "@angular/core";
+import { ViewService } from "./view.service";
 
 @Directive({
   selector: '[clickEffect]'
@@ -8,14 +9,19 @@ export class ClickEffectDirective implements OnInit {
 
   constructor(
     private elRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private viewService: ViewService
   ) {}
 
   ngOnInit() {
     this.renderer.addClass(this.elRef.nativeElement, 'click-effect');
-    console.log(this.forcedTheme);
-    if (this.forcedTheme) {
-      this.renderer.addClass(this.elRef.nativeElement, 'force-' + this.forcedTheme);
+    let forcedTheme = this.forcedTheme;
+    console.log(forcedTheme);
+    if (forcedTheme) {
+      if (forcedTheme == 'revert') {
+        forcedTheme = this.viewService.theme == 'light' ? 'dark' : 'light';
+      }
+      this.renderer.addClass(this.elRef.nativeElement, 'force-' + forcedTheme);
     }
   }
 

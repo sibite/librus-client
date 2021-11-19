@@ -3,7 +3,6 @@ import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild } fro
 import { forkJoin } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
-import { ThemeService } from './shared/theme.service';
 import { StoreService } from './store/store.service';
 
 @Component({
@@ -12,18 +11,12 @@ import { StoreService } from './store/store.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  windowHeight = window.innerHeight;
 
   constructor(
     private authService: AuthService,
     private storeService: StoreService,
-    private themeService: ThemeService,
     private http: HttpClient
   ) {}
-
-  @HostListener('window:resize') onResize() {
-    this.windowHeight = window.innerHeight;
-  }
 
   ngOnInit() {
     this.authService.authStateSubject.subscribe(state => {

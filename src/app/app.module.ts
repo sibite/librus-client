@@ -8,17 +8,23 @@ import { CorsInterceptorService } from './interceptors/cors-interceptor.service'
 import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
 import { AuthComponent } from './auth/auth.component';
 import { ClickEffectDirective } from './shared/click-effect.directive';
+import { FormsModule } from '@angular/forms';
+import { TopbarComponent } from './topbar/topbar.component';
+import { SideMenuComponent } from './side-menu/side-menu.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
-    ClickEffectDirective
+    ClickEffectDirective,
+    TopbarComponent,
+    SideMenuComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [
     {

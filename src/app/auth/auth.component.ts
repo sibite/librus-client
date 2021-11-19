@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { ViewService } from '../shared/view.service';
 
 @Component({
   selector: 'app-auth',
@@ -8,9 +10,16 @@ import { Component, OnInit } from '@angular/core';
 export class AuthComponent implements OnInit {
   errorMessage = null;
 
-  constructor() { }
+  constructor(
+    public viewService: ViewService
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  onSubmit(form: NgForm) {
+    console.log(form);
+
   }
 
 }

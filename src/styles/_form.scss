@@ -63,6 +63,17 @@ $group-ver-margin: 30px;
     background-color: var(--form-el-bg-color-focus);
     border-color: vars.$accent;
   }
+
+  &.ng-invalid.ng-touched {
+    border-color: vars.$danger;
+  }
+}
+
+.ui.form-error {
+  color: vars.$danger;
+  font-size: 0.8em;
+  margin-top: 0px;
+  margin-bottom: 12px;
 }
 
 .ui.button {
@@ -73,10 +84,18 @@ $group-ver-margin: 30px;
   color: var(--btn-font-color-default);
   border-radius: vars.$border-radius;
   font-weight: bold;
+  @include fast-transition();
+
+  &:active {
+    background-color: var(--btn-color-default-darker);
+  }
 
   &.primary {
     color: vars.$accent-contrast;
     background-color: vars.$accent;
+    &:active {
+      background-color: vars.$accent-darker;
+    }
   }
 }
 

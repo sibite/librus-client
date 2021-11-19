@@ -1,6 +1,13 @@
+.ui.view-wrapper {
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
 .ui.component {
   justify-content: center;
   align-items: center;
+  flex-grow: 1;
 }
 
 .ui.group {

@@ -1,0 +1,36 @@
+@use 'vars';
+
+$bar-height: 54px;
+$el-padding: 10px;
+$el-margin: 5px;
+
+@mixin common-bar-element() {
+  box-sizing: border-box;
+  height: #{$bar-height - $el-margin * 2};
+  width: #{$bar-height - $el-margin * 2};
+  margin: $el-margin;
+  line-height: #{$bar-height - $el-padding * 2};
+  padding: #{$el-padding - $el-margin};
+  color: var(--title-color-gray);
+}
+
+.ui.topbar {
+  height: $bar-height;
+  background-color: var(--bg-color-1);
+  box-shadow: 0px 1px 1px var(--shadow-color);
+  font-size: 0.85em;
+}
+
+.ui.topbar-button {
+  @include common-bar-element();
+  border-radius: 100%;
+  cursor: pointer;
+  font-size: 2.1em;
+  text-align: center;
+}
+
+.ui.topbar-title {
+  @include common-bar-element();
+  font-size: 1.1em;
+  font-weight: bold;
+}
