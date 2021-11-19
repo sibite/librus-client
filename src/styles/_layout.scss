@@ -1,0 +1,28 @@
+$content-offset: 24px;
+
+.ui.view-wrapper {
+  width: 100vw;
+  // height must be set by JS
+  display: flex;
+}
+
+.ui.component {
+  box-sizing: border-box;
+  display: flex;
+}
+
+.ui {
+  .component, .group {
+    &.offset {
+      padding: $content-offset;
+    }
+  }
+}
+
+.ui.disable-top-margin {
+  margin-top: 0;
+}
+
+.ui.disable-bottom-margin {
+  margin-bottom: 0;
+}

@@ -1,0 +1,83 @@
+@use 'vars';
+
+@mixin clearfix($modifyAfter: true) {
+  &::after {
+    @if $modifyAfter {
+      content: '';
+      display: block;
+    }
+    clear: both;
+  }
+}
+
+body {
+  --bg-color-1: #ffffff;
+  --btn-color-default: #eeeeee;
+  --form-el-bg-color: #f5f5f5;
+  --form-el-bg-color-focus: #f2f2f2;
+  --form-el-text-color: black;
+  --form-el-border-color: rgba(0, 0, 0, 0.05);
+  --title-color-main: black;
+  --title-color-gray: #3f3f3f;
+  --ripple-color-light: rgba(255, 255, 255, 0.4);
+  --ripple-color-dark: rgba(0, 0, 0, 0.3);
+  --ripple-color: var(--ripple-color-light);
+
+}
+
+body {
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  overscroll-behavior: none;
+  font-size: 17px;
+  background-color: var(--bg-color-1);
+  font-family: 'Lato', Roboto, sans-serif;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+a {
+  color: vars.$accent;
+  text-decoration: none;
+
+  &:active {
+    background-color: rgba(127, 127, 127, 0.5);
+  }
+}
+
+*:not(a) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input {
+  outline: none;
+}
+
+.ui.text-to-right {
+  text-align: right;
+}
+
+.ui.stick-to-right {
+  @include clearfix();
+  float: right;
+}
+
+@media (prefers-color-scheme: dark) {
+  body:not(.light) {
+    --bg-color-1: #000000;
+    --btn-color-default: #333333;
+    --form-el-bg-color: #1e1e1e;
+    --form-el-bg-color-focus: #2f2f2f;
+    --form-el-text-color: #dddddd;
+    --form-el-border-color: rgba(255, 255, 255, 0.2);
+    --title-color-main: rgb(255, 255, 255);
+    --title-color-gray: #eeeeee;
+    --ripple-color: var(--ripple-color-dark);
+  }
+}

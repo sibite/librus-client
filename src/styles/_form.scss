@@ -1,0 +1,142 @@
+@use 'vars';
+
+$el-height: 44px;
+$el-padding: 12px;
+$el-line-height: #{$el-height - $el-padding*2};
+$el-ver-margin: 8px;
+$el-border-width: 1px;
+$group-ver-margin: 30px;
+
+@mixin fast-transition {
+  transition: all 200ms ease;
+}
+
+@mixin common-form-element-styles($no-border: false) {
+  box-sizing:border-box;
+  width: 100%;
+  padding: $el-padding;
+  line-height: $el-line-height;
+  font: {
+    family: 'Lato', Roboto, sans-serif;
+    size: 1em;
+  }
+  @if ($no-border) {
+    min-height: calc(#{$el-height} + 2 * #{$el-border-width});
+    border: none;
+  }
+  @else {
+    min-height: $el-height;
+    border: $el-border-width solid var(--form-el-border-color);
+  }
+  border-radius: vars.$border-radius;
+}
+
+.ui.form {
+  text-align: left;
+}
+
+.ui.form-group {
+  margin-top: $group-ver-margin;
+  margin-bottom: $group-ver-margin;
+
+  &:first-child {
+    margin-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.ui.form-control, .ui.form-control:-webkit-autofill {
+  @include fast-transition();
+  @include common-form-element-styles();
+
+  margin: {
+    top: $el-ver-margin;
+    bottom: $el-ver-margin;
+  }
+  color: var(--form-el-text-color);
+  background-color: var(--form-el-bg-color);
+  box-shadow: 0px 1px 2px 0px rgb(0, 0, 0, 10%) inset;
+
+  &:focus {
+    background-color: var(--form-el-bg-color-focus);
+    border-color: vars.$accent;
+  }
+}
+
+.ui.button {
+  @include fast-transition();
+  @include common-form-element-styles($no-border: true);
+  cursor: pointer;
+  background-color: var(--btn-color-default);
+  color: var(--btn-font-color-default);
+  border-radius: vars.$border-radius;
+  font-weight: bold;
+
+  &.primary {
+    color: vars.$accent-contrast;
+    background-color: vars.$accent;
+  }
+}
+
+.ui.label {
+  color: var(--form-el-text-color);
+  font-size: 0.8em;
+}
+
+.ui.click-effect {
+  --ripple-x: 50%;
+  --ripple-y: 50%;
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    background-color: var(--ripple-color);
+    border-radius: 100%;
+    left: calc(var(--ripple-x) - var(--ripple-size) / 2);
+    top: calc(var(--ripple-y) - var(--ripple-size) / 2);
+    width: var(--ripple-size);
+    height: var(--ripple-size);
+    opacity: 0;
+  }
+
+  &.clicked::before {
+    opacity: 0;
+    animation: {
+      name: ripple-opacity, ripple-scale;
+      timing-function: ease-out, ease-out;
+      iteration-count: 1, 1;
+      duration: 900ms, 400ms;
+    }
+  }
+
+  &.force-dark::before {
+    background-color: var(--ripple-color-dark);
+  }
+
+  &.force-light::before {
+    background-color: var(--ripple-color-light);
+  }
+}
+
+@keyframes ripple-scale {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes ripple-opacity {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+

@@ -1,5 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# user defined
+tasks.txt
+
 # compiled output
 /dist
 /tmp

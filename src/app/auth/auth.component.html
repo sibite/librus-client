@@ -1,0 +1,19 @@
+<div class="ui component offset">
+  <div class="ui group">
+    <h1 class="ui title disable-top-margin">Zaloguj się na <span style="white-space: nowrap;">konto Librus</span></h1>
+    <p class="ui simple-error">{{ errorMessage }}</p>
+    <form class="ui form form-auth" method="post">
+      <div class="ui form-group">
+        <label class="ui label" for="email">Adres e-mail</label>
+        <input class="ui form-control" type="email" name="email">
+        <label class="ui label" for="password">Hasło</label>
+        <input class="ui form-control" type="password" name="password">
+      </div>
+      <div class="ui form-group disable-bottom-margin">
+        <button class="ui button primary" clickEffect forceRippleTheme="light" type="button">Zaloguj</button>
+        <br><br>
+        <a href="https://portal.librus.pl/rodzina/password/reset" target="_blank" class="ui stick-to-right">Resetuj hasło</a>
+      </div>
+    </form>
+  </div>
+</div>

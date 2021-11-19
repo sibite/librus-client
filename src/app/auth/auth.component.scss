@@ -1,0 +1,25 @@
+.ui.component {
+  justify-content: center;
+  align-items: center;
+}
+
+.ui.group {
+  max-width: 300px;
+}
+
+.ui.title {
+  text-align: center;
+  color: var(--title-color-main);
+  color: var(--title-color-gray);
+  margin-bottom: 60px;
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: block;
+    bottom: -30px;
+    width: 100%;
+    border-top: 1px solid var(--form-el-border-color);
+  }
+}

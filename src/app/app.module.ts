@@ -6,10 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CorsInterceptorService } from './interceptors/cors-interceptor.service';
 import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
+import { AuthComponent } from './auth/auth.component';
+import { ClickEffectDirective } from './shared/click-effect.directive';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AuthComponent,
+    ClickEffectDirective
   ],
   imports: [
     BrowserModule,
