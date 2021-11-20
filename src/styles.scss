@@ -1,7 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-@use 'styles/fonts/fonts';
-@use 'styles/misc';
-@use 'styles/layout';
-@use 'styles/topbar';
-@use 'styles/main';
-@use 'styles/form';
+@use 'app/shared/styles/fonts/fonts';
+@use 'app/shared/styles/misc';
+@use 'app/shared/styles/layout';
+@use 'app/shared/styles/topbar';
+@use 'app/shared/styles/sidemenu';
+@use 'app/shared/styles/main';
+@use 'app/shared/styles/form';

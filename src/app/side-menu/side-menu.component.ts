@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ViewService } from '../shared/view.service';
 
 @Component({
   selector: 'app-side-menu',
@@ -6,8 +7,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./side-menu.component.scss']
 })
 export class SideMenuComponent implements OnInit {
+  @Input() isOpened = false;
+  @Input() panProgress: number;
+  @Input() enableTransition = true;
+  @Input() appSelf;
+  @Output() onClose = new EventEmitter();
 
-  constructor() { }
+  sideMenuWidth = +getComputedStyle(document.body).getPropertyValue('--side-menu-width').slice(0, -2);
+
+  constructor(
+    public viewService: ViewService
+  ) { }
 
   ngOnInit(): void {
   }

@@ -1,0 +1,17 @@
+@use '../../shared/styles/vars';
+
+li {
+  box-sizing: border-box;
+  cursor: pointer;
+  line-height: #{vars.$side-menu-item-height - vars.$side-menu-item-v-padding * 2};
+  padding: vars.$side-menu-item-v-padding vars.$side-menu-item-h-padding;
+
+  * {
+    vertical-align: middle;
+  }
+}
+
+i {
+  margin-right: vars.$side-menu-icon-margin;
+  font-size: 1.2em;
+}

@@ -2,7 +2,7 @@ import { Directive, ElementRef, HostBinding, HostListener, Input, OnInit, Render
 import { ViewService } from "./view.service";
 
 @Directive({
-  selector: '[clickEffect]'
+  selector: '[appClickEffect]'
 })
 export class ClickEffectDirective implements OnInit {
   @Input('forceRippleTheme') forcedTheme = null;
@@ -15,18 +15,13 @@ export class ClickEffectDirective implements OnInit {
 
   ngOnInit() {
     this.renderer.addClass(this.elRef.nativeElement, 'click-effect');
-    let forcedTheme = this.forcedTheme;
-    console.log(forcedTheme);
-    if (forcedTheme) {
-      if (forcedTheme == 'revert') {
-        forcedTheme = this.viewService.theme == 'light' ? 'dark' : 'light';
-      }
-      this.renderer.addClass(this.elRef.nativeElement, 'force-' + forcedTheme);
-    }
+    if (!this.forcedTheme) return
+    this.renderer.addClass(this.elRef.nativeElement, 'force-' + this.forcedTheme);
   }
 
 
-  @HostListener('click', ['$event']) onClick(event: PointerEvent) {
+  @HostListener('pointerdown', ['$event']) onPointerDown(event: PointerEvent) {
+    if (event.target !== this.elRef.nativeElement) return;
     const elWidth = this.elRef.nativeElement.clientWidth;
     const elHeight = this.elRef.nativeElement.clientHeight;
     const clickX = event.offsetX;
@@ -41,8 +36,16 @@ export class ClickEffectDirective implements OnInit {
     this.elRef.nativeElement.style.setProperty('--ripple-size', rippleSize + 'px');
     this.elRef.nativeElement.style.setProperty('--ripple-x', clickX + 'px');
     this.elRef.nativeElement.style.setProperty('--ripple-y', clickY + 'px');
-    this.renderer.removeClass(this.elRef.nativeElement, 'clicked');
+    this.renderer.removeClass(this.elRef.nativeElement, 'ce-held');
+    this.renderer.removeClass(this.elRef.nativeElement, 'ce-released');
     void this.elRef.nativeElement.offsetWidth;
-    this.renderer.addClass(this.elRef.nativeElement, 'clicked');
+    this.renderer.addClass(this.elRef.nativeElement, 'ce-held');
+  }
+
+  @HostListener('pointercancel')
+  @HostListener('pointerout')
+  @HostListener('pointerup')
+  onPointerUp() {
+    this.renderer.addClass(this.elRef.nativeElement, 'ce-released');
   }
 }

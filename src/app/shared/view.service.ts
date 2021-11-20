@@ -23,7 +23,7 @@ export class ViewService {
   }
 
   refreshTheme() {
-    let localTheme = this.getLocalPreference();
+    let localTheme = this.getLocalPreference() || 'auto';
     if (localTheme === 'auto' && window.matchMedia) {
       let isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       console.log('isDark', isDark);
@@ -31,7 +31,7 @@ export class ViewService {
     } else {
       this._theme = localTheme;
     }
-    if (this._theme === 'light') {
+    if (localTheme === 'light') {
       document.body.classList.add('light');
     } else {
       document.body.classList.remove('light');

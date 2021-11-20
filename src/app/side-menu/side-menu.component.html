@@ -1,4 +1,42 @@
-<div class='ui view-wrapper'>
-  <div class="ui overlay" id="menu-overlay"></div>
-  <div class="ui side-menu"></div>
+<div
+  class="ui view-wrapper"
+  [ngClass]="{'opened': isOpened}"
+  [style.height.px]="viewService.windowHeight">
+  <div
+    class="ui overlay"
+    id="menu-overlay"
+    [appSideMenuOpener]="appSelf"
+    [appShouldOpen]="false"
+    (onClose)="onClose.emit()"
+    [style.opacity]="panProgress"
+    [style.transition]="!enableTransition ? 'none' : null"></div>
+  <nav
+    class="ui side-menu"
+    [style.left.px]="sideMenuWidth * ((panProgress !== null ? panProgress : false || +isOpened) - 1)"
+    [style.transition]="!enableTransition ? 'none' : null">
+    <div class="ui sm-segment sm-header">
+      <strong class="ui sm-name">Jan Kowalski</strong>
+      <span class="ui sm-email">jan.kowalski@gmail.com</span>
+      <ul class="ui sm-list">
+        <app-side-menu-item appIcon="bi-box-arrow-right">Wyloguj się</app-side-menu-item>
+      </ul>
+    </div>
+    <div class="ui sm-segment sm-body">
+      <p class="ui sm-segment-title">Przeglądaj</p>
+      <ul class="ui sm-list">
+        <app-side-menu-item appIcon="bi-grid-1x2">Szybki podgląd</app-side-menu-item>
+        <app-side-menu-item appIcon="bi-journal">Oceny i zachowanie</app-side-menu-item>
+        <app-side-menu-item appIcon="bi-ui-checks-grid">Frekwencja</app-side-menu-item>
+        <app-side-menu-item appIcon="bi-calendar-range">Plan lekcji</app-side-menu-item>
+        <app-side-menu-item appIcon="bi-building">Szkoła i klasa</app-side-menu-item>
+      </ul>
+    </div>
+    <div class="ui sm-segment sm-footer">
+      <p class="ui sm-segment-title">Aplikacja</p>
+      <ul class="ui sm-list">
+        <app-side-menu-item appIcon="bi-info">Informacje</app-side-menu-item>
+        <app-side-menu-item appIcon="bi-gear">Ustawienia</app-side-menu-item>
+      </ul>
+    </div>
+  </nav>
 </div>

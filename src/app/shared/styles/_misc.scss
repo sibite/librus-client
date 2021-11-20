@@ -10,8 +10,20 @@
   }
 }
 
+@mixin fast-transition() {
+  transition: all 200ms ease;
+}
+
 body {
+  --side-menu-width: #{vars.$side-menu-width};
+
   --bg-color-1: #ffffff;
+  --bg-color-2: #eeeeee;
+  --bg-color-3: #dddddd;
+  --bg-color-1-shift-dark: var(--bg-color-1);
+  --bg-color-2-shift-dark: var(--bg-color-2);
+  --bg-color-3-shift-dark: var(--bg-color-3);
+
   --btn-color-default: #eeeeee;
   --btn-color-default-darker: #e1e1e1;
   --link-color: #{vars.$accent};
@@ -19,13 +31,15 @@ body {
   --form-el-bg-color-focus: #f9f9f9;
   --form-el-text-color: black;
   --form-el-border-color: rgba(0, 0, 0, 0.05);
-  --title-color-main: black;
-  --title-color-gray: #3f3f3f;
+
+  --text-color-main: black;
+  --text-color-gray: #3f3f3f;
+
   --shadow-color: rgba(0, 0, 0, 0.2);
+  --ripple-color: var(--ripple-color-dark);
   --ripple-color-light: rgba(255, 255, 255, 0.4);
   --ripple-color-dark: rgba(0, 0, 0, 0.3);
-  --ripple-color: var(--ripple-color-light);
-
+  --ripple-color-revert: var(--ripple-color-light);
 }
 
 body {
@@ -35,8 +49,9 @@ body {
   margin: 0;
   width: 100vw;
   overscroll-behavior: none;
-  font-size: 17px;
+  font-size: 16px;
   background-color: var(--bg-color-1);
+  color: var(--text-color-main);
   font-family: 'Lato', Roboto, sans-serif;
 
   -webkit-user-select: none;
@@ -45,35 +60,15 @@ body {
   user-select: none;
 }
 
-a {
-  color: var(--link-color);
-  text-decoration: none;
-
-  &:active {
-    background-color: rgba(127, 127, 127, 0.5);
-  }
-}
-
-*:not(a) {
-  -webkit-tap-highlight-color: transparent;
-}
-
-input {
-  outline: none;
-}
-
-.ui.text-to-right {
-  text-align: right;
-}
-
-.ui.stick-to-right {
-  @include clearfix();
-  float: right;
-}
-
 @media (prefers-color-scheme: dark) {
   body:not(.light) {
     --bg-color-1: #000000;
+    --bg-color-2: #1a1a1a;
+    --bg-color-3: #2f2f2f;
+    --bg-color-1-shift-dark: var(--bg-color-2);
+    --bg-color-2-shift-dark: var(--bg-color-3);
+    --bg-color-3-shift-dark: var(--bg-color-3);
+
     --btn-color-default: #333333;
     --btn-color-default-darker: #3c3c3c;
     --link-color: #{vars.$accent-lighter};
@@ -81,9 +76,12 @@ input {
     --form-el-bg-color-focus: #2f2f2f;
     --form-el-text-color: #dddddd;
     --form-el-border-color: rgba(255, 255, 255, 0.3);
-    --title-color-main: rgb(255, 255, 255);
-    --title-color-gray: #eeeeee;
+
+    --text-color-main: rgb(255, 255, 255);
+    --text-color-gray: #eeeeee;
+
     --shadow-color: rgba(255, 255, 255, 0.2);
-    --ripple-color: var(--ripple-color-dark);
+    --ripple-color: var(--ripple-color-light);
+    --ripple-color-revert: var(--ripple-color-dark);
   }
 }

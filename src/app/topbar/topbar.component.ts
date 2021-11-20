@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-topbar',
@@ -7,6 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class TopbarComponent implements OnInit {
   @Input() uiTitle: string;
+  @Input() appIcon: string;
+  @Output() onButtonClick = new EventEmitter();
 
   constructor() { }
 

@@ -4,20 +4,31 @@
   align-items: stretch;
 }
 
-.ui.component {
-  justify-content: center;
+.ui.component#parent-component {
+  display: flex;
+  justify-content: stretch;
+  align-items: stretch;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.ui.component#child-component {
+  display: flex;
   align-items: center;
+  justify-content: center;
   flex-grow: 1;
 }
 
 .ui.group {
   max-width: 300px;
+  width: 100%;
 }
 
 .ui.title {
   text-align: center;
-  color: var(--title-color-main);
-  color: var(--title-color-gray);
+  color: var(--text-color-main);
+  color: var(--text-color-gray);
   margin-bottom: 60px;
   position: relative;
 

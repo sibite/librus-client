@@ -11,7 +11,7 @@ $el-margin: 5px;
   margin: $el-margin;
   line-height: #{$bar-height - $el-padding * 2};
   padding: #{$el-padding - $el-margin};
-  color: var(--title-color-gray);
+  color: var(--text-color-gray);
 }
 
 .ui.topbar {

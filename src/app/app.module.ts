@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -11,6 +11,8 @@ import { ClickEffectDirective } from './shared/click-effect.directive';
 import { FormsModule } from '@angular/forms';
 import { TopbarComponent } from './topbar/topbar.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
+import { SideMenuOpenerDirective } from './shared/side-menu-opener.directive';
+import { SideMenuItemComponent } from './side-menu/side-menu-item/side-menu-item.component';
 
 @NgModule({
   declarations: [
@@ -18,13 +20,16 @@ import { SideMenuComponent } from './side-menu/side-menu.component';
     AuthComponent,
     ClickEffectDirective,
     TopbarComponent,
-    SideMenuComponent
+    SideMenuComponent,
+    SideMenuOpenerDirective,
+    SideMenuItemComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HammerModule
   ],
   providers: [
     {

@@ -9,6 +9,7 @@ import { ViewService } from '../shared/view.service';
 })
 export class AuthComponent implements OnInit {
   errorMessage = null;
+  isSidemenuOpened = false;
 
   constructor(
     public viewService: ViewService
@@ -19,7 +20,14 @@ export class AuthComponent implements OnInit {
 
   onSubmit(form: NgForm) {
     console.log(form);
+  }
 
+  onCloseSidemenu() {
+    this.isSidemenuOpened = false;
+  }
+
+  onOpenSidemenu() {
+    this.isSidemenuOpened = true;
   }
 
 }

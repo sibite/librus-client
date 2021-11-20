@@ -1,4 +1,5 @@
 @use 'vars';
+@use 'misc';
 
 $el-height: 44px;
 $el-padding: 12px;
@@ -7,12 +8,8 @@ $el-ver-margin: 8px;
 $el-border-width: 1px;
 $group-ver-margin: 30px;
 
-@mixin fast-transition {
-  transition: all 200ms ease;
-}
-
 @mixin common-form-element-styles($no-border: false) {
-  box-sizing:border-box;
+  box-sizing: border-box;
   width: 100%;
   padding: $el-padding;
   line-height: $el-line-height;
@@ -36,6 +33,7 @@ $group-ver-margin: 30px;
 }
 
 .ui.form-group {
+  @include misc.clearfix();
   margin-top: $group-ver-margin;
   margin-bottom: $group-ver-margin;
 
@@ -48,7 +46,7 @@ $group-ver-margin: 30px;
 }
 
 .ui.form-control, .ui.form-control:-webkit-autofill {
-  @include fast-transition();
+  @include misc.fast-transition();
   @include common-form-element-styles();
 
   margin: {
@@ -70,6 +68,8 @@ $group-ver-margin: 30px;
 }
 
 .ui.form-error {
+  display: block;
+  clear: both;
   color: vars.$danger;
   font-size: 0.8em;
   margin-top: 0px;
@@ -77,85 +77,25 @@ $group-ver-margin: 30px;
 }
 
 .ui.button {
-  @include fast-transition();
+  @include misc.fast-transition();
   @include common-form-element-styles($no-border: true);
   cursor: pointer;
   background-color: var(--btn-color-default);
   color: var(--btn-font-color-default);
   border-radius: vars.$border-radius;
   font-weight: bold;
-  @include fast-transition();
-
-  &:active {
-    background-color: var(--btn-color-default-darker);
-  }
+  @include misc.fast-transition();
 
   &.primary {
     color: vars.$accent-contrast;
     background-color: vars.$accent;
-    &:active {
-      background-color: vars.$accent-darker;
-    }
   }
 }
 
 .ui.label {
+  display: block;
+  margin-top: $el-ver-margin;
+  clear: both;
   color: var(--form-el-text-color);
   font-size: 0.8em;
 }
-
-.ui.click-effect {
-  --ripple-x: 50%;
-  --ripple-y: 50%;
-  position: relative;
-  overflow: hidden;
-  &::before {
-    content: '';
-    position: absolute;
-    display: block;
-    background-color: var(--ripple-color);
-    border-radius: 100%;
-    left: calc(var(--ripple-x) - var(--ripple-size) / 2);
-    top: calc(var(--ripple-y) - var(--ripple-size) / 2);
-    width: var(--ripple-size);
-    height: var(--ripple-size);
-    opacity: 0;
-  }
-
-  &.clicked::before {
-    opacity: 0;
-    animation: {
-      name: ripple-opacity, ripple-scale;
-      timing-function: ease-out, ease-out;
-      iteration-count: 1, 1;
-      duration: 900ms, 400ms;
-    }
-  }
-
-  &.force-dark::before {
-    background-color: var(--ripple-color-dark);
-  }
-
-  &.force-light::before {
-    background-color: var(--ripple-color-light);
-  }
-}
-
-@keyframes ripple-scale {
-  0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes ripple-opacity {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
