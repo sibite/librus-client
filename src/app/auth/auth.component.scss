@@ -1,28 +1,24 @@
+@use '../shared/styles/layout';
+
 .ui.view-wrapper {
   flex-direction: column;
   justify-content: stretch;
   align-items: stretch;
 }
 
-.ui.component#parent-component {
+.ui.component {
   display: flex;
-  justify-content: stretch;
-  align-items: stretch;
   flex-direction: column;
   flex-grow: 1;
   overflow: auto;
 }
 
-.ui.component#child-component {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-grow: 1;
-}
-
 .ui.group {
-  max-width: 300px;
+  box-sizing: border-box;
   width: 100%;
+  max-width: calc(300px + #{layout.$content-offset * 2});
+  // centering
+  margin: auto;
 }
 
 .ui.title {

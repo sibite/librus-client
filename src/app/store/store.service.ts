@@ -64,10 +64,13 @@ export class StoreService {
 
   constructor(
     private http: HttpClient
-  ) {}
+  ) {
+    this.restoreLocalStorage();
+  }
 
   setUser(me: MeType) {
     this.data.me = me;
+    this.saveLocalStorage();
   }
 
   fetchSubjects() {
@@ -83,6 +86,7 @@ export class StoreService {
           subject.Grades = [];
           this.data.subjects[subject.Id] = subject;
         }
+        this.saveLocalStorage();
       })
     );
   }
@@ -99,6 +103,7 @@ export class StoreService {
         for (let user of users) {
           this.data.users[user.Id] = user;
         }
+        this.saveLocalStorage();
       })
     );
   }
@@ -155,6 +160,7 @@ export class StoreService {
           grade.Category = this.data.categories[grade.Category.Id];
           this.data.subjects[grade.Subject.Id].Grades.push(grade);
         }
+        this.saveLocalStorage();
       })
     );
   }
@@ -169,6 +175,7 @@ export class StoreService {
           lesson.Subject = this.data.subjects[lesson.Subject.Id];
           this.data.lessons[lesson.Id] = lesson;
         }
+        this.saveLocalStorage();
       })
     );
   }
@@ -199,6 +206,7 @@ export class StoreService {
           tap(response => {
             let attendances: AttendanceType[] = response['Attendances'];
             this.data.attendances = attendances;
+            this.saveLocalStorage();
           })
         );
       })
@@ -210,6 +218,7 @@ export class StoreService {
       catchError(this.errorHandler.bind(this)),
       tap(response => {
         this.data.luckyNumber = response['LuckyNumber'];
+        this.saveLocalStorage();
       })
     );
   }
@@ -223,6 +232,7 @@ export class StoreService {
       tap(({schools, classes}) => {
         this.data.schoolInfo = schools['School'];
         this.data.classInfo = classes['Class'];
+        this.saveLocalStorage();
       })
     )
   }
@@ -239,7 +249,7 @@ export class StoreService {
     );
   }
 
-  fetchTimetable(fetchClassrooms: boolean = true, weekStart: string = '') { // YYYY-MM-DD
+  fetchTimetable(weekStart: string = '') { // YYYY-MM-DD
     return this.fetchClassrooms().pipe(
       switchMap(() => {
         return this.http.get('https://api.librus.pl/2.0/Timetables', {params: { weekStart }});
@@ -250,6 +260,7 @@ export class StoreService {
         for (const key in timetable) {
           this.data.timetable[key] = timetable[key];
         }
+        this.saveLocalStorage();
       })
     );
   }
@@ -304,6 +315,7 @@ export class StoreService {
         for (let response of responses) {
           this.data.calendar[response.kind] = response.entries;
         }
+        this.saveLocalStorage();
       })
     );
   }
@@ -314,5 +326,15 @@ export class StoreService {
 
   errorHandler(err) {
     return throwError(err);
+  }
+
+  saveLocalStorage() {
+    localStorage.setItem('app.store', JSON.stringify(this.data));
+  }
+
+  restoreLocalStorage() {
+    console.log('restoring storage');
+    this.data = JSON.parse(localStorage.getItem('app.store')) || this.data;
+    console.log('localStorage.app.store', this.data);
   }
 }

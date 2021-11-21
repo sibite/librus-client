@@ -5,7 +5,7 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { SynergiaAccountType } from '../store/models/synergia-accounts.type';
 import { StoreService } from '../store/store.service';
 
-export type authState = {
+export type AuthStateType = {
   account: SynergiaAccountType
   loggedIn: boolean,
   loading: boolean,
@@ -18,14 +18,14 @@ export type authState = {
 })
 export class AuthService {
   private unknownErrorMessage = 'Wystąpił nieznany błąd';
-  private authState: authState = {
+  public authState: AuthStateType = {
     account: null,
     loggedIn: false,
     loading: false,
     authorized: false,
     error: null,
   };
-  public authStateSubject = new BehaviorSubject<authState>(this.authState);
+  public authStateSubject = new BehaviorSubject<AuthStateType>(this.authState);
   public authSuccessSubject = new Subject();
 
   constructor(
@@ -42,7 +42,7 @@ export class AuthService {
     this.authState.loading = true;
     this.authStateSubject.next(this.authState);
 
-    this.http.get(
+    return this.http.get(
       'https://portal.librus.pl/rodzina/login',
       {
         responseType: 'text',
@@ -77,8 +77,8 @@ export class AuthService {
           }
         );
       }),
-      catchError(this.errorHandler.bind(this))
-    ).subscribe(() => {
+      catchError(this.errorHandler.bind(this)),
+      tap(() => {
       this.authState = {
         ...this.authState,
         loggedIn: true,
@@ -87,14 +87,15 @@ export class AuthService {
         error: null
       };
       this.authStateSubject.next(this.authState);
-    });
+      })
+    );
   }
 
   auth() {
     this.authState.loading = true;
     this.authStateSubject.next(this.authState);
 
-    this.http.get(
+    return this.http.get(
       'https://portal.librus.pl/rodzina/widget',
       {
         withCredentials: true,
@@ -143,19 +144,20 @@ export class AuthService {
           }
         );
       }),
-      catchError(this.errorHandler.bind(this))
-    ).subscribe(response => {
-      this.storeService.setUser(response.Me);
-      this.authState = {
-        ...this.authState,
-        loading: false,
-        loggedIn: true,
-        authorized: true,
-        error: null
-      };
-      this.authStateSubject.next(this.authState);
-      this.authSuccessSubject.next();
-    });
+      catchError(this.errorHandler.bind(this)),
+      tap(response => {
+        this.storeService.setUser(response.Me);
+        this.authState = {
+          ...this.authState,
+          loading: false,
+          loggedIn: true,
+          authorized: true,
+          error: null
+        };
+        this.authStateSubject.next(this.authState);
+        this.authSuccessSubject.next();
+      })
+    );
   }
 
   getBearerToken() {
@@ -171,20 +173,18 @@ export class AuthService {
   }
 
   restoreAuthSession() {
-    console.log('restoring auth session');
+    console.log('restoring auth localstorage');
     this.authState = JSON.parse(localStorage.getItem('app.authState')) || this.authState;
     console.log('localStorage.app.authState', this.authState);
     this.authStateSubject.next(this.authState);
   }
 
   errorHandler(err) {
-    let errorJSON = err?.error;
-    let errors = errorJSON ? JSON.parse(errorJSON)?.errors : [this.unknownErrorMessage];
-    if (errors) {
-      let errorMessage = Object.values(errors)[0] || errors;
-      return throwError(errorMessage);
-    }
-    return throwError(err);
+    const errorJSON = err?.error;
+    const isJSON = String(errorJSON).startsWith('{');
+    let errors = isJSON ? JSON.parse(errorJSON)?.errors : [this.unknownErrorMessage];
+    let errorMessage = Object.values(errors)[0] || errors;
+    return throwError(errorMessage);
   }
 }
 

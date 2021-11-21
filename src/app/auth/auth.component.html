@@ -2,44 +2,50 @@
   <app-topbar
     uiTitle="Logowanie"
     appIcon="bi-list"
-    (onButtonClick)="isSidemenuOpened = true"></app-topbar>
+    (onButtonClick)="onOpenSidemenu()"></app-topbar>
   <app-side-menu
     [isOpened]="isSidemenuOpened"
     [appSelf]="sidemenuRef"
     (onClose)="onCloseSidemenu()"
     #sidemenuRef></app-side-menu>
-  <div class="ui component" id="parent-component" [appSideMenuOpener]="sidemenuRef" (onOpen)="onOpenSidemenu()">
-    <div class="ui component" id="child-component">
-      <div class="ui group offset">
-        <h2 class="ui title disable-top-margin"><span style="white-space: nowrap;">Konto Librus</span></h2>
-        <p class="ui simple-error">{{ errorMessage }}</p>
-        <form class="ui form form-auth" #f="ngForm" (ngSubmit)="onSubmit(f)">
-          <div class="ui form-group">
-            <label class="ui label" for="email">Adres e-mail</label>
-            <input
-              class="ui form-control"
-              type="email" name="email"
-              placeholder="example@mail.com"
-              ngModel required email #email="ngModel">
-            <p
-              class="ui form-error"
-              *ngIf="email.invalid && email.touched">Nieprawidłowy adres e-mail</p>
-            <label class="ui label" for="password">Hasło</label>
-            <input
-              class="ui form-control"
-              type="password" name="password"
-              ngModel required #password="ngModel">
-            <p
-              class="ui form-error"
-              *ngIf="password.invalid && password.touched">Hasło jest wymagane</p>
-          </div>
-          <div class="ui form-group disable-bottom-margin">
-            <button class="ui button primary" appClickEffect forceRippleTheme="light" type="submit">Zaloguj</button>
-            <br><br>
-            <a href="https://portal.librus.pl/rodzina/password/reset" target="_blank" class="ui stick-to-right">Resetuj hasło</a>
-          </div>
-        </form>
-      </div>
+  <div class="ui component"[appSideMenuOpener]="sidemenuRef" (onOpen)="onOpenSidemenu()">
+    <div class="ui group offset">
+      <h2 class="ui title disable-top-margin"><span style="white-space: nowrap;">Konto Librus</span></h2>
+      <p class="ui simple-error">{{ errorMessage }}</p>
+      <form class="ui form form-auth" #f="ngForm" (ngSubmit)="onSubmit(f)">
+        <div class="ui form-group">
+          <label class="ui label" for="email">Adres e-mail</label>
+          <input
+            [disabled]="isLoading"
+            class="ui form-control"
+            type="email" name="email"
+            placeholder="example@mail.com"
+            ngModel required email #email="ngModel">
+          <p
+            class="ui form-error"
+            *ngIf="email.invalid && email.touched">Nieprawidłowy adres e-mail</p>
+          <label class="ui label" for="password">Hasło</label>
+          <input
+            [disabled]="isLoading"
+            class="ui form-control"
+            type="password" name="password"
+            ngModel required #password="ngModel">
+          <p
+            class="ui form-error"
+            *ngIf="password.invalid && password.touched">Hasło jest wymagane</p>
+        </div>
+        <div class="ui form-group disable-bottom-margin clearfix">
+          <button
+          [disabled]="isLoading || f.invalid"
+          class="ui button primary"
+          [ngClass]="{loading: isLoading}"
+          appClickEffect
+          forceRippleTheme="light"
+          type="submit">Zaloguj</button>
+          <br><br>
+          <a href="https://portal.librus.pl/rodzina/password/reset" target="_blank" class="ui stick-to-right">Resetuj hasło</a>
+        </div>
+      </form>
     </div>
   </div>
 </div>

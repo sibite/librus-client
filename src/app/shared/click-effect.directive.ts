@@ -21,7 +21,8 @@ export class ClickEffectDirective implements OnInit {
 
 
   @HostListener('pointerdown', ['$event']) onPointerDown(event: PointerEvent) {
-    if (event.target !== this.elRef.nativeElement) return;
+    const isDisabled = this.elRef.nativeElement.disabled;
+    if (event.target !== this.elRef.nativeElement || isDisabled) return;
     const elWidth = this.elRef.nativeElement.clientWidth;
     const elHeight = this.elRef.nativeElement.clientHeight;
     const clickX = event.offsetX;
@@ -38,7 +39,9 @@ export class ClickEffectDirective implements OnInit {
     this.elRef.nativeElement.style.setProperty('--ripple-y', clickY + 'px');
     this.renderer.removeClass(this.elRef.nativeElement, 'ce-held');
     this.renderer.removeClass(this.elRef.nativeElement, 'ce-released');
-    void this.elRef.nativeElement.offsetWidth;
+    // Triggering reflow
+    let reflow = this.elRef.nativeElement.offsetLeft;
+    reflow = reflow ?? null;
     this.renderer.addClass(this.elRef.nativeElement, 'ce-held');
   }
 

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
@@ -19,18 +19,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.authStateSubject.subscribe(state => {
-      if (state.loggedIn && !state.authorized && !state.loading && !state.error) {
-        console.log('Logged In but not authorized => authorizing...')
-      }
-      else if (state.error) {
-        console.error("Error:", state.error);
-      }
-    });
-    this.authService.authSuccessSubject.pipe(take(1)).subscribe(() => {
-      console.log('Login success');
-    });
-    this.authService.auth();
+    // this.authService.auth().subscribe();
   }
 
   onLogin(email: string, password: string) {

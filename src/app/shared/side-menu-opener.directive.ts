@@ -20,17 +20,15 @@ export class SideMenuOpenerDirective implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.renderer.setStyle(this.elRef.nativeElement, 'touch-action', 'pan-y !important');
   }
 
   @HostListener('panstart') onPanStart() {
+    this.renderer.setStyle(this.elRef.nativeElement, 'touch-action', 'pan-y !important');
     this.sidemenuRef.enableTransition = false;
   }
 
-  @HostListener('panright', ['$event']) onPanRight(event) {
-    this.moveSideMenu(event, this.shouldOpen);
-  }
-
-  @HostListener('panleft', ['$event']) onPanLeft(event) {
+  @HostListener('panmove', ['$event']) onPan(event) {
     this.moveSideMenu(event, this.shouldOpen);
   }
 

@@ -65,6 +65,11 @@ $group-ver-margin: 30px;
   &.ng-invalid.ng-touched {
     border-color: vars.$danger;
   }
+
+  &[disabled] {
+    transition: none;
+    opacity: 0.5;
+  }
 }
 
 .ui.form-error {
@@ -89,6 +94,50 @@ $group-ver-margin: 30px;
   &.primary {
     color: vars.$accent-contrast;
     background-color: vars.$accent;
+  }
+
+  &[disabled] {
+    cursor: auto;
+    transition: none;
+    &:not(.loading) {
+      opacity: 0.5;
+    }
+  }
+
+  &.loading {
+    color: transparent;
+    position: relative;
+
+    &:after {
+      $size: 26px;
+      $width: 3px;
+      $inner-size: #{$size - $width * 2};
+      position: absolute;
+      content: '';
+      top: calc(50% - #{$size / 2});
+      left: calc(50% - #{$size / 2});
+      width: $inner-size;
+      height: $inner-size;
+      animation: button-spinner 0.6s linear;
+      animation-iteration-count: infinite;
+      box-shadow: 0 0 0 1px transparent;
+      border: {
+        color: #ffffff transparent transparent #ffffff;
+        style: solid;
+        width: $width;
+        radius: 100%;
+      }
+    }
+  }
+}
+
+@keyframes button-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
 

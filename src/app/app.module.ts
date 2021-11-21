@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, HammerModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,6 +13,7 @@ import { TopbarComponent } from './topbar/topbar.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { SideMenuOpenerDirective } from './shared/side-menu-opener.directive';
 import { SideMenuItemComponent } from './side-menu/side-menu-item/side-menu-item.component';
+import { AppHammerConfig } from './hammer.config';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,11 @@ import { SideMenuItemComponent } from './side-menu/side-menu-item/side-menu-item
       provide: HTTP_INTERCEPTORS,
       useClass: CorsInterceptorService,
       multi: true
-    }
+    },
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: AppHammerConfig,
+    },
   ],
   bootstrap: [AppComponent]
 })

@@ -15,13 +15,16 @@
     [style.left.px]="sideMenuWidth * ((panProgress !== null ? panProgress : false || +isOpened) - 1)"
     [style.transition]="!enableTransition ? 'none' : null">
     <div class="ui sm-segment sm-header">
-      <strong class="ui sm-name">Jan Kowalski</strong>
-      <span class="ui sm-email">jan.kowalski@gmail.com</span>
+      <ng-template [ngIf]="getAuthState().loggedIn">
+        <strong class="ui sm-name">{{ getAuthState().account?.studentName }}</strong>
+      <span class="ui sm-email">{{ getStoreData().me?.Account?.Email }}</span>
       <ul class="ui sm-list">
         <app-side-menu-item appIcon="bi-box-arrow-right">Wyloguj się</app-side-menu-item>
       </ul>
+      </ng-template>
+      <i class="ui sm-name" *ngIf="!getAuthState().loggedIn">Nie zalogowano</i>
     </div>
-    <div class="ui sm-segment sm-body">
+    <div class="ui sm-segment sm-body" *ngIf="getAuthState().loggedIn">
       <p class="ui sm-segment-title">Przeglądaj</p>
       <ul class="ui sm-list">
         <app-side-menu-item appIcon="bi-grid-1x2">Szybki podgląd</app-side-menu-item>
