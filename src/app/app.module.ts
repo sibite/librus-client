@@ -15,6 +15,8 @@ import { SideMenuOpenerDirective } from './shared/side-menu-opener.directive';
 import { SideMenuItemComponent } from './side-menu/side-menu-item/side-menu-item.component';
 import { AppHammerConfig } from './hammer.config';
 import { DiaryComponent } from './diary/diary.component';
+import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { NavBarItemComponent } from './nav-bar/nav-bar-item/nav-bar-item.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { DiaryComponent } from './diary/diary.component';
     SideMenuComponent,
     SideMenuOpenerDirective,
     SideMenuItemComponent,
-    DiaryComponent
+    DiaryComponent,
+    NavBarComponent,
+    NavBarItemComponent
   ],
   imports: [
     BrowserModule,

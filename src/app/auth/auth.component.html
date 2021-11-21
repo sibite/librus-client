@@ -1,15 +1,17 @@
 <div
   class="ui view-wrapper"
- [style.height.px]="viewService.windowHeight"
- [appSideMenuOpener]="sidemenuRef"
- (onOpen)="onOpenSidemenu()">
+  [style.height.px]="viewService.windowHeight"
+  [appSideMenuOpener]="sidemenuRef"
+  [appSideMenuElRef]="sidemenuElRef"
+  [appShouldOpen]="!isSidemenuOpened"
+  (onOpen)="onOpenSidemenu()"
+  (onClose)="onCloseSidemenu()">
   <app-top-bar
     uiTitle="Logowanie"
     appIcon="bi-list"
     (onButtonClick)="onOpenSidemenu()"></app-top-bar>
   <app-side-menu
     [isOpened]="isSidemenuOpened"
-    [appSelf]="sidemenuRef"
     (onClose)="onCloseSidemenu()"
     #sidemenuRef></app-side-menu>
   <div class="ui component">

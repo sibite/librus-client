@@ -1,18 +1,23 @@
-import { Directive, ElementRef, EventEmitter, Host, HostListener, Input, OnInit, Output, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, Renderer2 } from '@angular/core';
 
 @Directive({
   selector: '[appSideMenuOpener]'
 })
 export class SideMenuOpenerDirective implements OnInit {
   @Input('appSideMenuOpener') sidemenuRef;
+  @Input('appSideMenuElRef') sidemenuElRef;
   @Input('appShouldOpen') shouldOpen = true;
   @Output('onOpen') onOpen = new EventEmitter();
   @Output('onClose') onClose = new EventEmitter();
 
-  sideMenuWidth = +getComputedStyle(document.body).getPropertyValue('--side-menu-width').slice(0, -2);
   preventOpening = false;
   preventClosing = false;
-  preventClick = false;
+  left: number;
+
+  get sideMenuWidth() {
+    let sidemenuEl = this.sidemenuElRef.nativeElement.querySelector('.ui.side-menu');
+    return sidemenuEl.clientWidth;
+  }
 
   constructor(
     private elRef: ElementRef,
@@ -20,11 +25,9 @@ export class SideMenuOpenerDirective implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.renderer.setStyle(this.elRef.nativeElement, 'touch-action', 'pan-y !important');
   }
 
-  @HostListener('panstart') onPanStart() {
-    this.renderer.setStyle(this.elRef.nativeElement, 'touch-action', 'pan-y !important');
+  @HostListener('panstart', ['$event']) onPanStart(event) {
     this.sidemenuRef.enableTransition = false;
   }
 
@@ -42,30 +45,29 @@ export class SideMenuOpenerDirective implements OnInit {
       this.preventOpening = true;
       return;
     }
+    if (!open && panStartX <= this.sideMenuWidth) {
+      left = this.sideMenuWidth;
+      this.preventClosing = true;
+    }
     if (!open && left > this.sideMenuWidth) {
       this.preventClosing = true;
     }
+    this.left = left;
     const progress = Math.min(left / this.sideMenuWidth, 1);
     this.sidemenuRef.panProgress = progress;
-  }
-
-  @HostListener('click', ['$event']) onClick(event) {
-    if (!this.preventClick) this.onClose.emit();
-    this.preventClick = false;
   }
 
   @HostListener('panend', ['$event'])
   @HostListener('pancancel', ['$event'])
   onPanEnd(event) {
-    const triggeredOpening = event.deltaX > (this.sideMenuWidth / 3) && event.velocityX > -0.05 || event.velocityX > 0.2;
-    const triggeredClosing = event.center.x < (this.sideMenuWidth * 2/3 ) && event.velocityX < 0.05 || event.velocityX < -0.2;
+    const triggeredOpening = this.left > (this.sideMenuWidth / 3) && event.velocityX > -0.05 || event.velocityX > 0.2;
+    const triggeredClosing = this.left < (this.sideMenuWidth * 2/3 ) && event.velocityX < 0.05 || event.velocityX < -0.2;
     if (this.shouldOpen && triggeredOpening && !this.preventOpening) {
       this.onOpen.emit();
     }
     else if (!this.shouldOpen && triggeredClosing && !this.preventClosing) {
       this.onClose.emit();
     }
-    this.preventClick = true;
     this.sidemenuRef.panProgress = null;
     this.sidemenuRef.enableTransition = true;
   }

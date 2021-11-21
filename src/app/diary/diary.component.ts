@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ViewService } from '../shared/view.service';
+import { SideMenuComponent } from '../side-menu/side-menu.component';
 
 @Component({
   selector: 'app-diary',
@@ -8,6 +9,7 @@ import { ViewService } from '../shared/view.service';
 })
 export class DiaryComponent implements OnInit {
   isSidemenuOpened = false;
+  @ViewChild(SideMenuComponent, {read: ElementRef, static: true}) sidemenuElRef: ElementRef;
 
   constructor(
     public viewService: ViewService

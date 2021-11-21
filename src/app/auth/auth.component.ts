@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { switchMap, take } from 'rxjs/operators';
 import { ViewService } from '../shared/view.service';
+import { SideMenuComponent } from '../side-menu/side-menu.component';
 import { AuthService } from './auth.service';
 
 @Component({
@@ -14,6 +15,7 @@ export class AuthComponent implements OnInit {
   errorMessage = null;
   isLoading = false;
   isSidemenuOpened = false;
+  @ViewChild(SideMenuComponent, {read: ElementRef, static: true}) sidemenuElRef: ElementRef;
 
   constructor(
     public viewService: ViewService,

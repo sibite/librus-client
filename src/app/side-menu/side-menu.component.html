@@ -5,12 +5,13 @@
   <div
     class="ui overlay"
     id="menu-overlay"
-    [appSideMenuOpener]="appSelf"
-    [appShouldOpen]="false"
-    (onClose)="onClose.emit()"
+    (panstart)="isBeingPanned = false"
+    (panend)="isBeingPanned = true"
+    (click)="onOverlayClick()"
     [style.opacity]="panProgress"
     [style.transition]="!enableTransition ? 'none' : null"></div>
   <nav
+    #sidemenuElRef
     class="ui side-menu"
     [style.left.px]="sideMenuWidth * ((panProgress !== null ? panProgress : false || +isOpened) - 1)"
     [style.transition]="!enableTransition ? 'none' : null">

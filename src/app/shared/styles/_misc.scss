@@ -28,6 +28,10 @@ body {
   --bg-color-2-shift-dark: var(--bg-color-2);
   --bg-color-3-shift-dark: var(--bg-color-3);
 
+  --accent-0: #{vars.$accent-lighter};
+  --accent-1: #{vars.$accent};
+  --accent-2: #{vars.$accent-darker};
+
   --btn-color-default: #eeeeee;
   --btn-color-default-darker: #e1e1e1;
   --link-color: #{vars.$accent};
@@ -67,11 +71,15 @@ body {
 @media (prefers-color-scheme: dark) {
   body:not(.light) {
     --bg-color-1: #000000;
-    --bg-color-2: #1a1a1a;
-    --bg-color-3: #2f2f2f;
+    --bg-color-2: #1d1d1d;
+    --bg-color-3: #323232;
     --bg-color-1-shift-dark: var(--bg-color-2);
     --bg-color-2-shift-dark: var(--bg-color-3);
     --bg-color-3-shift-dark: var(--bg-color-3);
+
+    --accent-0: #{vars.$accent-darker};
+    --accent-1: #{vars.$accent};
+    --accent-2: #{vars.$accent-lighter};
 
     --btn-color-default: #333333;
     --btn-color-default-darker: #3c3c3c;

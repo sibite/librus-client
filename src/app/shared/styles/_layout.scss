@@ -9,6 +9,7 @@ $content-offset: 24px;
 .ui.component {
   box-sizing: border-box;
   display: flex;
+  touch-action: pan-y;
 }
 
 .ui {

@@ -1,0 +1,12 @@
+@use '../shared/styles/vars';
+
+:host {
+  display: flex;
+  justify-items: stretch;
+  align-items: stretch;
+  margin-top: auto;
+  height: vars.$nav-bar-height;
+  background: var(--bg-color-2);
+  box-shadow: 0px -1px 1px var(--shadow-color);
+
+}

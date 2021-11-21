@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { ViewService } from '../shared/view.service';
 import { StoreService } from '../store/store.service';
@@ -12,10 +12,14 @@ export class SideMenuComponent implements OnInit {
   @Input() isOpened = false;
   @Input() panProgress: number;
   @Input() enableTransition = true;
-  @Input() appSelf;
   @Output() onClose = new EventEmitter();
+  @ViewChild('sidemenuElRef', { static: true, read: ElementRef }) sidemenuElRef: ElementRef;
 
-  sideMenuWidth = +getComputedStyle(document.body).getPropertyValue('--side-menu-width').slice(0, -2);
+  get sideMenuWidth() {
+    let sidemenuEl = this.sidemenuElRef.nativeElement;
+    return sidemenuEl.clientWidth;
+  }
+  isBeingPanned = false;
 
   constructor(
     public viewService: ViewService,
@@ -24,6 +28,13 @@ export class SideMenuComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+  }
+
+  onOverlayClick() {
+    if (!this.isBeingPanned) {
+      this.onClose.emit();
+    }
+    this.isBeingPanned = false;
   }
 
   getAuthState() {

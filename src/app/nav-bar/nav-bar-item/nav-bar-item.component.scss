@@ -1,0 +1,16 @@
+:host {
+  cursor: pointer;
+  flex: 1 1 0;
+  text-align: center;
+  padding: 5px {
+    top: 12px;
+  }
+  font-weight: bold;
+}
+
+.nav-bar-item-caption {
+  display: inline-block;
+  font: {
+    size: 0.7em;
+  }
+}
