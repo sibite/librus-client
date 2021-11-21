@@ -1,0 +1,18 @@
+<div
+  class="ui view-wrapper"
+  [style.height.px]="viewService.windowHeight"
+  [appSideMenuOpener]="sidemenuRef"
+  (onOpen)="onOpenSidemenu()">
+  <app-top-bar
+    uiTitle="Dziennik"
+    appIcon="bi-list"
+    (onButtonClick)="onOpenSidemenu()"></app-top-bar>
+  <app-side-menu
+    [isOpened]="isSidemenuOpened"
+    [appSelf]="sidemenuRef"
+    (onClose)="onCloseSidemenu()"
+    #sidemenuRef></app-side-menu>
+  <div class="ui component">
+
+  </div>
+</div>

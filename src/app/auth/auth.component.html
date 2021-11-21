@@ -1,14 +1,18 @@
-<div class="ui view-wrapper" [style.height.px]="viewService.windowHeight">
-  <app-topbar
+<div
+  class="ui view-wrapper"
+ [style.height.px]="viewService.windowHeight"
+ [appSideMenuOpener]="sidemenuRef"
+ (onOpen)="onOpenSidemenu()">
+  <app-top-bar
     uiTitle="Logowanie"
     appIcon="bi-list"
-    (onButtonClick)="onOpenSidemenu()"></app-topbar>
+    (onButtonClick)="onOpenSidemenu()"></app-top-bar>
   <app-side-menu
     [isOpened]="isSidemenuOpened"
     [appSelf]="sidemenuRef"
     (onClose)="onCloseSidemenu()"
     #sidemenuRef></app-side-menu>
-  <div class="ui component"[appSideMenuOpener]="sidemenuRef" (onOpen)="onOpenSidemenu()">
+  <div class="ui component">
     <div class="ui group offset">
       <h2 class="ui title disable-top-margin"><span style="white-space: nowrap;">Konto Librus</span></h2>
       <p class="ui simple-error">{{ errorMessage }}</p>

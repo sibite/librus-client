@@ -9,11 +9,12 @@ import { AuthInterceptorService } from './interceptors/auth-interceptor.service'
 import { AuthComponent } from './auth/auth.component';
 import { ClickEffectDirective } from './shared/click-effect.directive';
 import { FormsModule } from '@angular/forms';
-import { TopbarComponent } from './topbar/topbar.component';
+import { TopbarComponent } from './top-bar/top-bar.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { SideMenuOpenerDirective } from './shared/side-menu-opener.directive';
 import { SideMenuItemComponent } from './side-menu/side-menu-item/side-menu-item.component';
 import { AppHammerConfig } from './hammer.config';
+import { DiaryComponent } from './diary/diary.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { AppHammerConfig } from './hammer.config';
     TopbarComponent,
     SideMenuComponent,
     SideMenuOpenerDirective,
-    SideMenuItemComponent
+    SideMenuItemComponent,
+    DiaryComponent
   ],
   imports: [
     BrowserModule,
