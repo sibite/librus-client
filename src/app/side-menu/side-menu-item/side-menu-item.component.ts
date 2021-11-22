@@ -6,7 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./side-menu-item.component.scss']
 })
 export class SideMenuItemComponent implements OnInit {
-  @Input() appIcon: string;
+  @Input() itemIcon: string;
 
   constructor() { }
 

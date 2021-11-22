@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { forkJoin } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
-import { StoreService } from './store/store.service';
+import { FetcherService } from './store/fetcher.service';
 
 @Component({
   selector: 'app-root',
@@ -14,12 +12,12 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private storeService: StoreService,
+    private fetcherService: FetcherService,
     private http: HttpClient
   ) {}
 
   ngOnInit() {
-    // this.authService.auth().subscribe();
+    // this.authService.auth().pipe(take(1)).subscribe();
   }
 
   onLogin(email: string, password: string) {
@@ -30,25 +28,5 @@ export class AppComponent implements OnInit {
     this.http.get(url).subscribe(response => {
       console.log(response);
     });
-  }
-
-  fetchData() {
-    this.storeService.fetchSubjects().pipe(
-      take(1),
-      switchMap(() => {
-        return this.storeService.fetchUsers();
-      }),
-      switchMap(() => {
-        return forkJoin([
-          this.storeService.fetchGrades(),
-          this.storeService.fetchAttendances(true),
-          this.storeService.fetchTimetable(),
-          this.storeService.fetchCalendar(),
-          this.storeService.fetchUnitInfo()
-        ]);
-      })
-      ).subscribe(() => {
-        console.log(this.storeService.getData());
-      });
   }
 }

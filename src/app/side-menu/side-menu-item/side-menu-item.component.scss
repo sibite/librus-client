@@ -1,5 +1,11 @@
 @use '../../shared/styles/vars';
 
+:host.active li {
+  color: var(--accent-u1);
+  background-color: var(--accent-d2);
+  font-weight: bold;
+}
+
 li {
   box-sizing: border-box;
   cursor: pointer;

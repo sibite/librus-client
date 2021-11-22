@@ -6,7 +6,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./nav-bar-item.component.scss']
 })
 export class NavBarItemComponent implements OnInit {
-  @Input() appIcon: string;
+  @Input() itemIcon: string;
 
   constructor() { }
 

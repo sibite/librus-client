@@ -17,6 +17,7 @@ import { AppHammerConfig } from './hammer.config';
 import { DiaryComponent } from './diary/diary.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { NavBarItemComponent } from './nav-bar/nav-bar-item/nav-bar-item.component';
+import { GradesComponent } from './diary/grades/grades.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { NavBarItemComponent } from './nav-bar/nav-bar-item/nav-bar-item.compone
     SideMenuItemComponent,
     DiaryComponent,
     NavBarComponent,
-    NavBarItemComponent
+    NavBarItemComponent,
+    GradesComponent
   ],
   imports: [
     BrowserModule,

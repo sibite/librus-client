@@ -28,9 +28,11 @@ body {
   --bg-color-2-shift-dark: var(--bg-color-2);
   --bg-color-3-shift-dark: var(--bg-color-3);
 
-  --accent-0: #{vars.$accent-lighter};
-  --accent-1: #{vars.$accent};
-  --accent-2: #{vars.$accent-darker};
+  --accent-d2: #{vars.$accent-lightest};
+  --accent-d1: #{vars.$accent-lighter};
+  --accent: #{vars.$accent};
+  --accent-u1: #{vars.$accent-darker};
+  --accent-u2: #{vars.$accent-darkest};
 
   --btn-color-default: #eeeeee;
   --btn-color-default-darker: #e1e1e1;
@@ -77,9 +79,11 @@ body {
     --bg-color-2-shift-dark: var(--bg-color-3);
     --bg-color-3-shift-dark: var(--bg-color-3);
 
-    --accent-0: #{vars.$accent-darker};
-    --accent-1: #{vars.$accent};
-    --accent-2: #{vars.$accent-lighter};
+    --accent-d2: #{vars.$accent-darkest};
+    --accent-d1: #{vars.$accent};
+    --accent: #{vars.$accent-lighter};
+    --accent-u1: #{vars.$accent-lightest};
+    --accent-u2: #{vars.$accent-lightest};
 
     --btn-color-default: #333333;
     --btn-color-default-darker: #3c3c3c;
@@ -92,7 +96,7 @@ body {
     --text-color-main: rgb(255, 255, 255);
     --text-color-gray: #eeeeee;
 
-    --shadow-color: rgba(255, 255, 255, 0.2);
+    --shadow-color: rgba(255, 255, 255, 0.3);
     --ripple-color: var(--ripple-color-light);
     --ripple-color-revert: var(--ripple-color-dark);
   }

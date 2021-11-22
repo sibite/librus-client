@@ -6,11 +6,15 @@
     top: 12px;
   }
   font-weight: bold;
+
+  &.active {
+    color: var(--accent)
+  }
 }
 
 .nav-bar-item-caption {
   display: inline-block;
   font: {
-    size: 0.7em;
+    size: 0.8em;
   }
 }

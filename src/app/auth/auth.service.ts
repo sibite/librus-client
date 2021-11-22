@@ -2,11 +2,13 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Subject, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { MeType } from '../store/models/me.model';
 import { SynergiaAccountType } from '../store/models/synergia-accounts.type';
 import { StoreService } from '../store/store.service';
 
 export type AuthStateType = {
-  account: SynergiaAccountType
+  account: SynergiaAccountType,
+  me: MeType,
   loggedIn: boolean,
   loading: boolean,
   authorized: boolean,
@@ -20,6 +22,7 @@ export class AuthService {
   private unknownErrorMessage = 'Wystąpił nieznany błąd';
   public authState: AuthStateType = {
     account: null,
+    me: null,
     loggedIn: false,
     loading: false,
     authorized: false,
@@ -29,8 +32,7 @@ export class AuthService {
   public authSuccessSubject = new Subject();
 
   constructor(
-    private http: HttpClient,
-    private storeService: StoreService
+    private http: HttpClient
   ) {
     this.restoreAuthSession();
     this.authStateSubject.subscribe(authState => {
@@ -146,9 +148,9 @@ export class AuthService {
       }),
       catchError(this.errorHandler.bind(this)),
       tap(response => {
-        this.storeService.setUser(response.Me);
         this.authState = {
           ...this.authState,
+          me: response['Me'],
           loading: false,
           loggedIn: true,
           authorized: true,

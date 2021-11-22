@@ -67,7 +67,7 @@
   .sm-email {
     display: block;
     font-size: 0.9em;
-    color: vars.$accent-lighter;
+    color: var(--accent);
   }
   .sm-list {
     padding-top: vars.$side-menu-item-v-padding;
