@@ -1,9 +1,12 @@
 @use '../../shared/styles/vars';
 
+:host li {
+  color: var(--text-color-3);
+}
+
 :host.active li {
   color: var(--accent-u1);
   background-color: var(--accent-d2);
-  font-weight: bold;
 }
 
 li {

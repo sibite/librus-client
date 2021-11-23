@@ -15,6 +15,7 @@ $content-offset: 24px;
 .ui {
   .component, .group {
     &.offset {
+      box-sizing: border-box;
       padding: $content-offset;
     }
   }

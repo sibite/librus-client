@@ -42,10 +42,11 @@ body {
   --form-el-text-color: black;
   --form-el-border-color: rgba(0, 0, 0, 0.05);
 
-  --text-color-main: black;
-  --text-color-gray: #3f3f3f;
+  --text-color-1: #000000;
+  --text-color-2: #202020;
+  --text-color-3: #525252;
 
-  --shadow-color: rgba(0, 0, 0, 0.2);
+  --bar-shadow-color: hsl(0, 0%, 90%);
   --ripple-color: var(--ripple-color-dark);
   --ripple-color-light: rgba(255, 255, 255, 0.4);
   --ripple-color-dark: rgba(0, 0, 0, 0.3);
@@ -61,7 +62,7 @@ body {
   overscroll-behavior: none;
   font-size: 16px;
   background-color: var(--bg-color-1);
-  color: var(--text-color-main);
+  color: var(--text-color-1);
   font-family: 'Lato', Roboto, sans-serif;
 
   -webkit-user-select: none;
@@ -93,10 +94,11 @@ body {
     --form-el-text-color: #dddddd;
     --form-el-border-color: rgba(255, 255, 255, 0.3);
 
-    --text-color-main: rgb(255, 255, 255);
-    --text-color-gray: #eeeeee;
+    --text-color-1: #ffffff;
+    --text-color-2: #dddddd;
+    --text-color-3: #bbbbbb;
 
-    --shadow-color: rgba(255, 255, 255, 0.3);
+    --bar-shadow-color: hsl(0, 0%, 30%);
     --ripple-color: var(--ripple-color-light);
     --ripple-color-revert: var(--ripple-color-dark);
   }

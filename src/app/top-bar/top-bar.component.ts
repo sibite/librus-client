@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { StoreService } from '../store/store.service';
 
 @Component({
@@ -11,13 +12,9 @@ export class TopbarComponent implements OnInit {
   @Input() appIcon: string;
   @Output() onButtonClick = new EventEmitter();
 
-  constructor(private storeService: StoreService) { }
+  constructor() { }
 
   ngOnInit(): void {
-  }
-
-  fetchData() {
-    console.log('This feature is disabled');
   }
 
 }

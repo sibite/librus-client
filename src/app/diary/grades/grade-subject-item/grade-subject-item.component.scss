@@ -1,0 +1,38 @@
+@use '../../../shared/styles/vars';
+
+$margin-horizontal: 5px;
+
+.container {
+  padding: 5px;
+  background-color: var(--bg-color-2);
+  border-radius: vars.$border-radius;
+}
+
+.subject-title, .no-grades-text {
+  margin: 0px $margin-horizontal;
+  padding: 8px 0;
+}
+
+.subject-title {
+  font-size: 0.9em;
+}
+
+.subject-grades-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1px;
+}
+
+.subject-grade {
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: vars.$border-radius;
+  padding: 6px 10px;
+  color: #ffffff;
+  margin: $margin-horizontal;
+}
+
+.no-grades-text {
+  color: var(--text-color-3);
+  font-size: 0.9em;
+}

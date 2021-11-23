@@ -1,7 +1,7 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { forkJoin, Subject, throwError } from "rxjs";
+import { BehaviorSubject, forkJoin, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { AuthService } from "../auth/auth.service";
 import { FetcherService } from "./fetcher.service";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
@@ -41,29 +41,35 @@ export type FetcherDataType = {
 
 export type StoreDataType = {
   lastSyncTime?: number,
-  grades?: SubjectType[],
+  gradeSubjects?: SubjectType[],
   gradeCategories?: { [key: number]: CategoryType },
-  subjectColors?: { [key: number]: string }
+  subjectColors?: { [key: number]: string },
+  users?: { [key: number]: UserType },
 };
 
 @Injectable({ providedIn: 'root' })
 export class StoreService {
   fetcherData: FetcherDataType = {};
   data: StoreDataType = {};
-  dataSyncSubject = new Subject<StoreDataType>();
+  dataSyncSubject = new BehaviorSubject<StoreDataType>({});
 
   constructor(
-    private http: HttpClient,
-    private fetcherService: FetcherService
+    private fetcherService: FetcherService,
+    private authService: AuthService
   ) {
     this.restoreLocalStorage();
+    this.dataSyncSubject.next(this.data);
     const lastSyncTime = this.data.lastSyncTime || 0;
+    // sync if last synced minimum 30 minutes ago
     if (Date.now() - lastSyncTime > 1800 * 1000) {
       this.synchronize();
     }
+    else {
+      setTimeout(() => this.synchronize(), lastSyncTime + 1800 * 1000 - Date.now());
+    }
   }
 
-  synchronize() {
+  synchronize(isSecondAttempt = false) {
     const queueMap = {
       subjects: this.fetcherService.fetchSubjects(),
       users: this.fetcherService.fetchUsers(),
@@ -79,12 +85,18 @@ export class StoreService {
 
     forkJoin(queueMap)
       .pipe(
-        catchError(this.errorHandler.bind(this))
+        catchError(err => {
+          return this.syncErrorHandler(err, isSecondAttempt);
+        })
       )
       .subscribe(forkResponse => {
         this.fetcherData = forkResponse;
         this.transformFetcherData();
+        // emit sync subject
+        this.dataSyncSubject.next(this.data);
         this.data.lastSyncTime = Date.now();
+        // resync after 30 minutes
+        setTimeout(() => this.synchronize(), 1800 * 1000);
         this.saveLocalStorage();
         console.log(this.getData());
       });
@@ -101,7 +113,7 @@ export class StoreService {
       for (let grade of this.fetcherData.grades.list) {
         gradesSubjects[grade.Subject.Id].Grades.push(grade);
       }
-      this.data.grades = Object.values(gradesSubjects);
+      this.data.gradeSubjects = Object.values(gradesSubjects);
       this.data.gradeCategories = this.fetcherData.grades.categories;
     }
 
@@ -119,18 +131,27 @@ export class StoreService {
       this.data.subjectColors = subjectColors;
     }
 
+    let transformUsers = () => {
+      this.data.users = this.fetcherData.users;
+    }
+
     // transform functions execution
     transformGrades();
     transformThemes();
-    // emit sync subject
-    this.dataSyncSubject.next(this.data);
+    transformUsers();
   }
 
   getData() {
     return this.data;
   }
 
-  errorHandler(err) {
+  syncErrorHandler(err, isSecondAttempt) {
+    console.dir(err);
+    if (err.error?.Code == "TokenIsExpired" && !isSecondAttempt) {
+      this.authService.auth().subscribe(
+        () => this.synchronize(true)
+      )
+    }
     return throwError(err);
   }
 

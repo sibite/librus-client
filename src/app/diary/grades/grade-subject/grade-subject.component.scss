@@ -1,0 +1,81 @@
+@use '../../../shared/styles/vars';
+
+.ui.view-wrapper {
+  flex-direction: column;
+}
+
+#grades-list-component {
+  overflow: auto;
+  display: block;
+}
+
+.grades-list {
+  display: block;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 500px;
+}
+
+.grade {
+  display: flex;
+  pointer-events: auto;
+  cursor: pointer;
+  background-color: var(--bg-color-2);
+  border-radius: vars.$border-radius;
+  border-radius: vars.$border-radius;
+  color: #000000;
+
+  &:not(:last-child) {
+    margin-bottom: vars.$card-margin;
+  }
+  &:not(:first-child) {
+    margin-top: vars.$card-margin;
+  }
+}
+
+.symbol {
+  position: relative;
+  width: 70px;
+  font-size: 2em;
+  line-height: 0;
+  font-weight: bold;
+  color: #ffffff;
+
+  span {
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+  }
+}
+
+.details {
+  flex-grow: 1;
+  padding: 8px 15px;
+  line-height: 1.3em;
+  color: var(--text-color-1);
+
+  p {
+    margin: 0;
+    padding: 3px 0;
+  }
+}
+
+.date, .added-by {
+  font-size: 0.85em;
+}
+
+.category {
+  font-weight: bold;
+}
+
+// .subject-title, .no-grades-text {
+//   margin: 0px $margin-horizontal;
+//   padding: 8px 0;
+// }
+
+.no-grades-text {
+  color: var(--text-color-3);
+  font-size: 0.9em;
+}

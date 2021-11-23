@@ -51,6 +51,7 @@ export class AuthService {
         withCredentials: true
       }
     ).pipe(
+      catchError(this.errorHandler.bind(this)),
       map(responseHTML => {
         let parser = new DOMParser();
         let responseDOM = parser.parseFromString(responseHTML, 'text/html');
@@ -61,6 +62,7 @@ export class AuthService {
         }
         return {xsrfToken, csrfToken};
       }),
+      catchError(this.errorHandler.bind(this)),
       switchMap(tokens => {
         return this.http.post(
           'https://portal.librus.pl/rodzina/login/action',

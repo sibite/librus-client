@@ -2,6 +2,7 @@
 
 # user defined
 tasks.txt
+/src/environments/environment.prod.ts
 
 # firebase
 /.firebase

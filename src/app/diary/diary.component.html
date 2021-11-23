@@ -7,7 +7,7 @@
   (onOpen)="onOpenSidemenu()"
   (onClose)="onCloseSidemenu()">
   <app-top-bar
-    uiTitle="Dziennik"
+    [uiTitle]="routeTitle"
     appIcon="bi-list"
     (onButtonClick)="onOpenSidemenu()"></app-top-bar>
   <app-side-menu

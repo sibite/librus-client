@@ -18,6 +18,9 @@ import { DiaryComponent } from './diary/diary.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { NavBarItemComponent } from './nav-bar/nav-bar-item/nav-bar-item.component';
 import { GradesComponent } from './diary/grades/grades.component';
+import { GradeSubjectItemComponent } from './diary/grades/grade-subject-item/grade-subject-item.component';
+import { CapitalizePipe } from './shared/capitalize.pipe';
+import { GradeSubjectComponent } from './diary/grades/grade-subject/grade-subject.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { GradesComponent } from './diary/grades/grades.component';
     DiaryComponent,
     NavBarComponent,
     NavBarItemComponent,
-    GradesComponent
+    GradesComponent,
+    GradeSubjectItemComponent,
+    CapitalizePipe,
+    GradeSubjectComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +47,7 @@ import { GradesComponent } from './diary/grades/grades.component';
     HammerModule
   ],
   providers: [
+    CapitalizePipe,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,

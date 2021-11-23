@@ -1,1 +1,9 @@
-<h3 style="text-align: center;">Tutaj będą wyświetlane oceny</h3>
+<div class="ui component">
+  <div class="ui grades-subjects-list" class="ui group offset">
+    <app-grade-subject-item
+      *ngFor="let gradeSubject of gradeSubjects; let i = index"
+      [subject]="gradeSubjects[i]"
+      [color]="subjectColors[gradeSubject.Id]">
+    </app-grade-subject-item>
+  </div>
+</div>

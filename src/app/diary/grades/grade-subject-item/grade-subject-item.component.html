@@ -1,0 +1,18 @@
+<div
+  class="container"
+  [routerLink]="'/grades/list/' + subject.Id"
+  appClickEffect>
+  <h5 class="subject-title">{{ subject.Name | capitalize }}</h5>
+  <div class="subject-grades-list">
+    <div
+      class="subject-grade"
+      appClickEffect
+      (click)="showGradeDetails($event, grade)"
+      forceRippleTheme="light"
+      [ngStyle]="{'background-color': color}"
+      *ngFor="let grade of grades">{{ formatGradeShort(grade) }}</div>
+  </div>
+  <div
+    class="no-grades-text"
+    *ngIf="grades.length === 0">Brak ocen</div>
+</div>

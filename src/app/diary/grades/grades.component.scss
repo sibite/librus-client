@@ -1,0 +1,21 @@
+@use '../../shared/styles/vars';
+
+:host {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ui.component {
+  display: block;
+}
+
+app-grade-subject-item {
+  display: block;
+}
+
+app-grade-subject-item:not(:last-child) {
+  margin-bottom: vars.$card-margin;
+}
+app-grade-subject-item:not(:first-child) {
+  margin-top: vars.$card-margin;
+}

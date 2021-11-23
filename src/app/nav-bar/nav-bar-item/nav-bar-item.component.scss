@@ -2,19 +2,25 @@
   cursor: pointer;
   flex: 1 1 0;
   text-align: center;
-  padding: 5px {
+  padding: 5px;
+  padding: {
     top: 12px;
   }
   font-weight: bold;
+  color: var(--text-color-3);
 
   &.active {
-    color: var(--accent)
+    color: var(--accent);
   }
+}
+
+.nav-bar-item-icon {
+  font-size: 1.1em;
 }
 
 .nav-bar-item-caption {
   display: inline-block;
   font: {
-    size: 0.8em;
+    size: 0.85em;
   }
 }
