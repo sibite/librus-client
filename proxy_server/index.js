@@ -6,8 +6,11 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
 
 // Configuration
-const HOST = 'localhost';
-const PORT = 3000;
+const HOST = '0.0.0.0';
+const HOST_PROTOCOL = 'https';
+const ABS_HOST = 'localhost';
+const PORT = process.env.PORT || 3000;
+const ABS_PORT = ':3000';
 const APP_HOST = 'http://localhost:4200';
 
 app.use(morgan('dev'));
@@ -21,8 +24,8 @@ function getProxyOptions(routeAlias, host, protocol = 'https') {
     pathRewrite: {
         [`^/${routeAlias}`]: '',
     },
-    hostRewrite: `${HOST}:${PORT}/${routeAlias}`,
-    protocolRewrite: 'http',
+    hostRewrite: `${ABS_HOST}${ABS_PORT}/${routeAlias}`,
+    protocolRewrite: HOST_PROTOCOL,
     headers: {
       'Host': host, // host.com
       'Origin': 'https://portal.librus.pl',
@@ -43,16 +46,26 @@ function getProxyOptions(routeAlias, host, protocol = 'https') {
       // Rewrite cookies domain
       proxyRes.headers['set-cookie'] = proxyRes.headers['set-cookie']?.map(cookie => {
         return cookie.replace(
-          `domain=${host}`,
-          'domain=localhost'
+          /samesite=.+;?/,
+          'samesite=None;'
         );
       });
       // Rewrite redirection
       if(proxyRes.headers['location']) {
         proxyRes.headers['location'] = proxyRes.headers['location'].replace(
           `https://personalschedule.librus.pl/`,
-          `http://${HOST}:${PORT}/personalschedule-api/`
+          `${HOST_PROTOCOL}://${ABS_HOST}${ABS_PORT}/personalschedule-api/`
         );
+      }
+    },
+    onProxyReq(proxyReq, req, res) {
+      if (routeAlias === 'portal-api' && req.headers.cookie) {
+        let cookie = req.headers.cookie;
+        let matching = cookie.match(/XSRF-TOKEN=(.*)/);
+        if (!matching) return;
+        const xsrfToken = matching[1];
+        console.log("XSRF-TOKEN=" + xsrfToken);
+        req.headers['X-XSRF-TOKEN'] = xsrfToken;
       }
     }
   }

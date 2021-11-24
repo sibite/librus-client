@@ -19,8 +19,10 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { NavBarItemComponent } from './nav-bar/nav-bar-item/nav-bar-item.component';
 import { GradesComponent } from './diary/grades/grades.component';
 import { GradeSubjectItemComponent } from './diary/grades/grade-subject-item/grade-subject-item.component';
-import { CapitalizePipe } from './shared/capitalize.pipe';
+import { CapitalizePipe } from './shared/pipes/capitalize.pipe';
 import { GradeSubjectComponent } from './diary/grades/grade-subject/grade-subject.component';
+import { PopUpComponent } from './shared/pop-up/pop-up.component';
+import { KeepHtmlPipe } from './shared/pipes/keep-html.pipe';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { GradeSubjectComponent } from './diary/grades/grade-subject/grade-subjec
     GradesComponent,
     GradeSubjectItemComponent,
     CapitalizePipe,
-    GradeSubjectComponent
+    KeepHtmlPipe,
+    GradeSubjectComponent,
+    PopUpComponent
   ],
   imports: [
     BrowserModule,

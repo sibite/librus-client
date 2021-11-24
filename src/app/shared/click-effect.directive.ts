@@ -1,22 +1,25 @@
-import { Directive, ElementRef, HostBinding, HostListener, Input, OnInit, Renderer2 } from "@angular/core";
-import { ViewService } from "./view.service";
+import { Directive, ElementRef, HostListener, Input, OnInit, Renderer2 } from "@angular/core";
 
 @Directive({
   selector: '[appClickEffect]'
 })
 export class ClickEffectDirective implements OnInit {
   @Input('forceRippleTheme') forcedTheme = null;
+  pointerDownTimeout;
 
   constructor(
     private elRef: ElementRef,
-    private renderer: Renderer2,
-    private viewService: ViewService
+    private renderer: Renderer2
   ) {}
 
   ngOnInit() {
     this.renderer.addClass(this.elRef.nativeElement, 'click-effect');
     if (!this.forcedTheme) return
     this.renderer.addClass(this.elRef.nativeElement, 'force-' + this.forcedTheme);
+  }
+
+  @HostListener('pointermove', ['$event']) onMove(event) {
+    clearTimeout(this.pointerDownTimeout);
   }
 
 
@@ -39,13 +42,11 @@ export class ClickEffectDirective implements OnInit {
     this.elRef.nativeElement.style.setProperty('--ripple-y', clickY + 'px');
     this.renderer.removeClass(this.elRef.nativeElement, 'ce-held');
     this.renderer.removeClass(this.elRef.nativeElement, 'ce-released');
-    // Triggering reflow
-    let reflow = this.elRef.nativeElement.offsetLeft;
-    reflow = reflow ?? null;
-    this.renderer.addClass(this.elRef.nativeElement, 'ce-held');
+    this.pointerDownTimeout = setTimeout(
+      () => this.renderer.addClass(this.elRef.nativeElement, 'ce-held'), 40
+    );
   }
 
-  @HostListener('pointercancel')
   @HostListener('pointerout')
   @HostListener('pointerup')
   onPointerUp() {

@@ -1,0 +1,49 @@
+@use '../styles/vars';
+@use '../styles/layout';
+
+:host {
+  position: absolute;
+  top: 0;
+}
+
+.ui.view-wrapper {
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.ui.overlay {
+  z-index: 2000;
+}
+
+.window {
+  z-index: 2001;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 100px);
+  width: calc(100% - #{layout.$content-offset * 2});
+  max-width: #{vars.$column-max-width - layout.$content-offset * 2};
+  background-color: var(--bg-color-1-shift-dark);
+  border-radius: vars.$border-radius;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.title {
+  $height: 50px;
+  box-sizing: border-box;
+  width: 100%;
+  height: $height;
+  padding: calc(#{$height * 0.5} - 0.5em);
+  text-align: center;
+  font-weight: bold;
+  box-shadow: 0px 1px 2px var(--bar-shadow-color);
+}
+
+.content {
+  overflow-y: auto;
+}
+
+.toolbar {
+  box-shadow: 0px -1px 2px var(--bar-shadow-color);
+}

@@ -9,6 +9,12 @@
   display: block;
 }
 
+.ui.grades-subjects-list {
+  max-width: vars.$column-max-width;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 app-grade-subject-item {
   display: block;
 }

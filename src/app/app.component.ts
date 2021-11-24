@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, Subscription } from 'rxjs';
 import { AuthService } from './auth/auth.service';
+import { ViewService } from './shared/view.service';
 import { FetcherService } from './store/fetcher.service';
 
 @Component({
@@ -8,16 +11,34 @@ import { FetcherService } from './store/fetcher.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  popUpSubscription: Subscription;
+  popUpTitle: string;
+  popUpContent: any;
 
   constructor(
     private authService: AuthService,
-    private fetcherService: FetcherService,
-    private http: HttpClient
+    public viewService: ViewService,
+    private http: HttpClient,
+    private router: Router,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit() {
-    // this.authService.auth().pipe(take(1)).subscribe();
+    this.popUpSubscription = this.viewService.popUpSubject.subscribe(payload => {
+      this.popUpTitle = payload?.title;
+      this.popUpContent = payload?.content;
+    });
+
+    this.router.events.subscribe(() => {
+      this.viewService.popUpSubject.next(null);
+    });
+
+    this.renderer.removeClass(document.body, 'preload');
+  }
+
+  ngOnDestroy() {
+    this.popUpSubscription.unsubscribe();
   }
 
   onLogin(email: string, password: string) {
@@ -28,5 +49,9 @@ export class AppComponent implements OnInit {
     this.http.get(url).subscribe(response => {
       console.log(response);
     });
+  }
+
+  onPopUpClose() {
+    this.viewService.popUpSubject.next({ content: null, title: null});
   }
 }

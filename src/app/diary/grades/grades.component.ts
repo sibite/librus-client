@@ -19,7 +19,7 @@ export class GradesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.storeSubscription = this.storeService.dataSyncSubject.subscribe(
       data => {
-        this.gradeSubjects = data.gradeSubjects.sort((a, b) => a.Name > b.Name ? 1 : -1);
+        this.gradeSubjects = data.gradeSubjects?.sort((a, b) => a.Name > b.Name ? 1 : -1);
         this.subjectColors = data.subjectColors;
       }
     );

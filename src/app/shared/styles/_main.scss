@@ -72,7 +72,7 @@ input {
     }
   }
 
-  &.ce-released::before {
+  &.ce-held.ce-released::before {
     opacity: 0;
     animation: {
       name: ripple-scale, ripple-opacity;
@@ -122,3 +122,42 @@ input {
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 1;
 }
+
+.ui.details-list {
+  list-style: none;
+  margin: 10px;
+  padding: 0px;
+}
+
+.ui.details-item {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--bar-shadow-color);
+  }
+}
+
+.ui.details-item-name, .ui.details-item-content {
+  margin: 5px 0;
+}
+
+.ui.details-item-name {
+  margin-right: auto;
+  font-size: 0.7em;
+  padding-top: 0.37em;
+  text-transform: uppercase;
+  color: var(--text-color-3);
+}
+
+.ui.details-item-content {
+  color: var(--text-color-1);
+}
+
+// <ul class="ui details-list">
+//   <li class="ui details-item">
+//     <h5 class="ui details-item-name">name</h5>
+//     <p class="ui details-item-content">content</p>
+//   </li>
+// </ul>

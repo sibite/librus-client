@@ -96,6 +96,11 @@ $group-ver-margin: 30px;
     background-color: vars.$accent;
   }
 
+  &.transparent {
+    color: var(--text-color-1);
+    background-color: transparent;
+  }
+
   &[disabled] {
     cursor: auto;
     transition: none;

@@ -1,0 +1,10 @@
+<div class="ui view-wrapper" [style.height.px]="viewService.windowHeight">
+  <div class="ui overlay"></div>
+  <div class="window">
+    <div class="title">{{ windowTitle }}</div>
+    <div class="content" [innerHTML]="windowContent"></div>
+    <div class="toolbar">
+      <button class="ui button transparent" appClickEffect type="button" (click)="onClose.emit()">Zamknij</button>
+    </div>
+  </div>
+</div>

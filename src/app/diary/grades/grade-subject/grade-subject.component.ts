@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CapitalizePipe } from 'src/app/shared/capitalize.pipe';
+import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { convertLibrusDate } from 'src/app/shared/date-converter';
 import { ViewService } from 'src/app/shared/view.service';
 import { CategoryType } from 'src/app/store/models/category.type';
@@ -9,6 +9,7 @@ import { GradeType } from 'src/app/store/models/grade.type';
 import { UserType } from 'src/app/store/models/user.type';
 import { StoreService } from 'src/app/store/store.service';
 import { formatGradeShort, gradesByDateSorter } from '../grades.utilities';
+import { generateGradeDetailsHTML } from '../grade-details-generator';
 
 @Component({
   selector: 'app-grade-subject',
@@ -39,8 +40,10 @@ export class GradeSubjectComponent implements OnInit {
       const activatedSubject = this.storeService.data.gradeSubjects.find(
         subject => subject.Id == params['id']
       );
+
       if (!activatedSubject) return;
       this.routeTitle = this.capitalize.transform(activatedSubject.Name);
+
       this.grades = activatedSubject.Grades.sort(gradesByDateSorter).reverse();
       let subjectColors = this.storeService.data.subjectColors;
       this.color = subjectColors[activatedSubject.Id];
@@ -53,6 +56,10 @@ export class GradeSubjectComponent implements OnInit {
 
   showGradeDetails(event: MouseEvent, grade: GradeType) {
     console.log(grade);
+    this.viewService.popUpSubject.next({
+      title: 'Szczegóły',
+      content: generateGradeDetailsHTML(grade)
+    })
     event.stopPropagation();
   }
 
@@ -60,7 +67,8 @@ export class GradeSubjectComponent implements OnInit {
     return formatGradeShort(grade);
   }
 
-  getGradeDate(grade: GradeType) {
-    return convertLibrusDate(grade.Date);
+  getGradeDateFormatted(grade: GradeType) {
+    let localeDateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return convertLibrusDate(grade.Date).toLocaleDateString('pl-PL', <{}>localeDateOptions);
   }
 }

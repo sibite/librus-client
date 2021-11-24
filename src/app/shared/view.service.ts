@@ -1,4 +1,5 @@
-import { Injectable } from "@angular/core";
+import { ElementRef, Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 
 type ThemeType = 'dark' | 'light' | 'auto';
 
@@ -6,6 +7,7 @@ type ThemeType = 'dark' | 'light' | 'auto';
 export class ViewService {
   private _theme;
   private _windowHeight: number;
+  public popUpSubject = new Subject<{ content: any, title: string }>();
 
   get theme() { return this._theme; }
   get windowHeight() { return this._windowHeight; }

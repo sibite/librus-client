@@ -2,6 +2,10 @@
 
 $margin-horizontal: 5px;
 
+:host {
+  cursor: pointer;
+}
+
 .container {
   padding: 5px;
   background-color: var(--bg-color-2);

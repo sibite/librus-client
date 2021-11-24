@@ -6,6 +6,7 @@
 }
 
 .ui.view-wrapper {
+  z-index: 1500;
   position: absolute;
   top: 0;
   left: 0;
@@ -14,6 +15,7 @@
 }
 
 .ui.overlay {
+  z-index: 1;
   opacity: 0;
   @include side-menu-transition();
 }

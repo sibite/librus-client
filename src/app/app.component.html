@@ -1,1 +1,7 @@
 <router-outlet class="ui app-component"></router-outlet>
+<app-pop-up
+  *ngIf="popUpContent"
+  [windowTitle]="popUpTitle"
+  [windowContent]="popUpContent | keepHtml"
+  (onClose)="onPopUpClose()">
+</app-pop-up>

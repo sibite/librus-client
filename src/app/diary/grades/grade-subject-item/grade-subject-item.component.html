@@ -10,7 +10,9 @@
       (click)="showGradeDetails($event, grade)"
       forceRippleTheme="light"
       [ngStyle]="{'background-color': color}"
-      *ngFor="let grade of grades">{{ formatGradeShort(grade) }}</div>
+      *ngFor="let grade of grades">
+      {{ formatGradeShort(grade) }}
+    </div>
   </div>
   <div
     class="no-grades-text"

@@ -58,7 +58,7 @@ export class StoreService {
     private authService: AuthService
   ) {
     this.restoreLocalStorage();
-    this.dataSyncSubject.next(this.data);
+    this.dataSyncSubject.next(this.getData());
     const lastSyncTime = this.data.lastSyncTime || 0;
     // sync if last synced minimum 30 minutes ago
     if (Date.now() - lastSyncTime > 1800 * 1000) {
@@ -93,7 +93,7 @@ export class StoreService {
         this.fetcherData = forkResponse;
         this.transformFetcherData();
         // emit sync subject
-        this.dataSyncSubject.next(this.data);
+        this.dataSyncSubject.next(this.getData());
         this.data.lastSyncTime = Date.now();
         // resync after 30 minutes
         setTimeout(() => this.synchronize(), 1800 * 1000);
@@ -111,6 +111,18 @@ export class StoreService {
         subject.Grades = [];
       }
       for (let grade of this.fetcherData.grades.list) {
+        let addedBy = this.fetcherData.users[grade.AddedBy.Id]
+        grade.AddedBy = {
+          ...grade.AddedBy,
+           FirstName: addedBy.FirstName,
+           LastName: addedBy.LastName
+        }
+        let category = this.fetcherData.grades.categories[grade.Category.Id];
+        grade.Category = {
+          ...grade.Category,
+          Name: category.Name,
+          Weight: category.Weight
+        }
         gradesSubjects[grade.Subject.Id].Grades.push(grade);
       }
       this.data.gradeSubjects = Object.values(gradesSubjects);
@@ -142,7 +154,7 @@ export class StoreService {
   }
 
   getData() {
-    return this.data;
+    return { ...this.data };
   }
 
   syncErrorHandler(err, isSecondAttempt) {

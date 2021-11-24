@@ -1,6 +1,7 @@
 @use '../shared/styles/vars';
 
 :host {
+  z-index: 1000;
   display: flex;
   justify-items: stretch;
   align-items: stretch;

@@ -56,8 +56,9 @@ export class AuthService {
         let parser = new DOMParser();
         let responseDOM = parser.parseFromString(responseHTML, 'text/html');
         let csrfToken = (<HTMLMetaElement>responseDOM.head.querySelector('meta[name="csrf-token"]')).content;
-        let xsrfToken = document.cookie.match(/XSRF-TOKEN=(.*)/)[1];
-        if (!csrfToken || !xsrfToken) {
+        //let xsrfToken = document.cookie.match(/XSRF-TOKEN=(.*)/)[1];
+        let xsrfToken = ''
+        if (!csrfToken/* || !xsrfToken*/) {
           throw new Error('Could not scrap tokens');
         }
         return {xsrfToken, csrfToken};
@@ -69,7 +70,7 @@ export class AuthService {
           {email, password},
           {
             headers: new HttpHeaders({
-              'X-XSRF-TOKEN': tokens.xsrfToken,
+              //'X-XSRF-TOKEN': tokens.xsrfToken,
               'X-CSRF-TOKEN': tokens.csrfToken,
               'X-Requested-With': 'XMLHttpRequest',
               'Accept': 'Accept: application/json, text/plain, */*',
