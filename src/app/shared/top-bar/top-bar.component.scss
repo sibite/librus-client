@@ -1,4 +1,4 @@
-@use '../shared/styles/vars';
+@use '../styles/vars';
 
 $bar-height: 54px;
 $el-padding: 10px;
@@ -19,8 +19,8 @@ $el-margin: 5px;
   display: flex;
   height: $bar-height;
   background-color: var(--bg-color-1);
-  box-shadow: 0px 0.5px 1px var(--bar-shadow-color);
-  font-size: 0.85em;
+  box-shadow: 0px 1px 1px var(--bar-shadow-color);
+  font-size: 1.06rem;
 }
 
 .ui.topbar-button {

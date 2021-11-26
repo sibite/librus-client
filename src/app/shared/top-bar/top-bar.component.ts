@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { StoreService } from '../store/store.service';
+import { StoreService } from '../../store/store.service';
 
 @Component({
   selector: 'app-top-bar',

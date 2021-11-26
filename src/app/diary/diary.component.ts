@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ViewService } from '../shared/view.service';
-import { SideMenuComponent } from '../side-menu/side-menu.component';
+import { SideMenuComponent } from '../shared/side-menu/side-menu.component';
 import { StoreService } from '../store/store.service';
 
 @Component({
@@ -10,9 +10,10 @@ import { StoreService } from '../store/store.service';
   styleUrls: ['./diary.component.scss']
 })
 export class DiaryComponent implements OnInit {
+  @ViewChild(SideMenuComponent, {read: ElementRef, static: true}) sidemenuElRef: ElementRef;
+
   isSidemenuOpened = false;
   routeTitle: string = "Dziennik";
-  @ViewChild(SideMenuComponent, {read: ElementRef, static: true}) sidemenuElRef: ElementRef;
 
   constructor(
     public viewService: ViewService,

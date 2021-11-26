@@ -7,7 +7,7 @@ const app = express();
 
 // Configuration
 const HOST = '0.0.0.0';
-const HOST_PROTOCOL = 'https';
+const HOST_PROTOCOL = 'http';
 const ABS_HOST = 'localhost';
 const PORT = process.env.PORT || 3000;
 const ABS_PORT = ':3000';

@@ -1,0 +1,41 @@
+@use '../styles/vars';
+
+$border: 1px solid var(--bg-color-3);
+
+.bar {
+  display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
+  align-items: stretch;
+  width: 100%;
+  border-radius: vars.$border-radius;
+}
+
+.bar-item {
+  cursor: pointer;
+  color: var(--text-color-3);
+  background-color: var(--bg-color-2);
+  flex-grow: 1;
+  padding: 10px;
+  text-align: center;
+  border: $border;
+
+  &.selected {
+    color: var(--text-color-1);
+    background-color: var(--bg-color-4);
+  }
+
+  &:first-child {
+    border-bottom-left-radius: vars.$border-radius;
+    border-top-left-radius: vars.$border-radius;
+  }
+
+  &:last-child {
+    border-bottom-right-radius: vars.$border-radius;
+    border-top-right-radius: vars.$border-radius;
+  }
+
+  &:not(:last-child) {
+    border-right: none;
+  }
+}

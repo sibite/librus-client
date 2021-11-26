@@ -11,6 +11,8 @@ $danger: #ff3311;
 $border-radius: 4px;
 $card-margin: 20px;
 $column-max-width: 500px;
+$smooth-out-timing-function: cubic-bezier(0, 0.5, 0, 1);
+$smooth-in-timing-function: cubic-bezier(0.5, 0, 1, 0);
 
 // side-menu
 $side-menu-width: 280px;
@@ -22,3 +24,9 @@ $side-menu-item-height: 44px;
 
 // nav-bar
 $nav-bar-height: 64px;
+
+// mixins
+
+@mixin fast-transition() {
+  transition: all 200ms ease;
+}

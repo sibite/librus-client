@@ -9,6 +9,7 @@ import { CalendarType } from "./models/calendar.type";
 import { CategoryType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
+import { CommentType } from "./models/comment.type";
 import { GradeType } from "./models/grade.type";
 import { LessonType } from "./models/lesson.type";
 import { LuckyNumberType } from "./models/lucky-number.type";
@@ -23,8 +24,9 @@ export type FetcherDataType = {
   subjects?: { [key: number]: SubjectType },
   themes?: any[],
   grades?: {
-    categories: { [key: number]: CategoryType };
-    list: GradeType[];
+    categories: CategoryType[],
+    comments: CommentType[],
+    list: GradeType[],
   },
   users?: { [key: number]: UserType },
   lessons?: { [key: number]: LessonType },
@@ -111,17 +113,30 @@ export class StoreService {
         subject.Grades = [];
       }
       for (let grade of this.fetcherData.grades.list) {
+        // attaching added by
         let addedBy = this.fetcherData.users[grade.AddedBy.Id]
         grade.AddedBy = {
           ...grade.AddedBy,
            FirstName: addedBy.FirstName,
            LastName: addedBy.LastName
         }
-        let category = this.fetcherData.grades.categories[grade.Category.Id];
+        // attaching categories
+        let category = this.fetcherData.grades.categories.find(
+          category => category.Id == grade.Category.Id
+        );
         grade.Category = {
           ...grade.Category,
           Name: category.Name,
           Weight: category.Weight
+        }
+        // attaching comments
+        if (grade.Comments) {
+          let comments = grade.Comments.map(gradeComment => {
+            return this.fetcherData.grades.comments.find(
+              storeComment => storeComment.Id == gradeComment.Id
+            )
+          });
+          grade.Comments = comments;
         }
         gradesSubjects[grade.Subject.Id].Grades.push(grade);
       }

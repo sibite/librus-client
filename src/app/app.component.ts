@@ -34,15 +34,12 @@ export class AppComponent implements OnInit, OnDestroy {
       this.viewService.popUpSubject.next(null);
     });
 
-    this.renderer.removeClass(document.body, 'preload');
+    // enable animations
+    setTimeout(() => this.renderer.removeClass(document.body, 'preload'), 100);
   }
 
   ngOnDestroy() {
     this.popUpSubscription.unsubscribe();
-  }
-
-  onLogin(email: string, password: string) {
-    this.authService.login(email, password);
   }
 
   onUrlRequest(url) {

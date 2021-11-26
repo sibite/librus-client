@@ -3,8 +3,9 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { switchMap, take } from 'rxjs/operators';
 import { ViewService } from '../shared/view.service';
-import { SideMenuComponent } from '../side-menu/side-menu.component';
+import { SideMenuComponent } from '../shared/side-menu/side-menu.component';
 import { AuthService } from './auth.service';
+import { StoreService } from '../store/store.service';
 
 @Component({
   selector: 'app-auth',
@@ -20,6 +21,7 @@ export class AuthComponent implements OnInit {
   constructor(
     public viewService: ViewService,
     private authService: AuthService,
+    private storeService: StoreService,
     private router: Router
   ) { }
 
@@ -41,6 +43,7 @@ export class AuthComponent implements OnInit {
           response => {
             console.log(response);
             this.isLoading = false;
+            this.storeService.synchronize();
             this.router.navigate(['/diary']);
           },
           error => {

@@ -1,15 +1,16 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { convertLibrusDate } from 'src/app/shared/date-converter';
+import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
+import { semesterOptions } from 'src/app/shared/semester-options';
 import { ViewService } from 'src/app/shared/view.service';
 import { CategoryType } from 'src/app/store/models/category.type';
 import { GradeType } from 'src/app/store/models/grade.type';
 import { UserType } from 'src/app/store/models/user.type';
 import { StoreService } from 'src/app/store/store.service';
-import { formatGradeShort, gradesByDateSorter } from '../grades.utilities';
 import { generateGradeDetailsHTML } from '../grade-details-generator';
+import { formatGradeShort, gradesByDateSorter } from '../grades.utilities';
 
 @Component({
   selector: 'app-grade-subject',
@@ -19,6 +20,9 @@ import { generateGradeDetailsHTML } from '../grade-details-generator';
 export class GradeSubjectComponent implements OnInit {
   public routeTitle: string = 'Oceny';
   public color: string;
+  public semester: number;
+  public semesterOptions = semesterOptions;
+
   public grades: GradeType[] = [];
   public users: { [key: number]: UserType };
   public categories: { [key: number]: CategoryType };
@@ -27,7 +31,9 @@ export class GradeSubjectComponent implements OnInit {
     public viewService: ViewService,
     private storeService: StoreService,
     private route: ActivatedRoute,
+    private router: Router,
     private location: Location,
+    private hostEl: ElementRef,
     private capitalize: CapitalizePipe
   ) { }
 
@@ -48,10 +54,25 @@ export class GradeSubjectComponent implements OnInit {
       let subjectColors = this.storeService.data.subjectColors;
       this.color = subjectColors[activatedSubject.Id];
     });
+
+    this.route.queryParams.subscribe(queryParams => {
+      this.semester = Number(queryParams['semester']) || 0;
+    })
   }
+
 
   onBack() {
     this.location.back();
+  }
+
+  getGrades() {
+    return this.grades.filter(grade => {
+      return this.semester === 0 ? true : grade.Semester === this.semester;
+    })
+  }
+
+  onSemesterSelect(optionKey) {
+    this.semester = optionKey;
   }
 
   showGradeDetails(event: MouseEvent, grade: GradeType) {

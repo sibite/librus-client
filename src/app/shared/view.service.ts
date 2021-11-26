@@ -1,4 +1,5 @@
-import { ElementRef, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
 
 type ThemeType = 'dark' | 'light' | 'auto';
@@ -7,6 +8,7 @@ type ThemeType = 'dark' | 'light' | 'auto';
 export class ViewService {
   private _theme;
   private _windowHeight: number;
+  private scrollStates: { [key: string]: number } = {};
   public popUpSubject = new Subject<{ content: any, title: string }>();
 
   get theme() { return this._theme; }
@@ -25,7 +27,7 @@ export class ViewService {
   }
 
   refreshTheme() {
-    let localTheme = this.getLocalPreference() || 'auto';
+    let localTheme = this.getLocalThemePreference() || 'auto';
     if (localTheme === 'auto' && window.matchMedia) {
       let isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       console.log('isDark', isDark);
@@ -40,11 +42,21 @@ export class ViewService {
     }
   }
 
-  getLocalPreference(): ThemeType {
+  getLocalThemePreference(): ThemeType {
     return <ThemeType>localStorage.getItem('app.preferedTheme') || 'auto';
   }
 
-  setLocalPreference(theme: ThemeType) {
+  setLocalThemePreference(theme: ThemeType) {
     localStorage.setItem('app.preferedTheme', theme);
+  }
+
+  saveScrollState(route: ActivatedRoute, scroll: number) {
+    let path = route.snapshot.pathFromRoot.toString();
+    this.scrollStates[path] = scroll;
+  }
+
+  getScrollState(route: ActivatedRoute) {
+    let path = route.snapshot.pathFromRoot.toString();
+    return this.scrollStates[path] || 0;
   }
 }

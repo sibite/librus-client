@@ -43,12 +43,13 @@ export class ClickEffectDirective implements OnInit {
     this.renderer.removeClass(this.elRef.nativeElement, 'ce-held');
     this.renderer.removeClass(this.elRef.nativeElement, 'ce-released');
     this.pointerDownTimeout = setTimeout(
-      () => this.renderer.addClass(this.elRef.nativeElement, 'ce-held'), 40
+      () => this.renderer.addClass(this.elRef.nativeElement, 'ce-held'), 80
     );
   }
 
   @HostListener('pointerout')
   @HostListener('pointerup')
+  @HostListener('click')
   onPointerUp() {
     this.renderer.addClass(this.elRef.nativeElement, 'ce-released');
   }

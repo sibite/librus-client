@@ -1,4 +1,5 @@
 @use '../../shared/styles/vars';
+@use '../../shared/styles/misc';
 
 :host {
   overflow-y: auto;
@@ -9,10 +10,20 @@
   display: block;
 }
 
-.ui.grades-subjects-list {
-  max-width: vars.$column-max-width;
-  margin-left: auto;
-  margin-right: auto;
+.options {
+  @include misc.clearfix();
+}
+
+.ui.details-item {
+  float: right;
+}
+
+#options-container {
+  @include misc.clearfix();
+}
+
+#semester-dropdown {
+  float: right;
 }
 
 app-grade-subject-item {

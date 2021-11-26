@@ -1,4 +1,5 @@
 import { CategoryType } from "./category.type";
+import { CommentType } from "./comment.type";
 import { SubjectType } from "./subject.type";
 import { UserType } from "./user.type";
 
@@ -6,6 +7,7 @@ export interface GradeType {
   AddDate: string, // YYYY-MM-DD HH-MM-SS
   AddedBy: UserType, // {Id: id, Url: "https://api.librus.pl/2.0/Users/id"}
   Category: CategoryType, // {Id: 771471, Url: "https://api.librus.pl/2.0/Grades/Categories/id"}
+  Comments?: CommentType[],
   Date: string, // YYYY-MM-DD
   Grade: string,
   Id: number,

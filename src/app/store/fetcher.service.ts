@@ -16,6 +16,7 @@ import { SchoolInfoType } from "./models/school-info.type";
 import { SubjectType } from "./models/subject.type";
 import { TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
+import { CommentType } from './models/comment.type';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +66,7 @@ export class FetcherService {
 
     let requests = GradeKinds.map(gradeKind => {
       return this.http.get<any>(`https://api.librus.pl/2.0/${gradeKind.name}`).pipe(
-          catchError(this.errorHandler.bind),
+          catchError(this.errorHandler.bind(this)),
           map(response => {
             return {
               kind: <GradeKindType>gradeKind.name,
@@ -90,7 +91,6 @@ export class FetcherService {
           if (categoryIdsArr.length > 0) {
             let req = this.http.get(`https://api.librus.pl/2.0/${response.kind}/Categories/${categoryIdsArr.join(',')}`)
               .pipe(
-                catchError(this.errorHandler.bind),
                 map(response => {
                   return response['Categories'];
                 })
@@ -98,18 +98,20 @@ export class FetcherService {
             categoryRequests.push(req);
           }
         }
-        return forkJoin(categoryRequests);
+        let commentsRequests = [
+          this.http.get('https://api.librus.pl/2.0/DescriptiveGrades/Comments').pipe(map(response => response['Comments'])),
+          this.http.get('https://api.librus.pl/2.0/Grades/Comments').pipe(map(response => response['Comments']))
+        ];
+        return forkJoin([forkJoin(categoryRequests), forkJoin(commentsRequests)]);
       }),
-      map(categoryGroups => {
-        let categories: CategoryType[] = [].concat(...categoryGroups);
-        let categoriesObj: {[key: number]: CategoryType} = {};
-        // Saving categories
-        for (let category of categories) {
-          categoriesObj[category.Id] = category;
-        }
+      catchError(this.errorHandler.bind(this)),
+      map(([categoryRequests, commentsRequests]) => {
+        let categories: CategoryType[] = [].concat(...categoryRequests);
+        let comments: CommentType[] = [].concat(...commentsRequests);
         // Returning grades
         return {
-          categories: categoriesObj,
+          categories: categories,
+          comments: comments,
           list: grades
         };
       })
@@ -208,7 +210,7 @@ export class FetcherService {
   fetchCalendar() {
     let requests = CalendarKinds.map(calendarKind => {
       return this.http.get<any>(`https://api.librus.pl/2.0/${calendarKind.name}`).pipe(
-          catchError(this.errorHandler.bind),
+          catchError(this.errorHandler.bind(this)),
           map(response => {
             return {
               kind: <CalendarKindType>calendarKind.propName,
@@ -223,11 +225,11 @@ export class FetcherService {
 
     return forkJoin({
       catList: this.http.get('https://api.librus.pl/2.0/HomeWorks/Categories').pipe(
-        catchError(this.errorHandler.bind),
+        catchError(this.errorHandler.bind(this)),
         map(response => response['Categories'])
       ),
       typesList: this.http.get('https://api.librus.pl/2.0/ClassFreeDays/Types').pipe(
-        catchError(this.errorHandler.bind),
+        catchError(this.errorHandler.bind(this)),
         map(response => response['Types'])
       )
     }).pipe(

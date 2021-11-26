@@ -18,7 +18,7 @@ $margin-horizontal: 5px;
 }
 
 .subject-title {
-  font-size: 0.9em;
+  font-size: 1.12rem;
 }
 
 .subject-grades-list {
@@ -30,13 +30,14 @@ $margin-horizontal: 5px;
 .subject-grade {
   pointer-events: auto;
   cursor: pointer;
-  border-radius: vars.$border-radius;
   padding: 6px 10px;
-  color: #ffffff;
   margin: $margin-horizontal;
+  border-radius: vars.$border-radius;
+  color: #ffffff;
+  font-size: 1.25rem;
 }
 
 .no-grades-text {
   color: var(--text-color-3);
-  font-size: 0.9em;
+  font-size: 1.12rem;
 }

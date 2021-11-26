@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
-import { ViewService } from '../shared/view.service';
-import { StoreService } from '../store/store.service';
+import { AuthService } from '../../auth/auth.service';
+import { ViewService } from '../view.service';
+import { StoreService } from '../../store/store.service';
 
 @Component({
   selector: 'app-side-menu',

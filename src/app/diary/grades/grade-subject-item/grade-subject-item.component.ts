@@ -13,6 +13,7 @@ import { formatGradeShort, gradesByDateSorter } from '../grades.utilities';
 export class GradeSubjectItemComponent implements OnInit {
   @ViewChild('popupContent') popupContentRef: ElementRef;
   @Input() subject: SubjectType;
+  @Input() semester: number;
   @Input() color: string;
   grades: GradeType[] = [];
 
@@ -21,7 +22,7 @@ export class GradeSubjectItemComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.grades = this.subject.Grades.sort(gradesByDateSorter).reverse();
+    this.grades = this.subject.Grades.sort(gradesByDateSorter);
   }
 
   showGradeDetails(event: MouseEvent, grade: GradeType) {
@@ -35,6 +36,12 @@ export class GradeSubjectItemComponent implements OnInit {
 
   formatGradeShort(grade: GradeType) {
     return formatGradeShort(grade);
+  }
+
+  getGrades() {
+    return this.grades.filter(grade => {
+      return this.semester === 0 ? true : grade.Semester === this.semester;
+    })
   }
 
 }

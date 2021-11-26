@@ -15,7 +15,7 @@ $group-ver-margin: 30px;
   line-height: $el-line-height;
   font: {
     family: 'Lato', Roboto, sans-serif;
-    size: 1em;
+    size: 1.1rem;
   }
   @if ($no-border) {
     min-height: calc(#{$el-height} + 2 * #{$el-border-width});
@@ -76,7 +76,7 @@ $group-ver-margin: 30px;
   display: block;
   clear: both;
   color: vars.$danger;
-  font-size: 0.8em;
+  font-size: 1rem;
   margin-top: 0px;
   margin-bottom: 12px;
 }
@@ -119,8 +119,8 @@ $group-ver-margin: 30px;
       $inner-size: #{$size - $width * 2};
       position: absolute;
       content: '';
-      top: calc(50% - #{$size / 2});
-      left: calc(50% - #{$size / 2});
+      top: calc(50% - #{$size * 0.5});
+      left: calc(50% - #{$size * 0.5});
       width: $inner-size;
       height: $inner-size;
       animation: button-spinner 0.6s linear;
@@ -151,5 +151,106 @@ $group-ver-margin: 30px;
   margin-top: $el-ver-margin;
   clear: both;
   color: var(--form-el-text-color);
-  font-size: 0.8em;
+  font-size: 1rem;
+}
+
+// Author: Aaron Iker
+
+input[type="radio"], input[type="checkbox"] {
+  --active: var(--accent);
+  --active-inner: #fff;
+  --border: var(--accent-d2);
+  --border-hover: var(--accent);
+  --background: #fff;
+  --disabled: #F8F8F8;
+  --disabled-inner: #E1E6F9;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 21px;
+  outline: none;
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  margin: 0;
+  margin-right: 7px;
+  cursor: pointer;
+  border: 1px solid var(--bc, var(--border));
+  background: var(--b, var(--background));
+  transition: background .3s, border-color .3s, box-shadow .2s;
+
+  & ~ * {
+    cursor: pointer;
+    line-height: 21px;
+  }
+
+  font: {
+    family: inherit;
+  }
+
+  &:after {
+    content: '';
+    display: block;
+    left: 0;
+    top: 0;
+    position: absolute;
+    transition: transform var(--d-t, .3s) var(--d-t-e, ease), opacity var(--d-o, .2s);
+  }
+  &:checked {
+    --b: var(--active);
+    --bc: var(--active);
+    --d-o: .3s;
+    --d-t: .6s;
+    --d-t-e: cubic-bezier(.2, .85, .32, 1.2);
+  }
+  &:disabled {
+    --b: var(--disabled);
+    cursor: not-allowed;
+    opacity: .9;
+    &:checked {
+      --b: var(--disabled-inner);
+      --bc: var(--border);
+    }
+    & + label {
+      cursor: not-allowed;
+    }
+  }
+  &:hover {
+    &:not(:checked) {
+      &:not(:disabled) {
+        --bc: var(--border-hover);
+      }
+    }
+  }
+  &:not(.switch) {
+    width: 21px;
+    &:after {
+      opacity: var(--o, 0);
+    }
+    &:checked {
+      --o: 1;
+    }
+  }
+  & + label {
+    font-size: 14px;
+    line-height: 21px;
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+    margin-left: 4px;
+  }
+}
+
+input[type="radio"] {
+  border-radius: 50%;
+  &:after {
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    background: var(--active-inner);
+    opacity: 0;
+    transform: scale(var(--s, .7));
+  }
+  &:checked {
+    --s: .5;
+  }
 }

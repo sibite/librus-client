@@ -1,0 +1,8 @@
+<div class="bar">
+  <div
+    class="bar-item"
+    appClickEffect
+    *ngFor="let option of options"
+    (click)="select(option.key)"
+    [ngClass]="{selected: selectedOption == option.key}">{{ option.name }}</div>
+</div>

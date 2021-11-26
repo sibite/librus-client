@@ -1,9 +1,15 @@
 <div class="ui component">
-  <!-- <app-grade-details></app-grade-details> -->
-  <div class="ui grades-subjects-list group offset">
+  <div class="ui group offset align-width" id="options-container">
+    <app-bar-switch
+      [options]="semesterOptions"
+      [selectedOption]="1"
+      (onSelect)="onSemesterSelect($event)"></app-bar-switch>
+  </div>
+  <div class="ui group offset align-width">
     <app-grade-subject-item
       *ngFor="let gradeSubject of gradeSubjects; let i = index"
       [subject]="gradeSubjects[i]"
+      [semester]="semester"
       [color]="subjectColors[gradeSubject.Id]">
     </app-grade-subject-item>
   </div>

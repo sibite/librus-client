@@ -5,26 +5,32 @@
     [uiTitle]="routeTitle"
     appIcon="bi-arrow-left"
     (onButtonClick)="onBack()"></app-top-bar>
-  <div class="ui component offset" id="grades-list-component">
-    <ul class="grades-list">
-      <ng-container *ngFor="let grade of grades; let i = index">
-        <div class="date" *ngIf="grades[i-1]?.Date !== grade.Date"><span>{{ getGradeDateFormatted(grade) }}</span></div>
-        <li
-        class="grade"
-        appClickEffect
-        (click)="showGradeDetails($event, grade)">
-        <div class="symbol" [ngStyle]="{'background-color': color}">{{ formatGradeShort(grade) }}</div>
-        <div class="details">
-          <p>
-            <span class="added-by">{{ users[grade.AddedBy.Id]?.FirstName }} {{ users[grade.AddedBy.Id]?.LastName }}</span>
-          </p>
-          <p class="category">{{ categories[grade.Category.Id].Name | capitalize }}</p>
-        </div>
-        </li>
-      </ng-container>
-    </ul>
+  <div class="ui component" id="grades-list-component">
+    <div class="ui group offset align-width">
+      <app-bar-switch
+      [options]="semesterOptions"
+      [selectedOption]="semester"
+      (onSelect)="onSemesterSelect($event)"></app-bar-switch>
+    </div>
+    <div class="ui group offset align-width">
+      <ul class="grades-list">
+        <ng-container *ngFor="let grade of getGrades(); let i = index">
+          <div class="date" *ngIf="grades[i-1]?.Date !== grade.Date"><span>{{ getGradeDateFormatted(grade) }}</span></div>
+          <li
+          class="grade"
+          appClickEffect
+          (click)="showGradeDetails($event, grade)">
+          <div class="symbol" [ngStyle]="{'background-color': color}">{{ formatGradeShort(grade) }}</div>
+          <div class="details">
+            <p class="added-by">{{ grade.AddedBy.FirstName }} {{ grade.AddedBy.LastName }}</p>
+            <p class="category">{{ grade.Category.Name | capitalize }}</p>
+          </div>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
   </div>
   <div
     class="no-grades-text"
-    *ngIf="grades.length === 0">Brak ocen</div>
+    *ngIf="getGrades().length === 0">Brak ocen</div>
 </div>

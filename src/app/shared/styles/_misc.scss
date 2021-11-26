@@ -28,9 +28,11 @@ body {
   --bg-color-1: #ffffff;
   --bg-color-2: #eeeeee;
   --bg-color-3: #dddddd;
+  --bg-color-4: #cccccc;
   --bg-color-1-shift-dark: var(--bg-color-1);
   --bg-color-2-shift-dark: var(--bg-color-2);
   --bg-color-3-shift-dark: var(--bg-color-3);
+  --bg-color-3-shift-dark: var(--bg-color-4);
 
   --accent-d2: #{vars.$accent-lightest};
   --accent-d1: #{vars.$accent-lighter};
@@ -80,9 +82,11 @@ body {
     --bg-color-1: #000000;
     --bg-color-2: #1d1d1d;
     --bg-color-3: #323232;
+    --bg-color-4: #444444;
     --bg-color-1-shift-dark: var(--bg-color-2);
     --bg-color-2-shift-dark: var(--bg-color-3);
-    --bg-color-3-shift-dark: var(--bg-color-3);
+    --bg-color-3-shift-dark: var(--bg-color-4);
+    --bg-color-4-shift-dark: var(--bg-color-4);
 
     --accent-d2: #{vars.$accent-darkest};
     --accent-d1: #{vars.$accent};
@@ -102,7 +106,7 @@ body {
     --text-color-2: #dddddd;
     --text-color-3: #bbbbbb;
 
-    --bar-shadow-color: hsl(0, 0%, 30%);
+    --bar-shadow-color: hsl(0, 0%, 20%);
     --ripple-color: var(--ripple-color-light);
     --ripple-color-revert: var(--ripple-color-dark);
   }
