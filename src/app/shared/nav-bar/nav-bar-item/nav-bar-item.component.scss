@@ -6,21 +6,22 @@
   padding: {
     top: 12px;
   }
-  font-weight: bold;
-  color: var(--text-color-3);
+  color: var(--text-color-4);
 
   &.active {
-    color: var(--accent);
+    color: var(--text-color-1);
   }
 }
 
 .nav-bar-item-icon {
-  font-size: 1.38rem;
+  display: inline-block;
+  font-size: 1.4rem;
+  margin-bottom: 2px;
 }
 
 .nav-bar-item-caption {
   display: inline-block;
   font: {
-    size: 1.06rem;
+    size: 1rem;
   }
 }

@@ -34,6 +34,10 @@ export class GradeSubjectItemComponent implements OnInit {
     event.stopPropagation();
   }
 
+  isGradeNormal(grade: GradeType) {
+    return !(grade.IsFinalProposition || grade.IsFinal || grade.IsSemester || grade.IsSemesterProposition);
+  }
+
   formatGradeShort(grade: GradeType) {
     return formatGradeShort(grade);
   }
@@ -42,6 +46,36 @@ export class GradeSubjectItemComponent implements OnInit {
     return this.grades.filter(grade => {
       return this.semester === 0 ? true : grade.Semester === this.semester;
     })
+  }
+
+  getAverage() {
+    let constituentGrades = this.getGrades().filter(grade => grade.IsConstituent);
+    let weightSum = constituentGrades.reduce((sum: number, nextGrade) => {
+      let weight = nextGrade.Category.Weight
+      return nextGrade.Grade.match(/\d|nb/) ? sum + weight : sum;
+    }, 0);
+    let gradesSum = constituentGrades.reduce((sum: number, nextGrade) => {
+      const orgGrade = nextGrade.Grade;
+      let grade: number;
+      if (orgGrade.match(/\d\+/)) {
+        grade = +orgGrade.substr(0, 1) + 0.5;
+      }
+      else if (orgGrade.match(/\d\-/)) {
+        grade = +orgGrade.substr(0, 1) - 0.25;
+      }
+      else if (orgGrade === 'nb' || orgGrade === '0') {
+        grade = 1;
+      }
+      else if (Number(orgGrade)) {
+        grade = +orgGrade;
+      }
+      else {
+        grade = 0;
+      }
+      return sum + grade * nextGrade.Category.Weight;
+    }, 0);
+
+    return Math.round(gradesSum / weightSum * 100) / 100 || null;
   }
 
 }

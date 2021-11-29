@@ -1,14 +1,27 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { Subject } from "rxjs";
 
 type ThemeType = 'dark' | 'light' | 'auto';
+
+interface ViewStatesType {
+  gradesView: {
+    scroll: number,
+    semester: number
+  }
+}
+
+const initialViewStates = {
+  gradesView: {
+    scroll: null,
+    semester: null
+  }
+}
 
 @Injectable({providedIn: 'root'})
 export class ViewService {
   private _theme;
   private _windowHeight: number;
-  private scrollStates: { [key: string]: number } = {};
+  public state: ViewStatesType = initialViewStates;
   public popUpSubject = new Subject<{ content: any, title: string }>();
 
   get theme() { return this._theme; }
@@ -48,15 +61,5 @@ export class ViewService {
 
   setLocalThemePreference(theme: ThemeType) {
     localStorage.setItem('app.preferedTheme', theme);
-  }
-
-  saveScrollState(route: ActivatedRoute, scroll: number) {
-    let path = route.snapshot.pathFromRoot.toString();
-    this.scrollStates[path] = scroll;
-  }
-
-  getScrollState(route: ActivatedRoute) {
-    let path = route.snapshot.pathFromRoot.toString();
-    return this.scrollStates[path] || 0;
   }
 }

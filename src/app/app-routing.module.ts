@@ -6,18 +6,18 @@ import { GradeSubjectComponent } from './diary/grades/grade-subject/grade-subjec
 import { GradesComponent } from './diary/grades/grades.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'diary', pathMatch: 'full' },
+  { path: '', redirectTo: 'main/grades', pathMatch: 'full' },
   { path: 'auth', component: AuthComponent, data: { title: 'Logowanie' } },
+  { path: 'grades/subject/:id', component: GradeSubjectComponent },
   {
-    path: 'diary',
+    path: 'main',
     component: DiaryComponent,
     data: { title: 'Dziennik' },
     children: [
-      { path: 'grades', component: GradesComponent, data: { title: 'Oceny i zachowanie' } }
+      { path: 'grades', component: GradesComponent, pathMatch: 'full', data: { title: 'Oceny i zachowanie' } }
     ]
   },
-  { path: 'grades/list/:id', component: GradeSubjectComponent },
-  { path: '**', redirectTo: 'diary/grades/list' }
+  { path: '**', redirectTo: 'main/grades' }
 ];
 
 @NgModule({

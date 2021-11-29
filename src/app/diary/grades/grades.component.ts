@@ -17,7 +17,7 @@ export class GradesComponent implements OnInit, AfterViewInit {
   public gradeSubjects;
   public subjectColors;
 
-  public semester = 1;
+  public semester: number;
   public semesterOptions = semesterOptions;
 
   constructor(
@@ -36,13 +36,20 @@ export class GradesComponent implements OnInit, AfterViewInit {
     );
 
     this.hostEl.nativeElement.addEventListener('scroll', () => {
-      this.viewService.saveScrollState(this.route, this.hostEl.nativeElement.scrollTop);
+      this.viewService.state.gradesView.scroll = this.hostEl.nativeElement.scrollTop;
     })
+
+    this.semester = this.viewService.state.gradesView.semester ?? 1;
+  }
+
+  ngOnDestroy() {
+    this.viewService.state.gradesView.semester = this.semester;
   }
 
   ngAfterViewInit() {
-    let savedScrollTop = this.viewService.getScrollState(this.route);
+    let savedScrollTop = this.viewService.state.gradesView.scroll;
     this.hostEl.nativeElement.scrollTop = savedScrollTop;
+    console.log(this.semester);
   }
 
   onSemesterSelect(optionKey) {

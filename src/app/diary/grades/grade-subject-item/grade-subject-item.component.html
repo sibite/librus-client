@@ -1,18 +1,22 @@
 <div
   class="container"
-  [routerLink]="'/grades/list/' + subject.Id"
-  [queryParams]="{semester: semester}"
+  [routerLink]="'/grades/subject/' + subject.Id"
   appClickEffect>
   <h5 class="subject-title">{{ subject.Name | capitalize }}</h5>
-  <div class="subject-grades-list">
+  <div class="subject-grades-list" [style.--subject-color]="color">
     <div
       class="subject-grade"
       appClickEffect
       (click)="showGradeDetails($event, grade)"
       forceRippleTheme="light"
-      [ngStyle]="{'background-color': color}"
+      [ngClass]="{'final-or-proposed': !isGradeNormal(grade)}"
       *ngFor="let grade of getGrades()">
       {{ formatGradeShort(grade) }}
+    </div>
+    <div
+    class="average"
+    *ngIf="getAverage()">
+      <span class="average-text">Średnia:</span><span class="average-value">{{ getAverage() | number: '1.2-2' }}</span>
     </div>
   </div>
   <div

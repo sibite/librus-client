@@ -1,10 +1,10 @@
+import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
-import { AuthService } from './auth/auth.service';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { ViewService } from './shared/view.service';
-import { FetcherService } from './store/fetcher.service';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +17,11 @@ export class AppComponent implements OnInit, OnDestroy {
   popUpContent: any;
 
   constructor(
-    private authService: AuthService,
     public viewService: ViewService,
     private http: HttpClient,
+    private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private renderer: Renderer2
   ) {}
 
@@ -28,10 +29,19 @@ export class AppComponent implements OnInit, OnDestroy {
     this.popUpSubscription = this.viewService.popUpSubject.subscribe(payload => {
       this.popUpTitle = payload?.title;
       this.popUpContent = payload?.content;
-    });
 
-    this.router.events.subscribe(() => {
-      this.viewService.popUpSubject.next(null);
+      if (!payload) return;
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParamsHandling: 'merge',
+        queryParams: { popup: 'open' }
+      });
+
+      setTimeout(() => this.router.events.pipe(take(1)).subscribe(event => {
+        if (event instanceof NavigationStart && event.navigationTrigger === 'popstate') {
+          this.viewService.popUpSubject.next(null);
+        }
+      }), 10);
     });
 
     // enable animations
@@ -49,6 +59,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onPopUpClose() {
-    this.viewService.popUpSubject.next({ content: null, title: null});
+    this.location.back();
   }
 }

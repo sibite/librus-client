@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
-import { Component, ElementRef, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { convertLibrusDate } from 'src/app/shared/date-converter';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { semesterOptions } from 'src/app/shared/semester-options';
@@ -31,9 +31,7 @@ export class GradeSubjectComponent implements OnInit {
     public viewService: ViewService,
     private storeService: StoreService,
     private route: ActivatedRoute,
-    private router: Router,
     private location: Location,
-    private hostEl: ElementRef,
     private capitalize: CapitalizePipe
   ) { }
 
@@ -55,9 +53,7 @@ export class GradeSubjectComponent implements OnInit {
       this.color = subjectColors[activatedSubject.Id];
     });
 
-    this.route.queryParams.subscribe(queryParams => {
-      this.semester = Number(queryParams['semester']) || 0;
-    })
+    this.semester = this.viewService.state.gradesView.semester ?? 0;
   }
 
 

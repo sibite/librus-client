@@ -9,12 +9,12 @@ export function generateGradeDetailsHTML(grade: GradeType) {
 
   let propertyList = [
     { name: 'Ocena', content: grade.Grade },
-    { name: 'Data', content: convertLibrusDate(grade.Date || grade.AddDate).toLocaleDateString('pl-PL') },
-    { name: 'Dodano przez', content: grade.AddedBy.FirstName + ' ' + grade.AddedBy.LastName },
     { name: 'Kategoria', content: grade.Category.Name },
     { name: 'Komentarz', content: grade.Comments?.map(comment => comment.Text).join('\n\n') || null },
     { name: 'Waga', content: grade.Category.Weight },
     { name: 'Licz do średniej', content: grade.Kind === 'Grades' ? (grade.IsConstituent ? 'Tak' : 'Nie') : null },
+    { name: 'Data', content: convertLibrusDate(grade.Date || grade.AddDate).toLocaleDateString('pl-PL') },
+    { name: 'Dodano przez', content: grade.AddedBy.FirstName + ' ' + grade.AddedBy.LastName },
   ];
 
   for (let property of propertyList) {

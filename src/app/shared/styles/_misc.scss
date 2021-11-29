@@ -27,8 +27,12 @@ body {
 
   --bg-color-1: #ffffff;
   --bg-color-2: #eeeeee;
-  --bg-color-3: #dddddd;
-  --bg-color-4: #cccccc;
+  --bg-color-3: #d6d6d6;
+  --bg-color-4: #c4c4c4;
+  --bg-color-1-reverse: var(--bg-color-4);
+  --bg-color-2-reverse: var(--bg-color-3);
+  --bg-color-3-reverse: var(--bg-color-2);
+  --bg-color-4-reverse: var(--bg-color-1);
   --bg-color-1-shift-dark: var(--bg-color-1);
   --bg-color-2-shift-dark: var(--bg-color-2);
   --bg-color-3-shift-dark: var(--bg-color-3);
@@ -51,10 +55,12 @@ body {
   --text-color-1: #000000;
   --text-color-2: #202020;
   --text-color-3: #525252;
+  --text-color-4: #757575;
+  --text-color-5: #8f8f8f;
 
   --bar-shadow-color: hsl(0, 0%, 90%);
   --ripple-color: var(--ripple-color-dark);
-  --ripple-color-light: rgba(255, 255, 255, 0.3);
+  --ripple-color-light: rgba(255, 255, 255, 0.2);
   --ripple-color-dark: rgba(0, 0, 0, 0.2);
   --ripple-color-revert: var(--ripple-color-light);
 }
@@ -83,6 +89,10 @@ body {
     --bg-color-2: #1d1d1d;
     --bg-color-3: #323232;
     --bg-color-4: #444444;
+    --bg-color-1-reverse: var(--bg-color-1);
+    --bg-color-2-reverse: var(--bg-color-2);
+    --bg-color-3-reverse: var(--bg-color-3);
+    --bg-color-4-reverse: var(--bg-color-4);
     --bg-color-1-shift-dark: var(--bg-color-2);
     --bg-color-2-shift-dark: var(--bg-color-3);
     --bg-color-3-shift-dark: var(--bg-color-4);
@@ -104,7 +114,9 @@ body {
 
     --text-color-1: #ffffff;
     --text-color-2: #dddddd;
-    --text-color-3: #bbbbbb;
+    --text-color-3: #b1b1b1;
+    --text-color-4: #7c7c7c;
+    --text-color-5: #5a5a5a;
 
     --bar-shadow-color: hsl(0, 0%, 20%);
     --ripple-color: var(--ripple-color-light);

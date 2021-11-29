@@ -1,4 +1,5 @@
 @use '../../../shared/styles/vars';
+@use '../../../shared/styles/misc';
 
 $margin-horizontal: 5px;
 
@@ -13,8 +14,7 @@ $margin-horizontal: 5px;
 }
 
 .subject-title, .no-grades-text {
-  margin: 0px $margin-horizontal;
-  padding: 8px 0;
+  margin: 8px $margin-horizontal;
 }
 
 .subject-title {
@@ -33,7 +33,42 @@ $margin-horizontal: 5px;
   padding: 6px 10px;
   margin: $margin-horizontal;
   border-radius: vars.$border-radius;
+  background-color: var(--subject-color);
   color: #ffffff;
+  font-size: 1.25rem;
+
+  &.final-or-proposed {
+    font-weight: 900;
+    background-color: var(--bg-color-3);
+    color: var(--text-color-1);
+  }
+}
+
+.average {
+  float: left;
+  cursor: auto;
+  pointer-events: none;
+  align-self: flex-end;
+  padding-left: 0.5rem;
+  margin: $margin-horizontal;
+  margin-top: 10px;
+  margin-left: auto;
+  line-height: 1.25rem;
+  font-size: 1rem;
+
+  * {
+    display: inline-block;
+    margin-top: 1px;
+  }
+}
+
+.average-text {
+  color: var(--text-color-3);
+  margin-right: 6px;
+}
+
+.average-value {
+  color: var(--text-color-1);
   font-size: 1.25rem;
 }
 
