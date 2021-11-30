@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { AuthComponent } from './auth/auth.component';
 import { DiaryComponent } from './diary/diary.component';
 import { GradeSubjectItemComponent } from './diary/grades/grade-subject-item/grade-subject-item.component';
-import { GradeSubjectComponent } from './diary/grades/grade-subject/grade-subject.component';
+import { GradeSubjectDetailsComponent } from './diary/grades/grade-subject-details/grade-subject-details.component';
 import { GradesComponent } from './diary/grades/grades.component';
 import { AppHammerConfig } from './hammer.config';
 import { AuthInterceptorService } from './interceptors/auth-interceptor.service';
@@ -25,6 +25,9 @@ import { TopbarComponent } from './shared/top-bar/top-bar.component';
 import { DropdownComponent } from './shared/dropdown/dropdown.component';
 import { BarSwitchComponent } from './shared/bar-switch/bar-switch.component';
 import { KeysPipe } from './shared/pipes/keys.pipe';
+import { AttendancesComponent } from './diary/attendances/attendances.component';
+import { AttendancesDayItemComponent } from './diary/attendances/attendances-day-item/attendances-day-item.component';
+import { AttendancesDayDetailsComponent } from './diary/attendances/attendances-day-details/attendances-day-details.component';
 
 
 @NgModule({
@@ -44,10 +47,13 @@ import { KeysPipe } from './shared/pipes/keys.pipe';
     CapitalizePipe,
     KeepHtmlPipe,
     KeysPipe,
-    GradeSubjectComponent,
+    GradeSubjectDetailsComponent,
     PopUpComponent,
     DropdownComponent,
-    BarSwitchComponent
+    BarSwitchComponent,
+    AttendancesComponent,
+    AttendancesDayItemComponent,
+    AttendancesDayDetailsComponent
   ],
   imports: [
     BrowserModule,

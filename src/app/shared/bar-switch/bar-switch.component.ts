@@ -13,7 +13,6 @@ export class BarSwitchComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.options);
   }
 
   select(optionKey) {

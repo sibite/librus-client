@@ -13,14 +13,14 @@
       (onSelect)="onSemesterSelect($event)"></app-bar-switch>
     </div>
     <div class="ui group offset align-width">
-      <ul class="grades-list">
+      <ul class="grades-list" [style.--subject-color]="color">
         <ng-container *ngFor="let grade of getGrades(); let i = index">
           <div class="date" *ngIf="grades[i-1]?.Date !== grade.Date"><span>{{ getGradeDateFormatted(grade) }}</span></div>
           <li
           class="grade"
           appClickEffect
           (click)="showGradeDetails($event, grade)">
-          <div class="symbol" [ngStyle]="{'background-color': color}">{{ formatGradeShort(grade) }}</div>
+          <div class="symbol">{{ formatGradeShort(grade) }}</div>
           <div class="details">
             <p class="added-by">{{ grade.AddedBy.FirstName }} {{ grade.AddedBy.LastName }}</p>
             <p class="category">{{ grade.Category.Name | capitalize }}</p>

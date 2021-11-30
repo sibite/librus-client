@@ -2,44 +2,12 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, forkJoin, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
-import { FetcherService } from "./fetcher.service";
+import { FetcherDataType, FetcherService } from "./fetcher.service";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
-import { CalendarType } from "./models/calendar.type";
 import { CategoryType } from "./models/category.type";
-import { ClassInfoType } from "./models/class-info.type";
-import { ClassroomType } from "./models/classroom.type";
-import { CommentType } from "./models/comment.type";
-import { GradeType } from "./models/grade.type";
-import { LessonType } from "./models/lesson.type";
-import { LuckyNumberType } from "./models/lucky-number.type";
-import { SchoolInfoType } from "./models/school-info.type";
 import { SubjectType } from "./models/subject.type";
-import { TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
-
-
-export type FetcherDataType = {
-  // Storage
-  subjects?: { [key: number]: SubjectType },
-  themes?: any[],
-  grades?: {
-    categories: CategoryType[],
-    comments: CommentType[],
-    list: GradeType[],
-  },
-  users?: { [key: number]: UserType },
-  lessons?: { [key: number]: LessonType },
-  classrooms?: { [key: number]: ClassroomType },
-  attendances?: AttendanceType[],
-  attendanceTypes?: { [key: number]: AttendanceTypeType },
-  timetable?: TimetableType,
-  calendar?: CalendarType,
-  // Small information
-  schoolInfo?: SchoolInfoType,
-  classInfo?: ClassInfoType,
-  luckyNumber?: LuckyNumberType
-}
 
 export type StoreDataType = {
   lastSyncTime?: number,
@@ -47,6 +15,8 @@ export type StoreDataType = {
   gradeCategories?: { [key: number]: CategoryType },
   subjectColors?: { [key: number]: string },
   users?: { [key: number]: UserType },
+  attendanceDays?: { [key: string]: AttendanceType[] },
+  attendanceTypes?: { [key: number]: AttendanceTypeType }
 };
 
 @Injectable({ providedIn: 'root' })
@@ -54,6 +24,7 @@ export class StoreService {
   fetcherData: FetcherDataType = {};
   data: StoreDataType = {};
   dataSyncSubject = new BehaviorSubject<StoreDataType>({});
+  syncInterval = 30 * 60 * 1000;
 
   constructor(
     private fetcherService: FetcherService,
@@ -61,14 +32,7 @@ export class StoreService {
   ) {
     this.restoreLocalStorage();
     this.dataSyncSubject.next(this.getData());
-    const lastSyncTime = this.data.lastSyncTime || 0;
-    // sync if last synced minimum 30 minutes ago
-    if (Date.now() - lastSyncTime > 1800 * 1000) {
-      this.synchronize();
-    }
-    else {
-      setTimeout(() => this.synchronize(), lastSyncTime + 1800 * 1000 - Date.now());
-    }
+    this.scheduleNextSync();
   }
 
   synchronize(isSecondAttempt = false) {
@@ -76,6 +40,7 @@ export class StoreService {
       subjects: this.fetcherService.fetchSubjects(),
       users: this.fetcherService.fetchUsers(),
       grades: this.fetcherService.fetchGrades(),
+      lessons: this.fetcherService.fetchLessons(),
       attendanceTypes: this.fetcherService.fetchAttendanceTypes(),
       attendances: this.fetcherService.fetchAttendances(),
       classrooms: this.fetcherService.fetchClassrooms(),
@@ -97,8 +62,7 @@ export class StoreService {
         // emit sync subject
         this.dataSyncSubject.next(this.getData());
         this.data.lastSyncTime = Date.now();
-        // resync after 30 minutes
-        setTimeout(() => this.synchronize(), 1800 * 1000);
+        this.scheduleNextSync();
         this.saveLocalStorage();
         console.log(this.getData());
       });
@@ -107,9 +71,24 @@ export class StoreService {
   transformFetcherData() {
     // transform functions (tidying messy api responses)
 
+    let transformThemes = () => {
+      let targetTheme = this.fetcherData.themes[0];
+      let subjectColors = {};
+      for (let name in targetTheme.subjectColors) {
+        let subjectMatching = Object.values(this.fetcherData.subjects).find(
+          subject => subject.Name == name
+        );
+        if (!subjectMatching) continue;
+        const id = subjectMatching.Id;
+        subjectColors[id] = targetTheme.subjectColors[name];
+      }
+      this.data.subjectColors = subjectColors;
+    }
+
     let transformGrades = () => {
       let gradesSubjects = { ...this.fetcherData.subjects };
       for (let subject of Object.values(gradesSubjects)) {
+        subject.Color = this.data.subjectColors[subject.Id];
         subject.Grades = [];
       }
       for (let grade of this.fetcherData.grades.list) {
@@ -144,28 +123,58 @@ export class StoreService {
       this.data.gradeCategories = this.fetcherData.grades.categories;
     }
 
-    let transformThemes = () => {
-      let targetTheme = this.fetcherData.themes[0];
-      let subjectColors = {};
-      for (let name in targetTheme.subjectColors) {
-        let subjectMatching = Object.values(this.fetcherData.subjects).find(
-          subject => subject.Name == name
-        );
-        if (!subjectMatching) continue;
-        const id = subjectMatching.Id;
-        subjectColors[id] = targetTheme.subjectColors[name];
-      }
-      this.data.subjectColors = subjectColors;
-    }
-
     let transformUsers = () => {
       this.data.users = this.fetcherData.users;
     }
 
+    let transformAttendanceTypes = () => {
+      let attendanceTypes = this.fetcherData.attendanceTypes;
+      this.data.attendanceTypes = attendanceTypes;
+    }
+
+    let transformAttendances = () => {
+      let attendances = this.fetcherData.attendances;
+      let attendancesObj = {};
+      for (let attendance of attendances) {
+        // attaching added by
+        let addedBy = this.fetcherData.users[attendance.AddedBy.Id]
+        attendance.AddedBy = {
+          ...attendance.AddedBy,
+           FirstName: addedBy.FirstName,
+           LastName: addedBy.LastName
+        }
+        // attaching type
+        // assigning direct object because it's repetitive and has no nested objects
+        let type = this.data.attendanceTypes[attendance.Type.Id];
+        attendance.Type = type;
+        // attaching lesson
+        let lesson = this.fetcherData.lessons[attendance.Lesson.Id];
+        let subject = this.fetcherData.subjects[lesson.Subject.Id];
+        attendance.Lesson.Subject = {
+          ...lesson.Subject,
+          Name: subject.Name,
+          Color: subject.Color
+        };
+        // pushing it to object with dates as keys
+        if (typeof attendancesObj[attendance.Date] !== 'object') {
+          attendancesObj[attendance.Date] = [];
+        }
+        attendancesObj[attendance.Date].push(attendance);
+      }
+      this.data.attendanceDays = attendancesObj;
+    }
+
     // transform functions execution
-    transformGrades();
     transformThemes();
+    transformGrades();
     transformUsers();
+    transformAttendanceTypes();
+    transformAttendances();
+  }
+
+  scheduleNextSync() {
+    const lastSyncTime = this.data.lastSyncTime || 0;
+    setTimeout(() => this.synchronize(), this.data.lastSyncTime + this.syncInterval - Date.now());
   }
 
   getData() {
@@ -178,6 +187,9 @@ export class StoreService {
       this.authService.auth().subscribe(
         () => this.synchronize(true)
       )
+    }
+    else {
+      this.scheduleNextSync();
     }
     return throwError(err);
   }

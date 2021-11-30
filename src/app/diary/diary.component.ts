@@ -1,8 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ChildActivationEnd, Router } from '@angular/router';
 import { ViewService } from '../shared/view.service';
 import { SideMenuComponent } from '../shared/side-menu/side-menu.component';
 import { StoreService } from '../store/store.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-diary',
@@ -18,23 +19,20 @@ export class DiaryComponent implements OnInit {
   constructor(
     public viewService: ViewService,
     public storeService: StoreService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    const route = this.route.firstChild ?? this.route;
-    route.data.subscribe(data => {
-      this.routeTitle = data.title || "Dziennik";
-    });
+    this.setTitle();
+    this.router.events.pipe(
+      filter(e => e instanceof ChildActivationEnd)
+    ).subscribe(this.setTitle.bind(this));
+  }
 
-    route.params.subscribe(params => {
-      if (params['id']) {
-        const id = params['id'];
-        const activatedSubject = this.storeService.data.gradeSubjects[id];
-        let name = activatedSubject.Name;
-        this.routeTitle = name.substr(0, 1).toUpperCase() + name.substr(1);
-      }
-    })
+  setTitle() {
+    let route = this.route.firstChild;
+    this.routeTitle = route.snapshot.data.title || "Dziennik";
   }
 
   onCloseSidemenu() {

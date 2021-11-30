@@ -1,29 +1,44 @@
-import { Directive, ElementRef, HostListener, Input, OnInit, Renderer2 } from "@angular/core";
+import { Directive, ElementRef, HostListener, Input, OnDestroy, OnInit, Renderer2 } from "@angular/core";
+import { Subscription } from "rxjs";
+import { ClickEffectService } from "./click-effect.service";
 
 @Directive({
   selector: '[appClickEffect]'
 })
-export class ClickEffectDirective implements OnInit {
+export class ClickEffectDirective implements OnInit, OnDestroy {
   @Input('forceRippleTheme') forcedTheme = null;
   pointerDownTimeout;
+  pointerMoveListenerFn;
+  subscriptions: Subscription[] = [];
 
   constructor(
     private elRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private clickEffectService: ClickEffectService
   ) {}
 
   ngOnInit() {
     this.renderer.addClass(this.elRef.nativeElement, 'click-effect');
-    if (!this.forcedTheme) return
-    this.renderer.addClass(this.elRef.nativeElement, 'force-' + this.forcedTheme);
+    if (this.forcedTheme) {
+      this.renderer.addClass(this.elRef.nativeElement, 'force-' + this.forcedTheme);
+    }
+
+    this.subscriptions.push(this.clickEffectService.onPointerDown.subscribe((event) => {
+      if (event.target == this.elRef.nativeElement) this.onPointerDown(event);
+    }));
+
+    this.subscriptions.push(this.clickEffectService.onPointerUp.subscribe(event => {
+      if (event.target == this.elRef.nativeElement) this.onPointerUp();
+    }));
   }
 
-  @HostListener('pointermove', ['$event']) onMove(event) {
-    clearTimeout(this.pointerDownTimeout);
+  ngOnDestroy() {
+    for (let sub of this.subscriptions) {
+      sub.unsubscribe();
+    }
   }
 
-
-  @HostListener('pointerdown', ['$event']) onPointerDown(event: PointerEvent) {
+  onPointerDown(event: PointerEvent) {
     const isDisabled = this.elRef.nativeElement.disabled;
     if (event.target !== this.elRef.nativeElement || isDisabled) return;
     const elWidth = this.elRef.nativeElement.clientWidth;
@@ -45,11 +60,14 @@ export class ClickEffectDirective implements OnInit {
     this.pointerDownTimeout = setTimeout(
       () => this.renderer.addClass(this.elRef.nativeElement, 'ce-held'), 80
     );
+    // canceling if pointer moves
+    const onPointerMove = () => {
+      clearTimeout(this.pointerDownTimeout);
+      this.elRef.nativeElement.removeEventListener('pointermove', onPointerMove);
+    }
+    this.elRef.nativeElement.addEventListener('pointermove', onPointerMove);
   }
 
-  @HostListener('pointerout')
-  @HostListener('pointerup')
-  @HostListener('click')
   onPointerUp() {
     this.renderer.addClass(this.elRef.nativeElement, 'ce-released');
   }

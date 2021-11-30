@@ -1,0 +1,18 @@
+@use '../../shared/styles/vars';
+
+:host {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.ui.component {
+  display: block;
+}
+
+.days-list {
+  @include vars.unstyle-list();
+}
+
+.date {
+  @include vars.date-bar();
+}

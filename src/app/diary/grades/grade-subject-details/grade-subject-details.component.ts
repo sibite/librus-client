@@ -9,15 +9,15 @@ import { CategoryType } from 'src/app/store/models/category.type';
 import { GradeType } from 'src/app/store/models/grade.type';
 import { UserType } from 'src/app/store/models/user.type';
 import { StoreService } from 'src/app/store/store.service';
-import { generateGradeDetailsHTML } from '../grade-details-generator';
+import { getGradeDetailsHTML } from '../grade-properties';
 import { formatGradeShort, gradesByDateSorter } from '../grades.utilities';
 
 @Component({
-  selector: 'app-grade-subject',
-  templateUrl: './grade-subject.component.html',
-  styleUrls: ['./grade-subject.component.scss']
+  selector: 'app-grade-subject-details',
+  templateUrl: './grade-subject-details.component.html',
+  styleUrls: ['./grade-subject-details.component.scss']
 })
-export class GradeSubjectComponent implements OnInit {
+export class GradeSubjectDetailsComponent implements OnInit {
   public routeTitle: string = 'Oceny';
   public color: string;
   public semester: number;
@@ -75,7 +75,7 @@ export class GradeSubjectComponent implements OnInit {
     console.log(grade);
     this.viewService.popUpSubject.next({
       title: 'Szczegóły',
-      content: generateGradeDetailsHTML(grade)
+      content: getGradeDetailsHTML(grade)
     })
     event.stopPropagation();
   }

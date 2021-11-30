@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { semesterOptions } from 'src/app/shared/semester-options';
 import { ViewService } from 'src/app/shared/view.service';
 import { StoreService } from 'src/app/store/store.service';
@@ -11,9 +12,8 @@ import { StoreService } from 'src/app/store/store.service';
   styleUrls: ['./grades.component.scss']
 })
 export class GradesComponent implements OnInit, AfterViewInit {
-  @ViewChild('scrollable') scrollable: ElementRef;
-
   private storeSubscription: Subscription;
+  private scrollInterval;
   public gradeSubjects;
   public subjectColors;
 
@@ -23,8 +23,8 @@ export class GradesComponent implements OnInit, AfterViewInit {
   constructor(
     private storeService: StoreService,
     private viewService: ViewService,
-    private hostEl: ElementRef,
-    private route: ActivatedRoute
+    private router: Router,
+    private hostEl: ElementRef
   ) { }
 
   ngOnInit() {
@@ -35,21 +35,22 @@ export class GradesComponent implements OnInit, AfterViewInit {
       }
     );
 
-    this.hostEl.nativeElement.addEventListener('scroll', () => {
+    this.scrollInterval = setInterval(() => {
       this.viewService.state.gradesView.scroll = this.hostEl.nativeElement.scrollTop;
-    })
+    }, 250);
 
     this.semester = this.viewService.state.gradesView.semester ?? 1;
   }
 
   ngOnDestroy() {
     this.viewService.state.gradesView.semester = this.semester;
+    clearInterval(this.scrollInterval);
+    this.storeSubscription.unsubscribe();
   }
 
   ngAfterViewInit() {
     let savedScrollTop = this.viewService.state.gradesView.scroll;
     this.hostEl.nativeElement.scrollTop = savedScrollTop;
-    console.log(this.semester);
   }
 
   onSemesterSelect(optionKey) {

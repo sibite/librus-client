@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ViewService } from 'src/app/shared/view.service';
 import { GradeType } from 'src/app/store/models/grade.type';
 import { SubjectType } from 'src/app/store/models/subject.type';
-import { generateGradeDetailsHTML } from '../grade-details-generator';
+import { getGradeDetailsHTML } from '../grade-properties';
 import { formatGradeShort, gradesByDateSorter } from '../grades.utilities';
 
 @Component({
@@ -29,7 +29,7 @@ export class GradeSubjectItemComponent implements OnInit {
     console.log(grade);
     this.viewService.popUpSubject.next({
       title: 'Szczegóły',
-      content: generateGradeDetailsHTML(grade)
+      content: getGradeDetailsHTML(grade)
     })
     event.stopPropagation();
   }

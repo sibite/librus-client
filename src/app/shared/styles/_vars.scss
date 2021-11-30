@@ -7,6 +7,13 @@ $accent-darkest: hsl(268, 20%, 15%);
 $accent-contrast: #ffffff;
 $danger: #ff3311;
 
+// attendances
+$att-presence: #0B114B;
+$att-lateness: #F4AB3E;
+$att-absence: #FF424F;
+$att-excused: #14B814;
+$att-exempt: #387EE5;
+
 // other
 $border-radius: 4px;
 $card-margin: 20px;
@@ -29,4 +36,49 @@ $nav-bar-height: 64px;
 
 @mixin fast-transition() {
   transition: all 200ms ease;
+}
+
+@mixin unstyle-list() {
+  display: block;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+
+@mixin date-bar() {
+  color: var(--text-color-4);
+  font-size: 1.05rem;
+  text-align: center;
+  margin-bottom: 18px;
+  margin-top: 18px;
+  line-height: 0px;
+  height: 1px;
+  background-color: var(--bg-color-2-shift-dark);
+
+  &:not(:first-child) {
+    margin-top: 30px;
+  }
+
+  span {
+    background-color: var(--bg-color-1);
+    padding: 0 10px;
+  }
+}
+
+@mixin set-att-color-var() {
+  &[att-type="1"] { // absence
+    --att-color: #{$att-absence};
+  }
+  &[att-type="2"] { // lateness
+    --att-color: #{$att-lateness};
+  }
+  &[att-type="3"] { // absence excused
+    --att-color: #{$att-excused};
+  }
+  &[att-type="4"] { // exempt
+    --att-color: #{$att-exempt};
+  }
+  &[att-type="100"] { // presence
+    --att-color: var(--bg-color-3);
+  }
 }

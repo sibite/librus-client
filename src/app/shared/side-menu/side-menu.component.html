@@ -20,7 +20,7 @@
         <strong class="ui sm-name">{{ getAuthState().account?.studentName }}</strong>
       <span class="ui sm-email">{{ getAuthState().me?.Account?.Email }}</span>
       <ul class="ui sm-list">
-        <app-side-menu-item itemIcon="bi-box-arrow-right">Wyloguj się</app-side-menu-item>
+        <!-- <app-side-menu-item itemIcon="bi-box-arrow-right">Wyloguj się</app-side-menu-item> -->
       </ul>
       </ng-template>
       <i class="ui sm-name" *ngIf="!getAuthState().loggedIn">Nie zalogowano</i>
@@ -28,18 +28,18 @@
     <div class="ui sm-segment sm-body" *ngIf="getAuthState().loggedIn">
       <p class="ui sm-segment-title">Przeglądaj</p>
       <ul class="ui sm-list">
-        <app-side-menu-item itemIcon="bi-grid-1x2">Szybki podgląd</app-side-menu-item>
+        <!-- <app-side-menu-item itemIcon="bi-grid-1x2">Szybki podgląd</app-side-menu-item> -->
         <app-side-menu-item itemIcon="bi-journal" routerLink="grades" routerLinkActive="active">Oceny i zachowanie</app-side-menu-item>
-        <app-side-menu-item itemIcon="bi-ui-checks-grid">Frekwencja</app-side-menu-item>
-        <app-side-menu-item itemIcon="bi-calendar-range">Plan lekcji</app-side-menu-item>
-        <app-side-menu-item itemIcon="bi-building">Szkoła i klasa</app-side-menu-item>
+        <app-side-menu-item itemIcon="bi-ui-checks-grid" routerLink="attendances" routerLinkActive="active">Frekwencja</app-side-menu-item>
+        <!-- <app-side-menu-item itemIcon="bi-calendar-range">Plan lekcji</app-side-menu-item>
+        <app-side-menu-item itemIcon="bi-building">Szkoła i klasa</app-side-menu-item> -->
       </ul>
     </div>
     <div class="ui sm-segment sm-footer">
       <p class="ui sm-segment-title">Aplikacja</p>
       <ul class="ui sm-list">
-        <app-side-menu-item itemIcon="bi-info">Informacje</app-side-menu-item>
-        <app-side-menu-item itemIcon="bi-gear">Ustawienia</app-side-menu-item>
+        <!-- <app-side-menu-item itemIcon="bi-info">Informacje</app-side-menu-item>
+        <app-side-menu-item itemIcon="bi-gear">Ustawienia</app-side-menu-item> -->
       </ul>
     </div>
   </nav>

@@ -1,0 +1,17 @@
+
+<div
+class="attendances-box"
+[routerLink]="'/attendances/day/' + day"
+appClickEffect>
+<div class="attendances-list">
+  <div
+    class="attendance"
+    appClickEffect
+    forceRippleTheme="light"
+    (click)="showAttendanceDetails($event, attendance)"
+    [attr.att-type]="attendance.Type.Id"
+    *ngFor="let attendance of getAttendances()">
+    {{ attendance.Type.Short }}
+  </div>
+</div>
+</div>

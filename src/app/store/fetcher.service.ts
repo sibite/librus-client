@@ -18,6 +18,28 @@ import { TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
 import { CommentType } from './models/comment.type';
 
+export type FetcherDataType = {
+  // Storage
+  subjects?: { [key: number]: SubjectType },
+  themes?: any[],
+  grades?: {
+    categories: CategoryType[],
+    comments: CommentType[],
+    list: GradeType[],
+  },
+  users?: { [key: number]: UserType },
+  lessons?: { [key: number]: LessonType },
+  classrooms?: { [key: number]: ClassroomType },
+  attendances?: AttendanceType[],
+  attendanceTypes?: { [key: number]: AttendanceTypeType },
+  timetable?: TimetableType,
+  calendar?: CalendarType,
+  // Small information
+  schoolInfo?: SchoolInfoType,
+  classInfo?: ClassInfoType,
+  luckyNumber?: LuckyNumberType
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -121,7 +143,7 @@ export class FetcherService {
   fetchLessons() {
     return this.http.get('https://api.librus.pl/2.0/Lessons').pipe(
       catchError(this.errorHandler.bind(this)),
-      tap(response => {
+      map(response => {
         let lessons: LessonType[] = response['Lessons'];
         let lessonsObj: {[key: number]: LessonType} = {};
         for (let lesson of lessons) {
@@ -135,7 +157,7 @@ export class FetcherService {
   fetchAttendanceTypes() {
     return this.http.get('https://api.librus.pl/2.0/Attendances/Types').pipe(
       catchError(this.errorHandler.bind(this)),
-      tap(response => {
+      map(response => {
         let types: AttendanceTypeType[] = response['Types'];
         let typesObj: {[key: number]: AttendanceTypeType} = {};
         for (let type of types) {
@@ -149,7 +171,7 @@ export class FetcherService {
   fetchAttendances() {
     return this.http.get('https://api.librus.pl/2.0/Attendances').pipe(
       catchError(this.errorHandler.bind(this)),
-      tap(response => {
+      map(response => {
         let attendances: AttendanceType[] = response['Attendances'];
         return attendances;
       })
@@ -159,7 +181,7 @@ export class FetcherService {
   fetchLuckyNumber() {
     return this.http.get('https://api.librus.pl/2.0/LuckyNumbers').pipe(
       catchError(this.errorHandler.bind(this)),
-      tap(response => {
+      map(response => {
         let luckyNumber: LuckyNumberType = response['LuckyNumber'];
         return luckyNumber;
       })
@@ -172,7 +194,7 @@ export class FetcherService {
       classes: this.http.get('https://api.librus.pl/2.0/Classes')
     }).pipe(
       catchError(this.errorHandler.bind(this)),
-      tap(({schools, classes}) => {
+      map(({schools, classes}) => {
         let schoolInfo: SchoolInfoType = schools['School'];
         let classInfo: ClassInfoType = classes['Class'];
         return { schoolInfo, classInfo };
@@ -183,7 +205,7 @@ export class FetcherService {
   fetchClassrooms() {
     return this.http.get('https://api.librus.pl/2.0/Classrooms').pipe(
       catchError(this.errorHandler.bind(this)),
-      tap(response => {
+      map(response => {
         let classrooms: ClassroomType[] = response['Classrooms'];
         let classroomsObj: {[key: number]: ClassroomType} = {};
         for (let classroom of classrooms) {
@@ -200,7 +222,7 @@ export class FetcherService {
         return this.http.get('https://api.librus.pl/2.0/Timetables', {params: { weekStart }});
       }),
       catchError(this.errorHandler.bind(this)),
-      tap(response => {
+      map(response => {
         let timetableObj: TimetableType = response['Timetable'];
         return timetableObj;
       })

@@ -1,0 +1,18 @@
+<div class="ui component">
+  <div class="ui group offset align-width">
+    <div class="days-list">
+      <ng-container *ngFor="let day of attendanceDates">
+        <ng-container *ngIf="isDisplayed(attendances[day])">
+          <div class="date"><span>{{ attendanceDatesFormatted[day] }}</span></div>
+          <div
+            class="day">
+            <app-attendances-day-item
+              [attendances]="attendances[day]"
+              [day]="day">
+            </app-attendances-day-item>
+          </div>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+</div>

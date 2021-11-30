@@ -8,5 +8,6 @@ export interface SubjectType {
   No: number,
   Short: string,
   Grades?: GradeType[]
+  Color?: string,
   Url?: string
 }

@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "start:proxy": "node proxy_server/index.js"
+    "proxy": "node proxy_server/index.js"
   },
   "private": true,
   "dependencies": {
@@ -26,6 +26,7 @@
     "http-proxy-middleware": "^2.0.1",
     "morgan": "^1.10.0",
     "rxjs": "~6.6.0",
+    "throttle-debounce": "^3.0.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },

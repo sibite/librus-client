@@ -7,6 +7,9 @@ interface ViewStatesType {
   gradesView: {
     scroll: number,
     semester: number
+  },
+  attendancesView: {
+    scroll: number
   }
 }
 
@@ -14,6 +17,9 @@ const initialViewStates = {
   gradesView: {
     scroll: null,
     semester: null
+  },
+  attendancesView: {
+    scroll: null
   }
 }
 

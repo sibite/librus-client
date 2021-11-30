@@ -1,0 +1,31 @@
+@use '../../../shared/styles/vars';
+
+$margin-horizontal: 5px;
+
+:host {
+  cursor: pointer;
+}
+
+.attendances-box {
+  padding: 5px;
+  background-color: var(--bg-color-2);
+  border-radius: vars.$border-radius;
+}
+
+.attendances-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1px;
+}
+
+.attendance {
+  @include vars.set-att-color-var();
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 6px 10px;
+  margin: $margin-horizontal;
+  border-radius: vars.$border-radius;
+  background-color: var(--att-color);
+  color: #ffffff;
+  font-size: 1.25rem;
+}

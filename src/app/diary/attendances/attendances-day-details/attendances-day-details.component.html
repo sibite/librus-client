@@ -1,0 +1,34 @@
+<div
+  class="ui view-wrapper"
+  [style.height.px]="viewService.windowHeight">
+  <app-top-bar
+    [uiTitle]="routeTitle"
+    appIcon="bi-arrow-left"
+    (onButtonClick)="onBack()"></app-top-bar>
+  <div class="ui component" id="attendances-list-component">
+    <div class="ui group offset align-width">
+      <ul class="attendances-list">
+        <ng-container *ngFor="let attendance of attendances; let i = index">
+          <li
+          class="attendance"
+          appClickEffect
+          [attr.att-type]="attendance.Type.Id"
+          [style.--subject-color]="attendance.Lesson.Subject.Color"
+          (click)="showAttendanceDetails($event, attendance)">
+          <div class="lesson-no">
+            <span class="caption">Lekcja</span><br>
+            <span class="number">{{ attendance.LessonNo }}</span>
+          </div>
+          <div class="details">
+            <p class="name">{{ attendance.Type.Name }}</p>
+            <p class="subject">{{ attendance.Lesson.Subject.Name | capitalize }}</p>
+          </div>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+  <div
+    class="no-attendances-text"
+    *ngIf="attendances.length === 0">Brak frekwencji w tym dniu</div>
+</div>

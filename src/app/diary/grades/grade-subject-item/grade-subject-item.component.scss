@@ -1,5 +1,4 @@
 @use '../../../shared/styles/vars';
-@use '../../../shared/styles/misc';
 
 $margin-horizontal: 5px;
 
@@ -45,31 +44,33 @@ $margin-horizontal: 5px;
 }
 
 .average {
-  float: left;
   cursor: auto;
   pointer-events: none;
   align-self: flex-end;
-  padding-left: 0.5rem;
+  padding-left: 1rem;
   margin: $margin-horizontal;
-  margin-top: 10px;
+  margin-top: 18px;
   margin-left: auto;
   line-height: 1.25rem;
   font-size: 1rem;
 
   * {
-    display: inline-block;
     margin-top: 1px;
+    display: inline-block;
+    vertical-align: middle;
   }
 }
 
 .average-text {
   color: var(--text-color-3);
   margin-right: 6px;
+  font-weight: bold;
 }
 
 .average-value {
-  color: var(--text-color-1);
-  font-size: 1.25rem;
+  color: var(--text-color-2);
+  font-size: 1rem;
+  font-weight: 900;
 }
 
 .no-grades-text {
