@@ -1,0 +1,26 @@
+<div
+  class="plan-container"
+  [style.--day-range-from]="dayStartRange"
+  [style.--day-range-to]="dayEndRange">
+  <div class="time-tags-container">
+    <div *ngFor="let tag of timeTags">{{ tag }}</div>
+  </div>
+  <div class="lessons-container">
+    <div
+    class="range-block"
+    *ngFor="let rangeLessons of timetable; let rangeIndex = index"
+    [style.--range-from]="lessonsRange[rangeIndex]?.RawFrom"
+    [style.--range-to]="lessonsRange[rangeIndex]?.RawTo">
+      <div
+        class="lesson"
+        *ngFor="let lesson of rangeLessons"
+        [style.--subject-color]="subjectColors[lesson.Subject.Id]">
+        <div class="lesson-caption">
+          <span class="lesson-name">{{ lesson.Subject.Name | capitalize }}</span>
+          <br>
+          <span class="lesson-range">{{ lessonsRange[lesson.LessonNo].From }} &#8210; {{ lessonsRange[lesson.LessonNo].To }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

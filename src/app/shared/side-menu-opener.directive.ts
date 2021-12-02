@@ -13,6 +13,7 @@ export class SideMenuOpenerDirective implements OnInit {
   preventOpening = false;
   preventClosing = false;
   left: number;
+  triggerArea = 50;
 
   get sideMenuWidth() {
     let sidemenuEl = this.sidemenuElRef.nativeElement.querySelector('.ui.side-menu');
@@ -41,7 +42,7 @@ export class SideMenuOpenerDirective implements OnInit {
     // check if pan started on left edge of view
     this.preventOpening = false;
     this.preventClosing = false;
-    if (open && (panStartX > 35)) {
+    if (open && (panStartX > this.triggerArea)) {
       this.preventOpening = true;
       return;
     }

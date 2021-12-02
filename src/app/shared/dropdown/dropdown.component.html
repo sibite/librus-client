@@ -5,6 +5,10 @@
   #dropdownButton>Semestr I</button>
 <div class="dropdown-content" [ngClass]="{open: isOpened}" #dropdownContent>
   <ul class="dropdown-list">
+    <li
+      class="dropdown-item"
+      appClickEffect
+      (click)="select($event, 'dupa')"></li>
     <li class="dropdown-item" appClickEffect (click)="select($event, 'dupa')">Semestr II</li>
     <li class="dropdown-item" appClickEffect (click)="select($event, 'dupa')">Semestr I</li>
     <li class="dropdown-item" appClickEffect (click)="select($event, 'dupa')">Cały rok</li>

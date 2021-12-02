@@ -35,8 +35,10 @@ export type FetcherDataType = {
   timetable?: TimetableType,
   calendar?: CalendarType,
   // Small information
-  schoolInfo?: SchoolInfoType,
-  classInfo?: ClassInfoType,
+  unitInfo?: {
+    school: SchoolInfoType,
+    class: ClassInfoType
+  }
   luckyNumber?: LuckyNumberType
 }
 
@@ -195,9 +197,9 @@ export class FetcherService {
     }).pipe(
       catchError(this.errorHandler.bind(this)),
       map(({schools, classes}) => {
-        let schoolInfo: SchoolInfoType = schools['School'];
-        let classInfo: ClassInfoType = classes['Class'];
-        return { schoolInfo, classInfo };
+        let school: SchoolInfoType = schools['School'];
+        let class_: ClassInfoType = classes['Class'];
+        return { school, class_ };
       })
     )
   }

@@ -28,6 +28,8 @@ import { KeysPipe } from './shared/pipes/keys.pipe';
 import { AttendancesComponent } from './diary/attendances/attendances.component';
 import { AttendancesDayItemComponent } from './diary/attendances/attendances-day-item/attendances-day-item.component';
 import { AttendancesDayDetailsComponent } from './diary/attendances/attendances-day-details/attendances-day-details.component';
+import { PlanComponent } from './diary/plan/plan.component';
+import { LessonsListComponent } from './diary/plan/lessons-list/lessons-list.component';
 
 
 @NgModule({
@@ -53,7 +55,9 @@ import { AttendancesDayDetailsComponent } from './diary/attendances/attendances-
     BarSwitchComponent,
     AttendancesComponent,
     AttendancesDayItemComponent,
-    AttendancesDayDetailsComponent
+    AttendancesDayDetailsComponent,
+    PlanComponent,
+    LessonsListComponent
   ],
   imports: [
     BrowserModule,

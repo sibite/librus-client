@@ -6,6 +6,7 @@ import { AttendancesComponent } from './diary/attendances/attendances.component'
 import { DiaryComponent } from './diary/diary.component';
 import { GradeSubjectDetailsComponent } from './diary/grades/grade-subject-details/grade-subject-details.component';
 import { GradesComponent } from './diary/grades/grades.component';
+import { PlanComponent } from './diary/plan/plan.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main/grades', pathMatch: 'full' },
@@ -17,8 +18,9 @@ const routes: Routes = [
     component: DiaryComponent,
     data: { title: 'Dziennik' },
     children: [
-      { path: 'grades', component: GradesComponent, pathMatch: 'full', data: { title: 'Oceny i zachowanie' } },
-      { path: 'attendances', component: AttendancesComponent, pathMatch: 'full', data: { title: 'Frekwencja' } }
+      { path: 'grades', component: GradesComponent, data: { title: 'Oceny i zachowanie' } },
+      { path: 'attendances', component: AttendancesComponent, data: { title: 'Frekwencja' } },
+      { path: 'timetables', component: PlanComponent, data: { title: 'Plan lekcji' } }
     ]
   },
   { path: '**', redirectTo: 'main/grades' }

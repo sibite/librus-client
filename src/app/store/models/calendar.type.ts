@@ -1,4 +1,3 @@
-import { CategoryType } from "./category.type";
 import { SubjectType } from "./subject.type";
 import { UserType } from "./user.type";
 
@@ -29,15 +28,18 @@ export interface ClassFreeDayType extends CalendarEntryBaseType {
   LessonFrom?: string,
   LessonTo?: string,
   TimeFrom?: string, // HH:MM:SS
-  TimeTo?: string // HH:MM:SS
+  TimeTo?: string, // HH:MM:SS
+  Kind?: CalendarKindType
 }
 
 export interface TeacherFreeDayType extends CalendarEntryBaseType {
   Teacher: UserType,
+  Name: string,
   LessonFrom?: string,
   LessonTo?: string,
   TimeFrom?: string, // HH:MM:SS
-  TimeTo?: string // HH:MM:SS
+  TimeTo?: string, // HH:MM:SS
+  Kind?: CalendarKindType
 }
 
 export interface SubstitutionType {
@@ -47,7 +49,12 @@ export interface SubstitutionType {
   OrgDate: string, // YYYY-MM-DD
   OrgLessonNo: string,
   OrgSubject: SubjectType,
-  OrgTeacher: UserType
+  OrgTeacher: UserType,
+  Date: string, // YYYY-MM-DD
+  LessonNo: string,
+  Subject: SubjectType,
+  Teacher: UserType,
+  Kind?: CalendarKindType
 }
 
 export interface HomeWorkType {
@@ -61,7 +68,8 @@ export interface HomeWorkType {
   Subject: SubjectType,
   TimeFrom: string, // HH:MM:SS
   TimeTo: string, // HH:MM:SS
-  VirtualClass: any
+  VirtualClass: any,
+  Kind?: CalendarKindType
 }
 
 export interface ParentTeacherConferences {
@@ -72,7 +80,8 @@ export interface ParentTeacherConferences {
   Room: string,
   Teacher: UserType,
   Time: string, // HH:MM:SS
-  Topic: string
+  Topic: string,
+  Kind?: CalendarKindType
 }
 
 

@@ -20,7 +20,7 @@
   display: flex;
   pointer-events: auto;
   cursor: pointer;
-  background-color: var(--bg-color-2);
+  background-color: var(--subject-color);
   border-radius: vars.$border-radius;
   border-radius: vars.$border-radius;
   color: #000000;
@@ -34,29 +34,27 @@
 }
 
 .symbol {
-  width: 40px;
+  width: 50px;
   border-radius: vars.$border-radius;
-  height: 40px;
+  height: 50px;
   flex-shrink: 0;
-  font-size: 1.7rem;
-  line-height: 40px;
-  font-weight: bold;
+  font-size: 2.4rem;
+  line-height: 50px;
   text-align: center;
-  margin: 15px;
-  margin-right: 10px;
+  margin: 10px;
+  margin-right: 5px;
   color: #ffffff;
-  background-color: var(--subject-color)
 }
 
 .details {
   flex-grow: 1;
   padding: 8px 10px;
   line-height: 1.25rem;
-  color: var(--text-color-1);
+  color: #ffffff;
 
   p {
     margin: 0;
-    padding: 4px 0;
+    padding: 5px 0;
     word-break: break-word;
   }
 }

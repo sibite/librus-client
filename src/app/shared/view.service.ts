@@ -59,6 +59,10 @@ export class ViewService {
     } else {
       document.body.classList.remove('light');
     }
+    let themeMetaEl = document.head.querySelector('meta[name="theme-color"]');
+    let themeColor = getComputedStyle(document.body).getPropertyValue('--bg-color-1');
+    console.log('theme color', themeColor);
+    themeMetaEl.setAttribute('content', themeColor);
   }
 
   getLocalThemePreference(): ThemeType {
