@@ -5,7 +5,9 @@
   <div class="ui component" id="list">
     <div class="ui group align-width">
       <div class="lists-slider">
-        <app-lessons-list [timetable]="timetableDays[day]"></app-lessons-list>
+        <app-lessons-list
+          [timetable]="timetableDays[day] || []"
+          [calendar]="calendar[day] || []"></app-lessons-list>
       </div>
     </div>
   </div>

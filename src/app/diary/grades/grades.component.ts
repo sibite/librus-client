@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { convertLibrusDate } from 'src/app/shared/date-converter';
 import { semesterOptions } from 'src/app/shared/semester-options';
 import { ViewService } from 'src/app/shared/view.service';
 import { StoreService } from 'src/app/store/store.service';
@@ -30,8 +31,11 @@ export class GradesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.storeSubscription = this.storeService.dataSyncSubject.subscribe(
       data => {
+        if (!data?.gradeSubjects || !data?.subjectColors || !data?.unitInfo) return;
         this.gradeSubjects = data.gradeSubjects?.sort((a, b) => a.Name > b.Name ? 1 : -1);
         this.subjectColors = data.subjectColors;
+        let semesterChangeDate = convertLibrusDate(data.unitInfo.class.EndFirstSemester);
+        this.semester = semesterChangeDate.getTime() < Date.now() + 86400e3 ? 1 : 2;
       }
     );
 

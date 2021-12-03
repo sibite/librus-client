@@ -6,7 +6,7 @@ import { GradeType } from "src/app/store/models/grade.type";
 export function getGradeDetailsHTML(grade: GradeType) {
   let properties = [
     { name: 'Ocena', content: grade.Grade },
-    { name: 'Kategoria', content: CapitalizePipe.prototype.transform( grade.Category.Name ) },
+    { name: 'Kategoria', content: CapitalizePipe.prototype.transform( grade.Category?.Name || '' ) || null },
     { name: 'Komentarz', content: CapitalizePipe.prototype.transform( grade.Comments?.map(comment => comment.Text).join('\n\n') || '' ) || null },
     { name: 'Waga', content: grade.Category.Weight },
     { name: 'Licz do średniej', content: grade.Kind === 'Grades' ? (grade.IsConstituent ? 'Tak' : 'Nie') : null },

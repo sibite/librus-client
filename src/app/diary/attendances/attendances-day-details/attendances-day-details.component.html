@@ -12,16 +12,16 @@
           <li
           class="attendance"
           appClickEffect
-          [attr.att-type]="attendance.Type.Id"
-          [style.--subject-color]="attendance.Lesson.Subject.Color"
+          [attr.att-type]="attendance.Type?.Id"
+          [style.--subject-color]="attendance.Lesson?.Subject?.Color"
           (click)="showAttendanceDetails($event, attendance)">
           <div class="lesson-no">
             <span class="caption">Lekcja</span><br>
             <span class="number">{{ attendance.LessonNo }}</span>
           </div>
           <div class="details">
-            <p class="name">{{ attendance.Type.Name }}</p>
-            <p class="subject">{{ attendance.Lesson.Subject.Name | capitalize }}</p>
+            <p class="name">{{ attendance.Type?.Name }}</p>
+            <p class="subject">{{ attendance.Lesson?.Subject?.Name | capitalize }}</p>
           </div>
           </li>
         </ng-container>

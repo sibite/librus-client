@@ -30,6 +30,7 @@ import { AttendancesDayItemComponent } from './diary/attendances/attendances-day
 import { AttendancesDayDetailsComponent } from './diary/attendances/attendances-day-details/attendances-day-details.component';
 import { PlanComponent } from './diary/plan/plan.component';
 import { LessonsListComponent } from './diary/plan/lessons-list/lessons-list.component';
+import { TimerangePipe } from './shared/pipes/timerange.pipe';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { LessonsListComponent } from './diary/plan/lessons-list/lessons-list.com
     AttendancesDayItemComponent,
     AttendancesDayDetailsComponent,
     PlanComponent,
-    LessonsListComponent
+    LessonsListComponent,
+    TimerangePipe
   ],
   imports: [
     BrowserModule,

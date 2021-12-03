@@ -14,6 +14,13 @@ $att-absence: #FF424F;
 $att-excused: #14B814;
 $att-exempt: #3e8bff;
 
+// calendar
+$event-teacher-free-day: hsl(7, 100%, 64%);
+$event-homework: rgb(203, 73, 255);
+$event-parent-conference: hsl(222, 100%, 57%);
+$event-class-free-day: hsl(83, 100%, 63%);
+$event-school-free-day: hsl(83, 100%, 63%);
+
 // other
 $border-radius: 4px;
 $card-margin: 20px;
@@ -25,7 +32,7 @@ $smooth-in-timing-function: cubic-bezier(0.5, 0, 1, 0);
 $hour-height: 100px;
 $minute-height: #{$hour-height / 60};
 $day-padding: 60;
-$lesson-margin: 5px;
+$lesson-margin: 3px;
 $time-tags-gap: 45px;
 
 // side-menu
@@ -87,5 +94,23 @@ $nav-bar-height: 64px;
   }
   &[att-type="100"] { // presence
     --att-color: var(--bg-color-3);
+  }
+}
+
+@mixin set-event-color() {
+  &[kind="TeacherFreeDays"] {
+    --event-color: #{$event-teacher-free-day};
+  }
+  &[kind="HomeWorks"] {
+    --event-color: #{$event-homework};
+  }
+  &[kind="ParentTeacherConferences"] {
+    --event-color: #{$event-parent-conference};
+  }
+  &[kind="ClassFreeDays"] {
+    --event-color: #{$event-class-free-day};
+  }
+  &[kind="SchoolFreeDays"] {
+    --event-color: #{$event-school-free-day};
   }
 }

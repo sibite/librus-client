@@ -19,13 +19,17 @@ $content-offset: 24px;
     &.offset {
       box-sizing: border-box;
       padding: #{$content-offset * 0.5} $content-offset;
-      &:last-child {
+      &:last-of-type {
         padding-bottom: $content-offset;
       }
-      &:first-child {
+      &:first-of-type {
         padding-top: $content-offset;
       }
     }
+  }
+
+  .offset:not(.group) {
+    padding: $content-offset;
   }
 }
 

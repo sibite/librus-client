@@ -2,6 +2,7 @@
 @use 'misc';
 
 html, body {
+  color: var(--text-color-1);
   font-size: 13px;
 }
 
@@ -131,7 +132,7 @@ input {
 
 .ui.details-list {
   list-style: none;
-  margin: 10px 20px;
+  margin: 10px 15px;
   padding: 0px;
 }
 

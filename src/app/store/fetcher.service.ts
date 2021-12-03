@@ -6,7 +6,7 @@ import { catchError, map, switchMap, tap } from "rxjs/operators";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
 import { CalendarKinds, CalendarKindType, CalendarType } from "./models/calendar.type";
-import { CategoryType } from "./models/category.type";
+import { CategoriesType, CategoryType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
 import { GradeKinds, GradeKindType, GradeType } from "./models/grade.type";
@@ -17,13 +17,14 @@ import { SubjectType } from "./models/subject.type";
 import { TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
 import { CommentType } from './models/comment.type';
+import { assignProperties, getIdAsKeysObj } from './transform-utilities';
 
 export type FetcherDataType = {
   // Storage
   subjects?: { [key: number]: SubjectType },
   themes?: any[],
   grades?: {
-    categories: CategoryType[],
+    categories: CategoriesType,
     comments: CommentType[],
     list: GradeType[],
   },
@@ -58,11 +59,7 @@ export class FetcherService {
         return <SubjectType[]>response['Subjects'];
       }),
       map(subjects => {
-        let subjectsObj: {[key: number]: SubjectType} = {};
-        for (let subject of subjects) {
-          subjectsObj[subject.Id] = subject;
-        }
-        return subjectsObj;
+        return getIdAsKeysObj(subjects);
       })
     );
   }
@@ -76,11 +73,7 @@ export class FetcherService {
         return <UserType[]>response['Users'];
       }),
       map(users => {
-        let usersObj: {[key: number]: UserType} = {};
-        for (let user of users) {
-          usersObj[user.Id] = user;
-        }
-        return usersObj;
+        return getIdAsKeysObj(users)
       })
     );
   }
@@ -102,7 +95,7 @@ export class FetcherService {
 
     return forkJoin(requests).pipe(
       switchMap(responses => {
-        let categoryRequests = [];
+        let categoryRequests = {};
         for (let response of responses) {
           grades = grades.concat(<GradeType[]>response.grades);
           let categoryIds = new Set();
@@ -119,19 +112,25 @@ export class FetcherService {
                   return response['Categories'];
                 })
               );
-            categoryRequests.push(req);
+            categoryRequests[response.kind] = req;
           }
         }
-        let commentsRequests = [
-          this.http.get('https://api.librus.pl/2.0/DescriptiveGrades/Comments').pipe(map(response => response['Comments'])),
-          this.http.get('https://api.librus.pl/2.0/Grades/Comments').pipe(map(response => response['Comments']))
-        ];
+        let commentsRequests = {
+          'DescriptiveGrades': this.http.get('https://api.librus.pl/2.0/DescriptiveGrades/Comments').pipe(map(response => response['Comments'])),
+          'Grades': this.http.get('https://api.librus.pl/2.0/Grades/Comments').pipe(map(response => response['Comments']))
+        };
         return forkJoin([forkJoin(categoryRequests), forkJoin(commentsRequests)]);
       }),
       catchError(this.errorHandler.bind(this)),
       map(([categoryRequests, commentsRequests]) => {
-        let categories: CategoryType[] = [].concat(...categoryRequests);
-        let comments: CommentType[] = [].concat(...commentsRequests);
+        let categories = {};
+        let comments = {};
+        for (let categoryKind of Object.keys(categoryRequests)) {
+          categories[categoryKind] = getIdAsKeysObj(categoryRequests[categoryKind]);
+        }
+        for (let commentKind of Object.keys(commentsRequests)) {
+          comments[commentKind] = getIdAsKeysObj(commentsRequests[commentKind]);
+        }
         // Returning grades
         return {
           categories: categories,
@@ -147,11 +146,7 @@ export class FetcherService {
       catchError(this.errorHandler.bind(this)),
       map(response => {
         let lessons: LessonType[] = response['Lessons'];
-        let lessonsObj: {[key: number]: LessonType} = {};
-        for (let lesson of lessons) {
-          lessonsObj[lesson.Id] = lesson;
-        }
-        return lessonsObj;
+        return getIdAsKeysObj(lessons);
       })
     );
   }
@@ -161,11 +156,7 @@ export class FetcherService {
       catchError(this.errorHandler.bind(this)),
       map(response => {
         let types: AttendanceTypeType[] = response['Types'];
-        let typesObj: {[key: number]: AttendanceTypeType} = {};
-        for (let type of types) {
-          typesObj[type.Id] = type;
-        }
-        return typesObj
+        return getIdAsKeysObj(types);
       })
     );
   }
@@ -199,7 +190,7 @@ export class FetcherService {
       map(({schools, classes}) => {
         let school: SchoolInfoType = schools['School'];
         let class_: ClassInfoType = classes['Class'];
-        return { school, class_ };
+        return { school, class: class_ };
       })
     )
   }
@@ -258,12 +249,8 @@ export class FetcherService {
       )
     }).pipe(
       switchMap(({catList, typesList}) => {
-        for (let category of catList) {
-          homeworkCategories[category.Id] = category;
-        }
-        for (let type of typesList) {
-          classFreeDayTypes[type.Id] = type;
-        }
+        homeworkCategories = getIdAsKeysObj(catList);
+        classFreeDayTypes = getIdAsKeysObj(typesList);
 
         return forkJoin(requests);
       }),

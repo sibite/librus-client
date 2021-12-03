@@ -1,6 +1,7 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { convertLibrusDate, formatDate } from 'src/app/shared/date-converter';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { ViewService } from 'src/app/shared/view.service';
@@ -16,11 +17,12 @@ import { attendancesByLessonSorter } from '../attendances.utilities';
   templateUrl: './attendances-day-details.component.html',
   styleUrls: ['./attendances-day-details.component.scss']
 })
-export class AttendancesDayDetailsComponent implements OnInit {
+export class AttendancesDayDetailsComponent implements OnInit, OnDestroy {
   public routeTitle: string = 'Frekwencja dnia';
-
-  public attendances: AttendanceType[];
+  public attendances: AttendanceType[] = [];
   public activatedDay: string;
+
+  private storeSub: Subscription;
 
   constructor(
     public viewService: ViewService,
@@ -36,11 +38,20 @@ export class AttendancesDayDetailsComponent implements OnInit {
       this.activatedDay = params['day'];
       if (!this.activatedDay) return;
 
-      this.attendances = this.storeService.data.attendanceDays[this.activatedDay]
-        .filter(a => a.Type.Id !== 100)
-        .sort(attendancesByLessonSorter);
       this.routeTitle = this.capitalize.transform(formatDate(convertLibrusDate(this.activatedDay), 'long weekday'));
     });
+
+    this.storeSub = this.storeService.dataSyncSubject.subscribe(data => {
+      if (!data?.attendanceDays) return;
+      this.attendances = data.attendanceDays[this.activatedDay]
+        .filter(a => a.Type.Id !== 100)
+        .sort(attendancesByLessonSorter);
+      console.log(this.attendances);
+    });
+  }
+
+  ngOnDestroy() {
+    this.storeSub.unsubscribe();
   }
 
 

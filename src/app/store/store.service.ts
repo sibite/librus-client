@@ -1,17 +1,19 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, forkJoin, throwError } from "rxjs";
-import { catchError, take } from "rxjs/operators";
+import { catchError, take, tap } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-converter";
+import { assignProperties } from "./transform-utilities";
 import { FetcherDataType, FetcherService } from "./fetcher.service";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
-import { CalendarEntryType } from "./models/calendar.type";
-import { CategoryType } from "./models/category.type";
+import { CalendarEntryType, HomeWorkType, TeacherFreeDayType } from "./models/calendar.type";
+import { CategoriesType, CategoryType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
+import { ClassroomType } from "./models/classroom.type";
 import { SchoolInfoType } from "./models/school-info.type";
 import { SubjectType } from "./models/subject.type";
-import { TimetableEntryType } from "./models/timetable.type";
+import { TimetableEntryType, TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
 
 export type StoreDataType = {
@@ -22,12 +24,14 @@ export type StoreDataType = {
     class: ClassInfoType
   }
   gradeSubjects?: SubjectType[],
-  gradeCategories?: { [key: number]: CategoryType },
+  gradeCategories?: CategoriesType;
+  subjects?: { [key: number]: SubjectType },
   subjectColors?: { [key: number]: string },
   users?: { [key: number]: UserType },
   attendanceDays?: { [key: string]: AttendanceType[] },
   attendanceTypes?: { [key: number]: AttendanceTypeType },
   timetableDays?: { [key: string]: TimetableEntryType[][] },
+  classrooms?: { [key: number]: ClassroomType },
   calendar?: { [key: string]: CalendarEntryType[] }
 };
 
@@ -81,6 +85,7 @@ export class StoreService {
         this.scheduleNextSync();
         this.saveLocalStorage();
         console.log(this.getData());
+        console.log(this.fetcherData)
       });
   }
 
@@ -109,29 +114,14 @@ export class StoreService {
       }
       for (let grade of this.fetcherData.grades.list) {
         // attaching added by
-        let addedBy = this.fetcherData.users[grade.AddedBy.Id]
-        grade.AddedBy = {
-          ...grade.AddedBy,
-           FirstName: addedBy.FirstName,
-           LastName: addedBy.LastName
-        }
+        assignProperties(grade.AddedBy, this.fetcherData.users, ['FirstName', 'LastName']);
         // attaching categories
-        let category = this.fetcherData.grades.categories.find(
-          category => category.Id == grade.Category.Id
-        );
-        grade.Category = {
-          ...grade.Category,
-          Name: category.Name,
-          Weight: category.Weight
-        }
+        assignProperties(grade.Category, this.fetcherData.grades.categories[grade.Kind], ['Name', 'Weight']);
         // attaching comments
         if (grade.Comments) {
-          let comments = grade.Comments.map(gradeComment => {
-            return this.fetcherData.grades.comments.find(
-              storeComment => storeComment.Id == gradeComment.Id
-            )
-          });
-          grade.Comments = comments;
+          grade.Comments = grade.Comments.map(comment => {
+            return this.fetcherData.grades.comments[grade.Kind][comment.Id];
+          })
         }
         gradesSubjects[grade.Subject.Id].Grades.push(grade);
       }
@@ -153,24 +143,14 @@ export class StoreService {
       let attendancesObj = {};
       for (let attendance of attendances) {
         // attaching added by
-        let addedBy = this.fetcherData.users[attendance.AddedBy.Id]
-        attendance.AddedBy = {
-          ...attendance.AddedBy,
-           FirstName: addedBy.FirstName,
-           LastName: addedBy.LastName
-        }
+        assignProperties(attendance.AddedBy, this.fetcherData.users, ['FirstName', 'LastName'])
         // attaching type
         // assigning direct object because it's repetitive and has no nested objects
         let type = this.data.attendanceTypes[attendance.Type.Id];
         attendance.Type = type;
         // attaching lesson
-        let lesson = this.fetcherData.lessons[attendance.Lesson.Id];
-        let subject = this.fetcherData.subjects[lesson.Subject.Id];
-        attendance.Lesson.Subject = {
-          ...lesson.Subject,
-          Name: subject.Name,
-          Color: subject.Color
-        };
+        assignProperties(attendance.Lesson, this.fetcherData.lessons, ['Subject']);
+        assignProperties(attendance.Lesson.Subject, this.fetcherData.subjects, ['Name', 'Color']);
         // pushing it to object with dates as keys
         if (typeof attendancesObj[attendance.Date] !== 'object') {
           attendancesObj[attendance.Date] = [];
@@ -178,6 +158,10 @@ export class StoreService {
         attendancesObj[attendance.Date].push(attendance);
       }
       this.data.attendanceDays = attendancesObj;
+    }
+
+    let transformClassrooms = () => {
+      this.data.classrooms = this.fetcherData.classrooms;
     }
 
     let transformCalendar = () => {
@@ -201,6 +185,8 @@ export class StoreService {
       for (let kind of Object.keys(calendarOrg)) {
         for (let entry of calendarOrg[kind]) {
           entry.Kind = kind;
+          assignProperties(entry.Subject, this.fetcherData.subjects, ['Name']);
+          assignProperties(entry.Teacher, this.fetcherData.users, ['FirstName', 'LastName']);
           addToCalendar(entry);
         }
       }
@@ -208,9 +194,12 @@ export class StoreService {
       this.data.calendar = calendarNew;
     }
 
-    let transformUnitInfo = () => {
+    let transformOthers = () => {
+      // unit info
       this.data.unitInfo = this.fetcherData.unitInfo;
       delete this.data.unitInfo.school.LessonsRange[0];
+      // subjects
+      this.data.subjects = this.fetcherData.subjects;
     }
 
     // transform functions execution
@@ -219,16 +208,17 @@ export class StoreService {
     transformUsers();
     transformAttendanceTypes();
     transformAttendances();
+    transformClassrooms();
     transformCalendar();
-    transformUnitInfo();
+    transformOthers();
   }
 
   loadTimetable(date: Date, isSecondAttempt = false) {
     let weekStart = toWeekStartDate(date);
     // format: YYYY-MM-DD
     let dateString = toDateString(weekStart);
-    let syncOffset = Date.now() - (this.data.timetablesLastSync[dateString] || Infinity);
-    if (this.timetableSyncMaxOffset > syncOffset) {
+    let syncOffset = Date.now() - (this.data.timetablesLastSync[dateString] || -Infinity);
+    if (syncOffset > this.timetableSyncMaxOffset) {
       this.fetcherService.fetchTimetable(dateString).pipe(
           take(1),
           catchError(err => {
@@ -238,6 +228,7 @@ export class StoreService {
         timetable => {
           console.log(timetable);
           for (let day of Object.keys(timetable)) {
+            this.transformTimetableDay(timetable[day]);
             this.data.timetableDays[day] = timetable[day];
           }
           this.data.timetablesLastSync[dateString] = Date.now();
@@ -249,6 +240,30 @@ export class StoreService {
     }
   }
 
+  transformTimetableDay(day: TimetableEntryType[][]) {
+    for (let range of day) {
+      for (let lesson of range) {
+        const classroom = this.data.classrooms[lesson.Classroom?.Id];
+        lesson.Classroom = {
+          ...lesson.Classroom,
+          Name: classroom?.Name
+        }
+        if (lesson.IsSubstitutionClass) {
+          const orgClassroom = this.data.classrooms[lesson.OrgClassroom.Id];
+          const orgSubject = this.data.subjects[lesson.OrgSubject.Id];
+          const orgTeacher = this.data.users[lesson.OrgTeacher.Id];
+          lesson.OrgClassroom.Name = orgClassroom.Name;
+          lesson.OrgSubject.Name = orgSubject.Name;
+          lesson.OrgTeacher = {
+            ...lesson.OrgTeacher,
+            FirstName: orgTeacher.FirstName,
+            LastName: orgTeacher.LastName
+          }
+        }
+      }
+    }
+  }
+
   scheduleNextSync(lastFailed = false) {
     const lastSyncTime = !lastFailed ? this.data.lastSyncTime || Date.now() - this.syncInterval : Date.now();
     setTimeout(() => this.synchronize(), lastSyncTime + this.syncInterval - Date.now());
@@ -257,7 +272,7 @@ export class StoreService {
   syncErrorHandler(err, isSecondAttempt) {
     console.error(err);
     if (err.error?.Code == "TokenIsExpired" && !isSecondAttempt) {
-      this.authService.auth().subscribe(
+      this.authService.auth().pipe(take(1)).subscribe(
         () => this.synchronize(true)
       )
     }
@@ -270,7 +285,7 @@ export class StoreService {
   timetableErrorHandler(err, date, isSecondAttempt) {
     console.error(err);
     if (err.error?.Code == "TokenIsExpired" && !isSecondAttempt) {
-      this.authService.auth().subscribe(
+      this.authService.auth().pipe(take(1)).subscribe(
         () => this.loadTimetable(date, true)
       )
     }

@@ -12,3 +12,14 @@ export interface CategoryType {
   Weight: number
   Url?: string
 }
+
+export interface CategoriesType {
+  'Grades': { [ key: number]: CategoryType },
+  'DescriptiveGrades': { [ key: number]: CategoryType },
+  'DescriptiveTextGrades': { [ key: number]: CategoryType },
+  'TextGrades': { [ key: number]: CategoryType },
+  'BehaviourGrades': { [ key: number]: CategoryType },
+  'BehaviourGrades/SystemProposal': { [ key: number]: CategoryType },
+  'BehaviourGrades/Points': { [ key: number]: CategoryType },
+  'PointGrades': { [ key: number]: CategoryType }
+}

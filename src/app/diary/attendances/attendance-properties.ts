@@ -7,9 +7,9 @@ export function getAttendanceDetailsHTML(attendance: AttendanceType) {
   let properties = [
     { name: 'Typ', content: attendance.Type.Name },
     { name: 'Numer lekcji', content: attendance.LessonNo },
-    { name: 'Lekcja', content: CapitalizePipe.prototype.transform(attendance.Lesson.Subject.Name) },
+    { name: 'Lekcja', content: CapitalizePipe.prototype.transform(attendance.Lesson?.Subject?.Name) },
     { name: 'Data', content: convertLibrusDate(attendance.Date || attendance.AddDate).toLocaleDateString('pl-PL') },
-    { name: 'Dodano przez', content: attendance.AddedBy.FirstName + ' ' + attendance.AddedBy.LastName },
+    { name: 'Dodano przez', content: attendance.AddedBy?.FirstName + ' ' + attendance.AddedBy?.LastName },
   ];
 
   return generateDetailsListHTML(properties);

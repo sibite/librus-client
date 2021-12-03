@@ -1,3 +1,32 @@
+<div class="events-container ui offset">
+  <div
+    class="entry event single"
+    *ngFor="let event of getEvents()"
+    [attr.kind]="event.Kind">
+    <div class="entry-caption">
+      <span class="entry-header">{{ event.Name || eventKindNames[event.Kind] }}</span>
+      <ng-container *ngIf="event.Kind == 'TeacherFreeDays'">
+        <br>
+        <span class="entry-sub">{{ event.Teacher.FirstName }} {{ event.Teacher.LastName }}</span>
+        <br>
+        <span class="entry-sub">{{ event | timerange }}</span>
+      </ng-container>
+      <ng-container *ngIf="event.Kind == 'ClassFreeDays'">
+        <br>
+        <span class="entry-sub">{{ event.Type.Name }}</span>
+        <br>
+        <span class="entry-sub">{{ event | timerange }}</span>
+      </ng-container>
+      <ng-container *ngIf="event.Kind == 'ParentTeacherConferences'">
+        <br>
+        <span class="entry-sub">{{ event.Time.substr(0, 5) }}</span>
+        <br>
+        <span class="entry-sub">Sala: {{ event.Room }}</span>
+      </ng-container>
+    </div>
+  </div>
+  <span class="no-events-text" *ngIf="getEvents().length == 0">Brak wydarzeń</span>
+</div>
 <div
   class="plan-container"
   [style.--day-range-from]="dayStartRange"
@@ -6,21 +35,40 @@
     <div *ngFor="let tag of timeTags">{{ tag }}</div>
   </div>
   <div class="lessons-container">
-    <div
-    class="range-block"
-    *ngFor="let rangeLessons of timetable; let rangeIndex = index"
-    [style.--range-from]="lessonsRange[rangeIndex]?.RawFrom"
-    [style.--range-to]="lessonsRange[rangeIndex]?.RawTo">
+    <ng-container  *ngFor="let rangeLessons of timetable; let rangeIndex = index">
       <div
-        class="lesson"
-        *ngFor="let lesson of rangeLessons"
-        [style.--subject-color]="subjectColors[lesson.Subject.Id]">
-        <div class="lesson-caption">
-          <span class="lesson-name">{{ lesson.Subject.Name | capitalize }}</span>
-          <br>
-          <span class="lesson-range">{{ lessonsRange[lesson.LessonNo].From }} &#8210; {{ lessonsRange[lesson.LessonNo].To }}</span>
+        class="range-block"
+        *ngIf="rangeLessons.length > 0"
+        [style.--range-from]="lessonsRange[rangeIndex]?.RawFrom"
+        [style.--range-to]="lessonsRange[rangeIndex]?.RawTo">
+        <div
+          class="entry lesson"
+          *ngFor="let lesson of rangeLessons"
+          [style.--subject-color]="subjectColors[lesson.Subject.Id]"
+          [ngClass]="{canceled: lesson.IsCanceled, substitution: lesson.IsSubstitutionClass}">
+          <div class="entry-caption">
+            <span
+              class="entry-header"
+              *ngIf="!lesson.IsSubstitutionClass; else substitutionName">{{ lesson.Subject.Name | capitalize }}</span>
+            <ng-template #substitutionName>
+              <span class="entry-header">{{ lesson.OrgSubject.Name | capitalize }}
+                <i class="bi-arrow-right"></i>
+                {{ lesson.Subject.Name | capitalize }}</span>
+            </ng-template>
+            <br>
+            <span class="entry-sub">{{ lessonsRange[lesson.LessonNo].From }} &ndash; {{ lessonsRange[lesson.LessonNo].To }}</span>
+          </div>
+        </div>
+        <div
+          class="entry homework"
+          *ngFor="let homework of getHomeworks(rangeIndex)">
+          <div class="entry-caption">
+            <span class="entry-header">{{ homework.Category.Name | capitalize }}</span>
+            <br>
+            <span class="entry-sub">{{ homework.Content }}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </ng-container>
   </div>
 </div>

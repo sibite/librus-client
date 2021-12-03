@@ -17,6 +17,7 @@ export interface CalendarEntryBaseType {
   DateTo: string, // YYYY-MM-DD
   Id: number,
   Name: string,
+  Kind?: CalendarKindType
 }
 
 export interface SchoolFreeDayType extends CalendarEntryBaseType {}
@@ -90,7 +91,7 @@ export type CalendarEntryType = ClassFreeDayType
   | SchoolFreeDayType
   | SubstitutionType
   | TeacherFreeDayType
-  | ParentTeacherConferences
+  | ParentTeacherConferences;
 
 export type CalendarKindType =
   'ClassFreeDays'
@@ -98,7 +99,7 @@ export type CalendarKindType =
   | 'SchoolFreeDays'
   | 'Substitutions'
   | 'TeacherFreeDays'
-  | 'ParentTeacherConferences'
+  | 'ParentTeacherConferences';
 
 export const CalendarKinds = [
   {
@@ -120,4 +121,4 @@ export const CalendarKinds = [
     name: 'ParentTeacherConferences',
     propName: 'ParentTeacherConferences'
   }
-]
+];

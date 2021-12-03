@@ -5,7 +5,7 @@ import { convertLibrusDate } from 'src/app/shared/date-converter';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { semesterOptions } from 'src/app/shared/semester-options';
 import { ViewService } from 'src/app/shared/view.service';
-import { CategoryType } from 'src/app/store/models/category.type';
+import { CategoriesType, CategoryType } from 'src/app/store/models/category.type';
 import { GradeType } from 'src/app/store/models/grade.type';
 import { UserType } from 'src/app/store/models/user.type';
 import { StoreService } from 'src/app/store/store.service';
@@ -25,7 +25,7 @@ export class GradeSubjectDetailsComponent implements OnInit {
 
   public grades: GradeType[] = [];
   public users: { [key: number]: UserType };
-  public categories: { [key: number]: CategoryType };
+  public categories: CategoriesType;
 
   constructor(
     public viewService: ViewService,
