@@ -1,14 +1,30 @@
 <div class="ui component" id="main">
-  <div class="ui component">
-
+  <div class="ui component align-width">
+    <div class="day-name">{{ dateDisplayString | capitalize }}</div>
   </div>
   <div class="ui component" id="list">
     <div class="ui group align-width">
       <div class="lists-slider">
         <app-lessons-list
-          [timetable]="timetableDays[day] || []"
-          [calendar]="calendar[day] || []"></app-lessons-list>
+          [timetable]="timetableDays[dateString] || []"
+          [calendar]="calendar[dateString] || []"></app-lessons-list>
       </div>
+    </div>
+  </div>
+  <div class="ui component align-width" id="weekdays">
+    <div class="arrow" (click)="slideWeekDates(-1)">
+      <i class="bi-caret-left-fill"></i>
+    </div>
+    <div
+      class="weekday-symbol"
+      (click)="pickDate(date_)"
+      [ngClass]="{active: date_.getTime() === date.getTime()}"
+      *ngFor="let date_ of weekdates; let i = index">
+      <div class="date">{{ date_.getDate() }}</div>
+      <div class="day">{{ dayNames[i] }}</div>
+    </div>
+    <div class="arrow" (click)="slideWeekDates(1)">
+      <i class="bi-caret-right-fill"></i>
     </div>
   </div>
 </div>

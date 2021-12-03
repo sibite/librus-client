@@ -24,7 +24,7 @@ export interface SchoolFreeDayType extends CalendarEntryBaseType {}
 
 export interface ClassFreeDayType extends CalendarEntryBaseType {
   Class: any,
-  Type: any,
+  Type: { Id: number, Name: string },
   VirtualClass: any,
   LessonFrom?: string,
   LessonTo?: string,
@@ -84,6 +84,36 @@ export interface ParentTeacherConferences {
   Topic: string,
   Kind?: CalendarKindType
 }
+
+export interface AnyCalendarEntryType {
+  AddDate?: string, // YYYY-MM-DD HH:MM:SS
+  Category?: {Id: number, Name: string},
+  Content?: string,
+  CreatedBy?: UserType,
+  Date?: string, // YYYY-MM-DD
+  Id?: number,
+  LessonNo?: string,
+  Subject?: SubjectType,
+  TimeFrom?: string, // HH:MM:SS
+  TimeTo?: string, // HH:MM:SS
+  VirtualClass?: any,
+  Kind?: CalendarKindType,
+  Class?: any,
+  Name?: string,
+  Room?: string,
+  Teacher?: UserType,
+  Time?: string, // HH:MM:SS
+  Topic?: string,
+  Type?: { Id: number, Name: string },
+  IsCancelled?: boolean,
+  IsShifted?: boolean,
+  OrgDate?: string, // YYYY-MM-DD
+  OrgLessonNo?: string,
+  OrgSubject?: SubjectType,
+  OrgTeacher?: UserType,
+  DateFrom?: string, // YYYY-MM-DD
+  DateTo?: string, // YYYY-MM-DD
+};
 
 
 export type CalendarEntryType = ClassFreeDayType

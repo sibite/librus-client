@@ -97,17 +97,6 @@
       background-color: #ffffff;
     }
   }
-
-  &::before {
-    //content: '';
-    display: block;
-    float: left;
-    width: 8px;
-    height: 100%;
-    margin-right: 8px;
-    border-radius: 4px;
-    background-color: var(--subject-color);
-  }
 }
 
 .entry.lesson {

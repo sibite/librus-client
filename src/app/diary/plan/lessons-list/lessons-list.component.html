@@ -2,6 +2,8 @@
   <div
     class="entry event single"
     *ngFor="let event of getEvents()"
+    appClickEffect
+    (click)="showEventDetails($event, event)"
     [attr.kind]="event.Kind">
     <div class="entry-caption">
       <span class="entry-header">{{ event.Name || eventKindNames[event.Kind] }}</span>
@@ -9,13 +11,13 @@
         <br>
         <span class="entry-sub">{{ event.Teacher.FirstName }} {{ event.Teacher.LastName }}</span>
         <br>
-        <span class="entry-sub">{{ event | timerange }}</span>
+        <span class="entry-sub">{{ event | timerange:'Cały dzień' }}</span>
       </ng-container>
       <ng-container *ngIf="event.Kind == 'ClassFreeDays'">
         <br>
         <span class="entry-sub">{{ event.Type.Name }}</span>
         <br>
-        <span class="entry-sub">{{ event | timerange }}</span>
+        <span class="entry-sub">{{ event | timerange:'Cały dzień' }}</span>
       </ng-container>
       <ng-container *ngIf="event.Kind == 'ParentTeacherConferences'">
         <br>
@@ -44,6 +46,9 @@
         <div
           class="entry lesson"
           *ngFor="let lesson of rangeLessons"
+          appClickEffect
+          forceRippleTheme="dark"
+          (click)="showLessonDetails($event, lesson)"
           [style.--subject-color]="subjectColors[lesson.Subject.Id]"
           [ngClass]="{canceled: lesson.IsCanceled, substitution: lesson.IsSubstitutionClass}">
           <div class="entry-caption">
@@ -61,6 +66,8 @@
         </div>
         <div
           class="entry homework"
+          (click)="showEventDetails($event, homework)"
+          appClickEffect
           *ngFor="let homework of getHomeworks(rangeIndex)">
           <div class="entry-caption">
             <span class="entry-header">{{ homework.Category.Name | capitalize }}</span>

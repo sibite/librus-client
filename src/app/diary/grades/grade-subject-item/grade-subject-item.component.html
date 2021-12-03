@@ -8,7 +8,7 @@
       class="subject-grade"
       appClickEffect
       (click)="showGradeDetails($event, grade)"
-      forceRippleTheme="light"
+      forceRippleTheme="dark"
       [ngClass]="{'final-or-proposed': !isGradeNormal(grade)}"
       *ngFor="let grade of getGrades()">
       {{ formatGradeShort(grade) }}

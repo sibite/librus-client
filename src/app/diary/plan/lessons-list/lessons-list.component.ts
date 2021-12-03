@@ -1,22 +1,13 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { convertLibrusDate } from 'src/app/shared/date-converter';
-import { CalendarEntryType, CalendarType, HomeWorkType } from 'src/app/store/models/calendar.type';
+import { ViewService } from 'src/app/shared/view.service';
+import { AnyCalendarEntryType, CalendarEntryType, HomeWorkType } from 'src/app/store/models/calendar.type';
 import { LessonRangeType } from 'src/app/store/models/lesson-range.type';
 import { SubjectType } from 'src/app/store/models/subject.type';
 import { TimetableEntryType } from 'src/app/store/models/timetable.type';
 import { StoreService } from 'src/app/store/store.service';
-
-interface EventCommonType {
-  [key: string]: any,
-  Kind: string,
-  Name: string,
-  DateFrom: string,
-  DateTo: string,
-  TimeFrom?: string,
-  TimeTo?: string,
-  Room?: string
-}
+import { eventKindNames, getEventDetailsHTML } from '../event-properties';
+import { getLessonDetailsHTML } from '../lesson-properties';
 
 @Component({
   selector: 'app-lessons-list',
@@ -33,20 +24,15 @@ export class LessonsListComponent implements OnInit, OnDestroy {
   public dayStartRange: number = 0;
   public dayEndRange: number = 1440
   public timeTags: string[] = [];
-  // for displaying homeworks
-  private subjects: SubjectType[];
   // for displaying events
-  public eventKindNames = {
-    'TeacherFreeDays': 'Nieobecność nauczyciela',
-    'ClassFreeDays': 'Nieobecność klasy',
-    'SchoolFreeDays': 'Dodatkowy dzień wolny',
-    'ParentTeacherConferences': 'Spotkanie z rodzicami'
-  }
+  public eventKindNames = eventKindNames;
 
   private storeSub: Subscription;
+  private wasScrollSet = false;
 
   constructor(
     private storeService: StoreService,
+    private viewService: ViewService,
     private elRef: ElementRef
   ) { }
 
@@ -55,14 +41,16 @@ export class LessonsListComponent implements OnInit, OnDestroy {
       if (!data.unitInfo) return;
       this.lessonsRange = data.unitInfo.school.LessonsRange;
       this.subjectColors = data.subjectColors;
-      this.subjects = data.gradeSubjects;
       let lastIndex = data.unitInfo.school.LessonsRange.length - 1;
       this.dayStartRange = data.unitInfo.school.LessonsRange[1].RawFrom;
       this.dayEndRange = data.unitInfo.school.LessonsRange[lastIndex].RawTo;
       setTimeout(() => {
         let firstLesson = this.elRef.nativeElement.querySelector('.entry.lesson');
         let firstLessonY = firstLesson.getBoundingClientRect().top - this.elRef.nativeElement.getBoundingClientRect().top;
-        this.elRef.nativeElement.scrollTop = firstLessonY - 10;
+        if (firstLessonY > 1 && !this.wasScrollSet) {
+          this.elRef.nativeElement.scrollTop = firstLessonY - 10;
+          this.wasScrollSet = true;
+        }
       }, 20);
     });
 
@@ -75,12 +63,30 @@ export class LessonsListComponent implements OnInit, OnDestroy {
     this.storeSub.unsubscribe();
   }
 
+  showEventDetails(mouseEvent: MouseEvent, event: AnyCalendarEntryType) {
+    console.log(event);
+    this.viewService.popUpSubject.next({
+      title: 'Szczegóły',
+      content: getEventDetailsHTML(event)
+    })
+    mouseEvent.stopPropagation();
+  }
+
+  showLessonDetails(mouseEvent: MouseEvent, lesson: TimetableEntryType) {
+    console.log(lesson);
+    this.viewService.popUpSubject.next({
+      title: 'Szczegóły',
+      content: getLessonDetailsHTML(lesson)
+    })
+    mouseEvent.stopPropagation();
+  }
+
   getHomeworks(lessonNo: number): HomeWorkType[] {
     return (<HomeWorkType[]>this.calendar).filter(a => a.Kind == "HomeWorks" && +a.LessonNo == lessonNo);
   }
 
-  getEvents(): EventCommonType[] {
-    return <EventCommonType[]>this.calendar.filter(a => a.Kind != 'HomeWorks' && a.Kind != 'Substitutions');
+  getEvents(): AnyCalendarEntryType[] {
+    return <AnyCalendarEntryType[]>this.calendar.filter(a => a.Kind != 'HomeWorks' && a.Kind != 'Substitutions');
   }
 
 }

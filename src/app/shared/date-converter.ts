@@ -26,7 +26,7 @@ export function toWeekStartDate(date: Date): Date {
   return new Date(midday.getTime() - ((midday.getDay() + 6) % 7) * 86400e3);
 }
 
-type dateStyle = 'long month' | 'long weekday' | 'normal';
+type dateStyle = 'long month' | 'long weekday' | 'long weekday-month' | 'normal';
 
 export function formatDate(date: Date, style: dateStyle = 'normal') {
   let options;
@@ -41,6 +41,14 @@ export function formatDate(date: Date, style: dateStyle = 'normal') {
       break;
     case 'long month':
       options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }
+      break;
+    case 'long weekday-month':
+      options = {
+        weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
