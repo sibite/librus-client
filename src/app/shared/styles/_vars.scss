@@ -1,9 +1,11 @@
 // colors
+@use "sass:math";
+
 $accent: hsl(268, 54%, 49%);
 $accent-lightest: hsl(268, 54%, 92%);
 $accent-lighter: hsl(268, 54%, 75%);
 $accent-darker: hsl(268, 54%, 38%);
-$accent-darkest: hsl(268, 20%, 15%);
+$accent-darkest: hsl(268, 40%, 20%);
 $accent-contrast: #ffffff;
 $danger: #ff3311;
 
@@ -30,7 +32,7 @@ $smooth-in-timing-function: cubic-bezier(0.5, 0, 1, 0);
 
 // timetable
 $hour-height: 100px;
-$minute-height: #{$hour-height / 60};
+$minute-height: #{math.div($hour-height, 60)};
 $day-padding: 60;
 $lesson-margin: 3px;
 $time-tags-gap: 45px;

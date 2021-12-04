@@ -6,6 +6,7 @@
     <div class="ui group align-width">
       <div class="lists-slider">
         <app-lessons-list
+          [$onDatePick]="$onDatePick"
           [timetable]="timetableDays[dateString] || []"
           [calendar]="calendar[dateString] || []"></app-lessons-list>
       </div>
@@ -18,7 +19,10 @@
     <div
       class="weekday-symbol"
       (click)="pickDate(date_)"
-      [ngClass]="{active: date_.getTime() === date.getTime()}"
+      [ngClass]="{
+        active: date_.getTime() === date.getTime(),
+        today: date_.getTime() === today.getTime()
+      }"
       *ngFor="let date_ of weekdates; let i = index">
       <div class="date">{{ date_.getDate() }}</div>
       <div class="day">{{ dayNames[i] }}</div>

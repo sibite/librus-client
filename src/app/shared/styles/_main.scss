@@ -8,6 +8,7 @@ html, body {
 
 body * {
   overscroll-behavior: auto;
+  outline: none;
 }
 
 a {
@@ -58,6 +59,7 @@ input {
   }
   &::before {
     content: '';
+    z-index: 1;
     position: absolute;
     display: block;
     background-color: var(--ripple-color);

@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
 import { ViewService } from 'src/app/shared/view.service';
 import { AnyCalendarEntryType, CalendarEntryType, HomeWorkType } from 'src/app/store/models/calendar.type';
 import { LessonRangeType } from 'src/app/store/models/lesson-range.type';
@@ -14,9 +14,13 @@ import { getLessonDetailsHTML } from '../lesson-properties';
   templateUrl: './lessons-list.component.html',
   styleUrls: ['./lessons-list.component.scss']
 })
-export class LessonsListComponent implements OnInit, OnDestroy {
+export class LessonsListComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   @Input() timetable: TimetableEntryType[][];
   @Input() calendar: CalendarEntryType[];
+  @Input() $onDatePick: Subject<Date>;
+  @ViewChild('lessonsContainer') lessonsContRef: ElementRef;
+
+  private autoScrollRequested = false;
 
   public homeworks: { [key: number]: HomeWorkType[] } = {};
   public lessonsRange: LessonRangeType[];
@@ -28,7 +32,7 @@ export class LessonsListComponent implements OnInit, OnDestroy {
   public eventKindNames = eventKindNames;
 
   private storeSub: Subscription;
-  private wasScrollSet = false;
+  private datePickSub: Subscription;
 
   constructor(
     private storeService: StoreService,
@@ -44,23 +48,40 @@ export class LessonsListComponent implements OnInit, OnDestroy {
       let lastIndex = data.unitInfo.school.LessonsRange.length - 1;
       this.dayStartRange = data.unitInfo.school.LessonsRange[1].RawFrom;
       this.dayEndRange = data.unitInfo.school.LessonsRange[lastIndex].RawTo;
-      setTimeout(() => {
-        let firstLesson = this.elRef.nativeElement.querySelector('.entry.lesson');
-        let firstLessonY = firstLesson.getBoundingClientRect().top - this.elRef.nativeElement.getBoundingClientRect().top;
-        if (firstLessonY > 1 && !this.wasScrollSet) {
-          this.elRef.nativeElement.scrollTop = firstLessonY - 10;
-          this.wasScrollSet = true;
-        }
-      }, 20);
     });
 
+    // ONLY TEMPORARY UNTIL ARE GESTURES IMPLEMENTED
+    this.datePickSub = this.$onDatePick.subscribe(() => {
+      this.autoScrollRequested = true;
+    });
+
+    // appending time tags behind the lessons plan
     for (let i = 0; i <= 24; i++) {
       this.timeTags.push(String(i).padStart(2, '0') + ':00');
     }
   }
 
+  ngAfterViewInit() {
+    this.autoScroll();
+  }
+
+  ngAfterViewChecked() {
+    if (this.autoScrollRequested) {
+      this.autoScroll();
+      this.autoScrollRequested = false;
+    }
+  }
+
   ngOnDestroy() {
     this.storeSub.unsubscribe();
+    this.datePickSub.unsubscribe();
+  }
+
+  autoScroll() {
+    const firstLesson = this.lessonsContRef.nativeElement.querySelector('.entry.lesson');
+    const firstLessonTop = firstLesson?.getBoundingClientRect().top;
+    const elRefTop = this.elRef.nativeElement.getBoundingClientRect().top;
+    this.elRef.nativeElement.scrollTop += firstLessonTop - elRefTop - 10;
   }
 
   showEventDetails(mouseEvent: MouseEvent, event: AnyCalendarEntryType) {
@@ -75,7 +96,7 @@ export class LessonsListComponent implements OnInit, OnDestroy {
   showLessonDetails(mouseEvent: MouseEvent, lesson: TimetableEntryType) {
     console.log(lesson);
     this.viewService.popUpSubject.next({
-      title: 'Szczegóły',
+      title: 'Lekcja',
       content: getLessonDetailsHTML(lesson)
     })
     mouseEvent.stopPropagation();

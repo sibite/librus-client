@@ -35,8 +35,9 @@ export class ViewService {
 
   constructor() {
     this.refreshTheme();
-    window.matchMedia(('prefers-color-scheme: dark')).addEventListener('change', media => {
-      this._theme = media.matches ? 'dark' : 'light';
+    // add listener
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', media => {
+      this.refreshTheme();
     })
     // Resizing view-wrappers
     this._windowHeight = window.innerHeight;
@@ -60,7 +61,7 @@ export class ViewService {
       document.body.classList.remove('light');
     }
     let themeMetaEl = document.head.querySelector('meta[name="theme-color"]');
-    let themeColor = getComputedStyle(document.body).getPropertyValue('--bg-color-1');
+    let themeColor = getComputedStyle(document.body).getPropertyValue('--bg-color-1').trim();
     console.log('theme color', themeColor);
     themeMetaEl.setAttribute('content', themeColor);
   }

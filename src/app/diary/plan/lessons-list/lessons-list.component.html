@@ -36,7 +36,7 @@
   <div class="time-tags-container">
     <div *ngFor="let tag of timeTags">{{ tag }}</div>
   </div>
-  <div class="lessons-container">
+  <div class="lessons-container" #lessonsContainer>
     <ng-container  *ngFor="let rangeLessons of timetable; let rangeIndex = index">
       <div
         class="range-block"

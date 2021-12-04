@@ -1,20 +1,20 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, forkJoin, throwError } from "rxjs";
-import { catchError, take, tap } from "rxjs/operators";
+import { BehaviorSubject, forkJoin, of, throwError } from "rxjs";
+import { catchError, map, take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-converter";
-import { assignProperties } from "./transform-utilities";
 import { FetcherDataType, FetcherService } from "./fetcher.service";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
-import { CalendarEntryType, HomeWorkType, TeacherFreeDayType } from "./models/calendar.type";
-import { CategoriesType, CategoryType } from "./models/category.type";
+import { CalendarEntryType } from "./models/calendar.type";
+import { CategoriesType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
 import { SchoolInfoType } from "./models/school-info.type";
 import { SubjectType } from "./models/subject.type";
-import { TimetableEntryType, TimetableType } from "./models/timetable.type";
+import { TimetableEntryType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
+import { assignProperties } from "./transform-utilities";
 
 export type StoreDataType = {
   lastSyncTime?: number,
@@ -78,7 +78,7 @@ export class StoreService {
       .subscribe(forkResponse => {
         this.fetcherData = forkResponse;
         this.transformFetcherData();
-        this.loadTimetable(new Date());
+        this.loadTimetable(new Date()).pipe(take(1)).subscribe();
         // emit sync subject
         this.dataSyncSubject.next(this.getData());
         this.data.lastSyncTime = Date.now();
@@ -187,6 +187,7 @@ export class StoreService {
           entry.Kind = kind;
           assignProperties(entry.Subject, this.fetcherData.subjects, ['Name']);
           assignProperties(entry.Teacher, this.fetcherData.users, ['FirstName', 'LastName']);
+          assignProperties(entry.CreatedBy, this.fetcherData.users, ['FirstName', 'LastName']);
           addToCalendar(entry);
         }
       }
@@ -218,26 +219,26 @@ export class StoreService {
     // format: YYYY-MM-DD
     let dateString = toDateString(weekStart);
     let syncOffset = Date.now() - (this.data.timetablesLastSync[dateString] || -Infinity);
-    if (syncOffset > this.timetableSyncMaxOffset) {
-      this.fetcherService.fetchTimetable(dateString).pipe(
-          take(1),
-          catchError(err => {
-            return this.timetableErrorHandler(err, date, isSecondAttempt);
-          })
-        ).subscribe(
-        timetable => {
-          console.log(timetable);
-          for (let day of Object.keys(timetable)) {
-            this.transformTimetableDay(timetable[day]);
-            this.data.timetableDays[day] = timetable[day];
-          }
-          this.data.timetablesLastSync[dateString] = Date.now();
-          this.timetableErrors[dateString] = false;
-          this.dataSyncSubject.next(this.getData());
-          this.saveLocalStorage();
+    if (syncOffset <= this.timetableSyncMaxOffset) return of(this.data.timetableDays);
+
+    return this.fetcherService.fetchTimetable(dateString).pipe(
+      take(1),
+      catchError(err => {
+        return this.timetableErrorHandler(err, date, isSecondAttempt);
+      }),
+      map(timetable => {
+        console.log(timetable);
+        for (let day of Object.keys(timetable)) {
+          this.transformTimetableDay(timetable[day]);
+          this.data.timetableDays[day] = timetable[day];
         }
-      );
-    }
+        this.data.timetablesLastSync[dateString] = Date.now();
+        this.timetableErrors[dateString] = false;
+        this.dataSyncSubject.next(this.getData());
+        this.saveLocalStorage();
+        return this.data.timetableDays;
+      })
+    );
   }
 
   transformTimetableDay(day: TimetableEntryType[][]) {
@@ -286,7 +287,7 @@ export class StoreService {
     console.error(err);
     if (err.error?.Code == "TokenIsExpired" && !isSecondAttempt) {
       this.authService.auth().pipe(take(1)).subscribe(
-        () => this.loadTimetable(date, true)
+        () => this.loadTimetable(date, true).pipe(take(1)).subscribe()
       )
     }
     else {

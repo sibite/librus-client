@@ -1,5 +1,7 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { convertLibrusDate, formatDate, toDateString, toMiddayDate, toWeekStartDate } from 'src/app/shared/date-converter';
 import { CalendarEntryType } from 'src/app/store/models/calendar.type';
 import { TimetableEntryType } from 'src/app/store/models/timetable.type';
@@ -11,6 +13,8 @@ import { StoreService } from 'src/app/store/store.service';
   styleUrls: ['./plan.component.scss']
 })
 export class PlanComponent implements OnInit, OnDestroy {
+  public $onDatePick = new Subject<Date>();
+  public today: Date;
   public date: Date;
   public dateString: string;
   public dateDisplayString: string = '';
@@ -32,17 +36,27 @@ export class PlanComponent implements OnInit, OnDestroy {
       this.timetableDays = data.timetableDays;
       this.calendar = data.calendar;
     });
-    this.pickDate(new Date());
+    this.pickDate(new Date(2021, 11, 3));
+    // set today to next day when reaches midnight
+    let nextDay = new Date(Date.now() + 86400e3);
+    nextDay.setHours(0, 0, 1);
+    setTimeout(() => this.today = toMiddayDate(new Date()), nextDay.getTime() - Date.now());
   }
 
   pickDate(date: Date) {
+    this.today = toMiddayDate(new Date());
     const weekStart = toWeekStartDate(date);
     this.weekSlideOffset = 0;
     this.date = toMiddayDate(date);
     this.dateString = toDateString(this.date);
     this.dateDisplayString = formatDate(date, 'long weekday-month');
     this.setWeekDates(weekStart);
-    this.storeService.loadTimetable(this.date);
+    this.storeService.loadTimetable(this.date)
+      .pipe(take(1))
+      .subscribe(timetableDays => {
+        console.log('onDatePick dispatched');
+        this.$onDatePick.next(this.date);
+      });
   }
 
   setWeekDates(weekStart: Date) {

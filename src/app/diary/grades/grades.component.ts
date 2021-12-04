@@ -35,7 +35,7 @@ export class GradesComponent implements OnInit, AfterViewInit {
         this.gradeSubjects = data.gradeSubjects?.sort((a, b) => a.Name > b.Name ? 1 : -1);
         this.subjectColors = data.subjectColors;
         let semesterChangeDate = convertLibrusDate(data.unitInfo.class.EndFirstSemester);
-        this.semester = semesterChangeDate.getTime() < Date.now() + 86400e3 ? 1 : 2;
+        this.semester = Date.now() < semesterChangeDate.getTime() + 86400e3 ? 1 : 2;
       }
     );
 

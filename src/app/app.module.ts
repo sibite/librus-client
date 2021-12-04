@@ -31,6 +31,8 @@ import { AttendancesDayDetailsComponent } from './diary/attendances/attendances-
 import { PlanComponent } from './diary/plan/plan.component';
 import { LessonsListComponent } from './diary/plan/lessons-list/lessons-list.component';
 import { TimerangePipe } from './shared/pipes/timerange.pipe';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 
 @NgModule({
@@ -67,7 +69,13 @@ import { TimerangePipe } from './shared/pipes/timerange.pipe';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HammerModule
+    HammerModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [
     CapitalizePipe,

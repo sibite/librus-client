@@ -43,15 +43,18 @@
 
 .arrow {
   width: 15px;
-  padding: 0px 8px;
-  line-height: 36px;
+  font-size: 1.2rem;
+  padding: 0px 12px;
+  line-height: 55px;
 }
 
 .weekday-symbol {
   box-sizing: border-box;
+  cursor: pointer;
   width: 36px;
   padding: 4px;
   text-align: center;
+  flex-grow: 1;
 
   .date {
     font-size: 0.8rem;
@@ -67,6 +70,15 @@
     border-radius: vars.$border-radius;
     font-size: 1rem;
     font-weight: bold;
+  }
+
+  &.today .day {
+    background-color: var(--accent-d2);
+  }
+
+  &.today.active .day {
+    background-color: vars.$accent;
+    color: vars.$accent-contrast;
   }
 }
 
