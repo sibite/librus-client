@@ -18,10 +18,17 @@
     <div class="ui sm-segment sm-header">
       <ng-template [ngIf]="getAuthState().loggedIn">
         <strong class="ui sm-name">{{ getAuthState().account?.studentName }}</strong>
-      <span class="ui sm-email">{{ getAuthState().me?.Account?.Email }}</span>
-      <ul class="ui sm-list">
-        <!-- <app-side-menu-item itemIcon="bi-box-arrow-right">Wyloguj się</app-side-menu-item> -->
-      </ul>
+        <span class="ui sm-email">{{ getAuthState().me?.Account?.Email }}</span>
+        <span class="ui sm-last-sync" *ngIf="lastSyncText">
+          <div class="ui details-item">
+            <h5 class="ui details-item-name">Ostatnia synchronizacja</h5>
+            <p class="ui details-item-content">{{ lastSyncText }}</p>
+          </div>
+        </span>
+        <ul class="ui sm-list">
+          <!-- <app-side-menu-item itemIcon="bi-box-arrow-right">Wyloguj się</app-side-menu-item> -->
+          <app-side-menu-item itemIcon="bi-arrow-repeat" (click)="onSyncClick()">Synchronizuj</app-side-menu-item>
+        </ul>
       </ng-template>
       <i class="ui sm-name" *ngIf="!getAuthState().loggedIn">Nie zalogowano</i>
     </div>

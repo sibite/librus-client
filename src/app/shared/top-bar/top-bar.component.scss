@@ -4,6 +4,8 @@ $bar-height: 54px;
 $el-padding: 10px;
 $el-margin: 5px;
 
+$sync-height: 24px;
+
 @mixin common-bar-element() {
   box-sizing: border-box;
   height: #{$bar-height - $el-margin * 2};
@@ -16,11 +18,14 @@ $el-margin: 5px;
 :host {
   z-index: 1000;
   box-sizing: border-box;
+  font-size: 1.06rem;
+}
+
+.main-bar {
   display: flex;
   height: $bar-height;
   background-color: var(--bg-color-1);
-  box-shadow: 0px 1px 1px var(--bar-shadow-color);
-  font-size: 1.06rem;
+  box-shadow: 0px 1px 0px var(--bar-shadow-color);
 }
 
 .ui.topbar-button {
@@ -41,4 +46,62 @@ $el-margin: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.sync-bar {
+  overflow: hidden;
+  line-height: $sync-height;
+  font-size: 1rem;
+  text-align: center;
+  transition: height 600ms;
+  color: #ffffff;
+  box-shadow: 0px 1px 3px rgb(0, 0, 0, 0.15);
+
+  &.offline, &.syncing, &.error, &.uptodate {
+    height: $sync-height;
+  }
+
+  &.none {
+    height: 0px;
+  }
+
+  &.offline {
+    background-color: vars.$warning;
+  }
+  &.syncing {
+    background-color: var(--bg-color-2);
+    color: var(--text-color-1);
+  }
+  &.error {
+    background-color: vars.$danger;
+  }
+  &.uptodate {
+    background-color: var(--bg-color-2);
+    color: var(--text-color-1);
+    animation: {
+      name: sync-hide;
+      duration: 1s;
+      fill-mode: forwards;
+      delay: 2s;
+    }
+  }
+}
+
+@keyframes sync-hide {
+  from {
+    height: $sync-height;
+  }
+  to {
+    height: 0px;
+  }
+}
+
+.loading-spinner {
+  margin-right: 12px;
+  height: $sync-height;
+  position: relative;
+  &::before {
+    display: inline-block;
+    @include vars.loading-spinner(12px, 2px, var(--text-color-1), true);
+  }
 }

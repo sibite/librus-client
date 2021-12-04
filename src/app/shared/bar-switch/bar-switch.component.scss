@@ -19,7 +19,7 @@ $border: 1px solid var(--color-4);
 .bar {
   display: flex;
   box-sizing: border-box;
-  overflow: hidden;
+  //overflow: hidden;
   align-items: stretch;
   width: 100%;
   border-radius: vars.$border-radius;

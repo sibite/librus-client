@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, forkJoin, of, throwError } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
-import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-converter";
+import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-utilities";
 import { FetcherDataType, FetcherService } from "./fetcher.service";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
@@ -16,7 +16,7 @@ import { TimetableEntryType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
 import { assignProperties } from "./transform-utilities";
 
-export type StoreDataType = {
+export interface StoreDataType {
   lastSyncTime?: number,
   timetablesLastSync?: { [key: string]: number },
   unitInfo?: {
@@ -35,14 +35,31 @@ export type StoreDataType = {
   calendar?: { [key: string]: CalendarEntryType[] }
 };
 
+export interface SyncStateType {
+  offline: boolean,
+  syncing: boolean,
+  timetableSyncing: boolean,
+  error: boolean
+}
+
+const initialSyncState = {
+  offline: false,
+  syncing: false,
+  timetableSyncing: false,
+  error: false
+}
+
 @Injectable({ providedIn: 'root' })
 export class StoreService {
   fetcherData: FetcherDataType = {};
   data: StoreDataType = {};
+  syncState: SyncStateType = initialSyncState;
+
   dataSyncSubject = new BehaviorSubject<StoreDataType>({});
+  syncStateSubject = new BehaviorSubject<SyncStateType>(this.syncState);
   syncInterval = 30 * 60e3;
   timetableSyncMaxOffset = 5 * 60e3;
-  timetableErrors?: { [key: string]: boolean} = {};
+  timetableErrors?: { [key: string]: boolean } = {};
 
   constructor(
     private fetcherService: FetcherService,
@@ -53,6 +70,23 @@ export class StoreService {
     this.data.timetablesLastSync ??= {};
     this.dataSyncSubject.next(this.getData());
     this.scheduleNextSync();
+
+    // network mode
+    this.syncState.offline = !window.navigator.onLine;
+    this.syncStateSubject.next(this.syncState);
+    // online mode
+    window.addEventListener('online', () => {
+      this.syncState.offline = false;
+      this.syncStateSubject.next(this.syncState);
+      if (this.syncState.error) {
+        this.synchronize();
+      }
+    })
+    // offline mode
+    window.addEventListener('offline', () => {
+      this.syncState.offline = true;
+      this.syncStateSubject.next(this.syncState);
+    })
   }
 
   synchronize(isSecondAttempt = false) {
@@ -69,6 +103,10 @@ export class StoreService {
       themes: this.fetcherService.fetchThemes()
     };
 
+    this.syncState.syncing = true;
+    this.syncState.error = false;
+    this.syncStateSubject.next(this.syncState);
+
     forkJoin(queueMap)
       .pipe(
         catchError(err => {
@@ -79,11 +117,14 @@ export class StoreService {
         this.fetcherData = forkResponse;
         this.transformFetcherData();
         this.loadTimetable(new Date()).pipe(take(1)).subscribe();
-        // emit sync subject
         this.dataSyncSubject.next(this.getData());
         this.data.lastSyncTime = Date.now();
         this.scheduleNextSync();
         this.saveLocalStorage();
+        this.syncState.syncing = false;
+        this.syncState.error = false;
+        this.syncStateSubject.next(this.syncState);
+
         console.log(this.getData());
         console.log(this.fetcherData)
       });
@@ -215,11 +256,17 @@ export class StoreService {
   }
 
   loadTimetable(date: Date, isSecondAttempt = false) {
+    this.syncState.timetableSyncing = true;
+    this.syncStateSubject.next(this.syncState);
+
     let weekStart = toWeekStartDate(date);
-    // format: YYYY-MM-DD
     let dateString = toDateString(weekStart);
-    let syncOffset = Date.now() - (this.data.timetablesLastSync[dateString] || -Infinity);
-    if (syncOffset <= this.timetableSyncMaxOffset) return of(this.data.timetableDays);
+
+    if (this.isTimetableDayUpToDate(date)) {
+      this.syncState.timetableSyncing = false;
+      this.syncStateSubject.next(this.syncState);
+      return of(this.data.timetableDays);
+    }
 
     return this.fetcherService.fetchTimetable(dateString).pipe(
       take(1),
@@ -234,6 +281,8 @@ export class StoreService {
         }
         this.data.timetablesLastSync[dateString] = Date.now();
         this.timetableErrors[dateString] = false;
+        this.syncState.timetableSyncing = false;
+        this.syncStateSubject.next(this.syncState);
         this.dataSyncSubject.next(this.getData());
         this.saveLocalStorage();
         return this.data.timetableDays;
@@ -265,6 +314,13 @@ export class StoreService {
     }
   }
 
+  isTimetableDayUpToDate(date: Date) {
+    let weekStart = toWeekStartDate(date);
+    let dateString = toDateString(weekStart);
+    let syncOffset = Date.now() - (this.data.timetablesLastSync[dateString] || -Infinity);
+    return syncOffset <= this.timetableSyncMaxOffset;
+  }
+
   scheduleNextSync(lastFailed = false) {
     const lastSyncTime = !lastFailed ? this.data.lastSyncTime || Date.now() - this.syncInterval : Date.now();
     setTimeout(() => this.synchronize(), lastSyncTime + this.syncInterval - Date.now());
@@ -278,6 +334,9 @@ export class StoreService {
       )
     }
     else {
+      this.syncState.syncing = false;
+      this.syncState.error = true;
+      this.syncStateSubject.next(this.syncState);
       this.scheduleNextSync(true);
     }
     return throwError(err);
@@ -292,6 +351,8 @@ export class StoreService {
     }
     else {
       this.timetableErrors[toDateString(date)] = true;
+      this.syncState.timetableSyncing = false;
+      this.syncStateSubject.next(this.syncState);
     }
     return throwError(err);
   }

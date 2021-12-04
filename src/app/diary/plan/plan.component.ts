@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { convertLibrusDate, formatDate, toDateString, toMiddayDate, toWeekStartDate } from 'src/app/shared/date-converter';
+import { convertLibrusDate, formatDate, toDateString, toMiddayDate, toWeekStartDate } from 'src/app/shared/date-utilities';
 import { CalendarEntryType } from 'src/app/store/models/calendar.type';
 import { TimetableEntryType } from 'src/app/store/models/timetable.type';
 import { StoreService } from 'src/app/store/store.service';
@@ -14,6 +14,7 @@ import { StoreService } from 'src/app/store/store.service';
 })
 export class PlanComponent implements OnInit, OnDestroy {
   public $onDatePick = new Subject<Date>();
+  public isUpToDate = true;
   public today: Date;
   public date: Date;
   public dateString: string;
@@ -35,8 +36,9 @@ export class PlanComponent implements OnInit, OnDestroy {
       if (!data.timetableDays) return;
       this.timetableDays = data.timetableDays;
       this.calendar = data.calendar;
+      this.isUpToDate = this.storeService.isTimetableDayUpToDate(this.date);
     });
-    this.pickDate(new Date(2021, 11, 3));
+    this.pickDate(new Date());
     // set today to next day when reaches midnight
     let nextDay = new Date(Date.now() + 86400e3);
     nextDay.setHours(0, 0, 1);
@@ -44,18 +46,21 @@ export class PlanComponent implements OnInit, OnDestroy {
   }
 
   pickDate(date: Date) {
+    this.$onDatePick.next(this.date);
     this.today = toMiddayDate(new Date());
     const weekStart = toWeekStartDate(date);
     this.weekSlideOffset = 0;
+    this.setWeekDates(weekStart);
     this.date = toMiddayDate(date);
     this.dateString = toDateString(this.date);
     this.dateDisplayString = formatDate(date, 'long weekday-month');
-    this.setWeekDates(weekStart);
+    this.isUpToDate = this.storeService.isTimetableDayUpToDate(this.date);
     this.storeService.loadTimetable(this.date)
       .pipe(take(1))
       .subscribe(timetableDays => {
         console.log('onDatePick dispatched');
         this.$onDatePick.next(this.date);
+        this.isUpToDate = true;
       });
   }
 

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { convertLibrusDate, formatDate } from 'src/app/shared/date-converter';
+import { convertLibrusDate, formatDate } from 'src/app/shared/date-utilities';
 import { ViewService } from 'src/app/shared/view.service';
 import { AttendanceType } from 'src/app/store/models/attendance.type';
 import { StoreService } from 'src/app/store/store.service';

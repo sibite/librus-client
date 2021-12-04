@@ -28,20 +28,31 @@
   align-items: center;
   padding: 5px 0;
   background-color: var(--bg-color-1);
-  box-shadow: 0px -1px 1px var(--bar-shadow-color);
+  box-shadow: 0px -1px 0px var(--bar-shadow-color);
 }
 
-.ui.component .day-name {
+.ui.component#day-title {
+  flex-direction: column;
   box-sizing: border-box;
   width: 100%;
   padding: 10px 0;
   text-align: center;
+  box-shadow: 0px 1px 0px var(--bar-shadow-color);
+}
+
+.day-name {
   font-size: 1.2rem;
   font-weight: bold;
-  box-shadow: 0px 1px 1px var(--bar-shadow-color);
+}
+
+.day-out-of-date {
+  margin-top: 8px;
+  font-size: 1rem;
+  color: var(--text-color-4);
 }
 
 .arrow {
+  cursor: pointer;
   width: 15px;
   font-size: 1.2rem;
   padding: 0px 12px;

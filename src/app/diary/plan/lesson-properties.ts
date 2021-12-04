@@ -1,8 +1,6 @@
-import { convertLibrusDate, formatDate } from "src/app/shared/date-converter";
+import { convertLibrusDate, formatDate } from "src/app/shared/date-utilities";
 import { generateDetailsListHTML } from "src/app/shared/generate-details-list";
 import { CapitalizePipe } from "src/app/shared/pipes/capitalize.pipe";
-import { TimerangePipe } from "src/app/shared/pipes/timerange.pipe";
-import { AnyCalendarEntryType } from "src/app/store/models/calendar.type";
 import { TimetableEntryType } from "src/app/store/models/timetable.type";
 
 function reFormatDate(date: string) {

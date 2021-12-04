@@ -1,4 +1,4 @@
-import { convertLibrusDate } from "src/app/shared/date-converter";
+import { convertLibrusDate } from "src/app/shared/date-utilities";
 import { generateDetailsListHTML } from "src/app/shared/generate-details-list";
 import { CapitalizePipe } from "src/app/shared/pipes/capitalize.pipe";
 import { GradeType } from "src/app/store/models/grade.type";

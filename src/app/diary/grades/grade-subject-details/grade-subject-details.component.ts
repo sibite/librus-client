@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { convertLibrusDate } from 'src/app/shared/date-converter';
+import { convertLibrusDate } from 'src/app/shared/date-utilities';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { semesterOptions } from 'src/app/shared/semester-options';
 import { ViewService } from 'src/app/shared/view.service';

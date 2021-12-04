@@ -1,4 +1,4 @@
-import { convertLibrusDate } from "src/app/shared/date-converter";
+import { convertLibrusDate } from "src/app/shared/date-utilities";
 import { GradeType } from "src/app/store/models/grade.type";
 
 export function gradesByDateSorter(a, b) {

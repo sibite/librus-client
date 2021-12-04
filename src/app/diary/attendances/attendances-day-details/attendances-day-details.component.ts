@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { convertLibrusDate, formatDate } from 'src/app/shared/date-converter';
+import { convertLibrusDate, formatDate } from 'src/app/shared/date-utilities';
 import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { ViewService } from 'src/app/shared/view.service';
 import { AttendanceType } from 'src/app/store/models/attendance.type';

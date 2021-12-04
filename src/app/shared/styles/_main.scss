@@ -77,7 +77,7 @@ input {
       name: ripple-scale;
       timing-function: ease-out;
       iteration-count: 1;
-      duration: 400ms;
+      duration: 250ms;
     }
   }
 
@@ -87,7 +87,7 @@ input {
       name: ripple-scale, ripple-opacity;
       timing-function: ease-out, ease-out;
       iteration-count: 1, 1;
-      duration: 400ms, 600ms;
+      duration: 250ms, 600ms;
     }
   }
 

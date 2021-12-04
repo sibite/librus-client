@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { NavigationStart, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { convertLibrusDate } from 'src/app/shared/date-converter';
+import { convertLibrusDate } from 'src/app/shared/date-utilities';
 import { semesterOptions } from 'src/app/shared/semester-options';
 import { ViewService } from 'src/app/shared/view.service';
 import { StoreService } from 'src/app/store/store.service';
@@ -43,7 +43,7 @@ export class GradesComponent implements OnInit, AfterViewInit {
       this.viewService.state.gradesView.scroll = this.hostEl.nativeElement.scrollTop;
     }, 250);
 
-    this.semester = this.viewService.state.gradesView.semester ?? 1;
+    this.semester = this.viewService.state.gradesView.semester ?? 0;
   }
 
   ngOnDestroy() {

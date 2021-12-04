@@ -56,19 +56,29 @@ $trns-fn: cubic-bezier(0, 0, 0.1, 1);
 
 .ui.sm-header {
   padding-top: vars.$side-menu-item-v-padding;
-  .sm-name, .sm-email {
+  .sm-name, .sm-email, .sm-last-sync {
     padding: 0 vars.$side-menu-item-h-padding;
     display: block;
   }
   .sm-name {
-    display: block;
     font-size: 1.2em;
     margin-bottom: 5px;
   }
   .sm-email {
-    display: block;
     font-size: 0.9em;
     color: var(--accent);
+  }
+  .sm-last-sync {
+    font-size: 0.9em;
+    padding-top: 16px;
+    color: var(--text-color-2);
+
+    .details-item {
+      padding: 0;
+      * {
+        margin: 2px 0;
+      }
+    }
   }
   .sm-list {
     padding-top: vars.$side-menu-item-v-padding;

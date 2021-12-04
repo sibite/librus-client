@@ -1,6 +1,7 @@
 <div class="ui component" id="main">
-  <div class="ui component align-width">
+  <div class="ui component align-width" id="day-title">
     <div class="day-name">{{ dateDisplayString | capitalize }}</div>
+    <div class="day-out-of-date" *ngIf="!isUpToDate">Dane mogą być nieaktualne</div>
   </div>
   <div class="ui component" id="list">
     <div class="ui group align-width">
@@ -13,7 +14,10 @@
     </div>
   </div>
   <div class="ui component align-width" id="weekdays">
-    <div class="arrow" (click)="slideWeekDates(-1)">
+    <div
+      class="arrow"
+      appClickEffect
+      (click)="slideWeekDates(-1)">
       <i class="bi-caret-left-fill"></i>
     </div>
     <div
@@ -27,7 +31,10 @@
       <div class="date">{{ date_.getDate() }}</div>
       <div class="day">{{ dayNames[i] }}</div>
     </div>
-    <div class="arrow" (click)="slideWeekDates(1)">
+    <div
+      class="arrow"
+      appClickEffect
+      (click)="slideWeekDates(1)">
       <i class="bi-caret-right-fill"></i>
     </div>
   </div>

@@ -45,7 +45,9 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     // enable animations
-    setTimeout(() => this.renderer.removeClass(document.body, 'preload'), 100);
+    document.onload = () => {
+      setTimeout(() => this.renderer.removeClass(document.body, 'preload'), 1000);
+    }
   }
 
   ngOnDestroy() {

@@ -1,5 +1,13 @@
+<div class="main-bar">
+  <div
+    class="ui topbar-button"
+    appClickEffect
+    (click)="onButtonClick.emit()"><i [class]="appIcon"></i></div>
+  <div class="ui topbar-title">{{ uiTitle }}</div>
+</div>
 <div
-  class="ui topbar-button"
-  appClickEffect
-  (click)="onButtonClick.emit()"><i [class]="appIcon"></i></div>
-<div class="ui topbar-title">{{ uiTitle }}</div>
+  class="sync-bar"
+  *ngIf="showSyncState"
+  [ngClass]="syncState">
+  <span class="loading-spinner" *ngIf="syncState == 'syncing'"></span><span>{{ syncText }}</span>
+</div>

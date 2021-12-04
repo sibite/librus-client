@@ -2,12 +2,14 @@
 @use "sass:math";
 
 $accent: hsl(268, 54%, 49%);
-$accent-lightest: hsl(268, 54%, 92%);
+$accent-lightest: hsl(268, 72%, 90%);
 $accent-lighter: hsl(268, 54%, 75%);
 $accent-darker: hsl(268, 54%, 38%);
 $accent-darkest: hsl(268, 40%, 20%);
 $accent-contrast: #ffffff;
 $danger: #ff3311;
+$success: #14B814;
+$warning: #F4AB3E;
 
 // attendances
 $att-presence: #0B114B;
@@ -114,5 +116,26 @@ $nav-bar-height: 64px;
   }
   &[kind="SchoolFreeDays"] {
     --event-color: #{$event-school-free-day};
+  }
+}
+
+@mixin loading-spinner($size: 26px, $width: 3px, $color: #ffffff, $auto-position: false) {
+  $inner-size: #{$size - $width * 2};
+  content: '';
+  @if $auto-position {
+    position: absolute;
+    top: calc(50% - #{$size * 0.5});
+    left: calc(50% - #{$size * 0.5});
+  }
+  width: $inner-size;
+  height: $inner-size;
+  animation: button-spinner 0.6s linear;
+  animation-iteration-count: infinite;
+  box-shadow: 0 0 0 1px transparent;
+  border: {
+    color: $color transparent transparent $color;
+    style: solid;
+    width: $width;
+    radius: 100%;
   }
 }
