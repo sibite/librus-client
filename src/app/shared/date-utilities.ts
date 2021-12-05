@@ -20,6 +20,7 @@ export function toDateString(date: Date): string {
 
 
 export function toMiddayDate(date: Date): Date {
+  if (!date) return null;
   let midday = new Date(date.getTime());
   midday.setHours(12, 0, 0, 0);
   return midday;
@@ -27,6 +28,7 @@ export function toMiddayDate(date: Date): Date {
 
 
 export function toWeekStartDate(date: Date): Date {
+  if (!date) return null;
   let midday = toMiddayDate(date);
   return new Date(midday.getTime() - ((midday.getDay() + 6) % 7) * 86400e3);
 }

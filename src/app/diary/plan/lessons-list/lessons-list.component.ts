@@ -43,11 +43,11 @@ export class LessonsListComponent implements OnInit, OnDestroy, AfterViewInit, A
   ngOnInit(): void {
     this.storeSub = this.storeService.dataSyncSubject.subscribe(data => {
       if (!data.unitInfo) return;
-      this.lessonsRange = data.unitInfo.school.LessonsRange;
+      this.lessonsRange = data.unitInfo.school?.LessonsRange || [];
       this.subjectColors = data.subjectColors;
-      let lastIndex = data.unitInfo.school.LessonsRange.length - 1;
-      this.dayStartRange = data.unitInfo.school.LessonsRange[1].RawFrom;
-      this.dayEndRange = data.unitInfo.school.LessonsRange[lastIndex].RawTo;
+      let lastIndex = this.lessonsRange.length - 1;
+      this.dayStartRange = this.lessonsRange[1]?.RawFrom || 0;
+      this.dayEndRange = this.lessonsRange[lastIndex]?.RawTo || 1440;
     });
 
     // ONLY TEMPORARY UNTIL ARE GESTURES IMPLEMENTED

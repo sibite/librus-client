@@ -33,6 +33,8 @@ import { LessonsListComponent } from './diary/plan/lessons-list/lessons-list.com
 import { TimerangePipe } from './shared/pipes/timerange.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { DiaryGuard } from './diary/diary.guard';
+import { AuthGuard } from './auth/auth.guard';
 
 
 @NgModule({
@@ -49,9 +51,6 @@ import { environment } from '../environments/environment';
     NavBarItemComponent,
     GradesComponent,
     GradeSubjectItemComponent,
-    CapitalizePipe,
-    KeepHtmlPipe,
-    KeysPipe,
     GradeSubjectDetailsComponent,
     PopUpComponent,
     DropdownComponent,
@@ -61,6 +60,9 @@ import { environment } from '../environments/environment';
     AttendancesDayDetailsComponent,
     PlanComponent,
     LessonsListComponent,
+    CapitalizePipe,
+    KeepHtmlPipe,
+    KeysPipe,
     TimerangePipe
   ],
   imports: [
@@ -79,6 +81,8 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     CapitalizePipe,
+    DiaryGuard,
+    AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptorService,

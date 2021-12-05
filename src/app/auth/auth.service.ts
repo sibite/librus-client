@@ -5,6 +5,8 @@ import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { MeType } from '../store/models/me.model';
 import { SynergiaAccountType } from '../store/models/synergia-accounts.type';
 import { StoreService } from '../store/store.service';
+import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 export type AuthStateType = {
   account: SynergiaAccountType,
@@ -15,24 +17,27 @@ export type AuthStateType = {
   error: string
 }
 
+const initialAuthState = {
+  account: null,
+  me: null,
+  loggedIn: false,
+  loading: false,
+  authorized: false,
+  error: null,
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private unknownErrorMessage = 'Wystąpił nieznany błąd';
-  public authState: AuthStateType = {
-    account: null,
-    me: null,
-    loggedIn: false,
-    loading: false,
-    authorized: false,
-    error: null,
-  };
+  public authState: AuthStateType = initialAuthState;
   public authStateSubject = new BehaviorSubject<AuthStateType>(this.authState);
   public authSuccessSubject = new Subject();
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) {
     this.restoreAuthSession();
     this.authStateSubject.subscribe(authState => {
@@ -56,9 +61,8 @@ export class AuthService {
         let parser = new DOMParser();
         let responseDOM = parser.parseFromString(responseHTML, 'text/html');
         let csrfToken = (<HTMLMetaElement>responseDOM.head.querySelector('meta[name="csrf-token"]')).content;
-        //let xsrfToken = document.cookie.match(/XSRF-TOKEN=(.*)/)[1];
         let xsrfToken = ''
-        if (!csrfToken/* || !xsrfToken*/) {
+        if (!csrfToken) {
           throw new Error('Could not scrap tokens');
         }
         return {xsrfToken, csrfToken};
@@ -70,7 +74,6 @@ export class AuthService {
           {email, password},
           {
             headers: new HttpHeaders({
-              //'X-XSRF-TOKEN': tokens.xsrfToken,
               'X-CSRF-TOKEN': tokens.csrfToken,
               'X-Requested-With': 'XMLHttpRequest',
               'Accept': 'Accept: application/json, text/plain, */*',
@@ -163,6 +166,16 @@ export class AuthService {
         this.authSuccessSubject.next();
       })
     );
+  }
+
+  logout() {
+    return this.http.get('https://logoutthatbitch.please/', {
+      withCredentials: true
+    }).pipe(tap(() => {
+      this.authStateSubject.next(this.authState);
+      this.authState = initialAuthState;
+      this.saveLocalStorage();
+    }));
   }
 
   getBearerToken() {

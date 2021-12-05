@@ -26,7 +26,7 @@
           </div>
         </span>
         <ul class="ui sm-list">
-          <!-- <app-side-menu-item itemIcon="bi-box-arrow-right">Wyloguj się</app-side-menu-item> -->
+          <app-side-menu-item itemIcon="bi-box-arrow-right" (click)="onLogoutClick()">Wyloguj się</app-side-menu-item>
           <app-side-menu-item itemIcon="bi-arrow-repeat" (click)="onSyncClick()">Synchronizuj</app-side-menu-item>
         </ul>
       </ng-template>

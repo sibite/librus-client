@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { forkJoin, throwError } from "rxjs";
-import { catchError, map, switchMap, tap } from "rxjs/operators";
-
+import { Injectable } from '@angular/core';
+import { forkJoin, of, throwError } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
 import { CalendarKinds, CalendarKindType, CalendarType } from "./models/calendar.type";
-import { CategoriesType, CategoryType } from "./models/category.type";
+import { CategoriesType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
+import { CommentType } from './models/comment.type';
 import { GradeKinds, GradeKindType, GradeType } from "./models/grade.type";
 import { LessonType } from "./models/lesson.type";
 import { LuckyNumberType } from "./models/lucky-number.type";
@@ -16,8 +16,8 @@ import { SchoolInfoType } from "./models/school-info.type";
 import { SubjectType } from "./models/subject.type";
 import { TimetableType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
-import { CommentType } from './models/comment.type';
-import { assignProperties, getIdAsKeysObj } from './transform-utilities';
+import { getIdAsKeysObj } from './transform-utilities';
+
 
 export type FetcherDataType = {
   // Storage
@@ -54,7 +54,9 @@ export class FetcherService {
     return this.http.get(
       'https://api.librus.pl/2.0/Subjects'
     ).pipe(
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, { Subjects: [] });
+      }),
       map(response => {
         return <SubjectType[]>response['Subjects'];
       }),
@@ -68,7 +70,9 @@ export class FetcherService {
     return this.http.get(
       'https://api.librus.pl/2.0/Users'
     ).pipe(
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, { Users: [] });
+      }),
       map(response => {
         return <UserType[]>response['Users'];
       }),
@@ -83,7 +87,9 @@ export class FetcherService {
 
     let requests = GradeKinds.map(gradeKind => {
       return this.http.get<any>(`https://api.librus.pl/2.0/${gradeKind.name}`).pipe(
-          catchError(this.errorHandler.bind(this)),
+          catchError(err => {
+            return this.errorHandler(err, { [gradeKind.propName]: [] });
+          }),
           map(response => {
             return {
               kind: <GradeKindType>gradeKind.name,
@@ -116,12 +122,14 @@ export class FetcherService {
           }
         }
         let commentsRequests = {
-          'DescriptiveGrades': this.http.get('https://api.librus.pl/2.0/DescriptiveGrades/Comments').pipe(map(response => response['Comments'])),
-          'Grades': this.http.get('https://api.librus.pl/2.0/Grades/Comments').pipe(map(response => response['Comments']))
+          'DescriptiveGrades': this.http.get('https://api.librus.pl/2.0/DescriptiveGrades/Comments').pipe(map(response => response['Comments'] ?? [])),
+          'Grades': this.http.get('https://api.librus.pl/2.0/Grades/Comments').pipe(map(response => response['Comments'] ?? []))
         };
         return forkJoin([forkJoin(categoryRequests), forkJoin(commentsRequests)]);
       }),
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, [ {}, {} ]);
+      }),
       map(([categoryRequests, commentsRequests]) => {
         let categories = {};
         let comments = {};
@@ -143,7 +151,9 @@ export class FetcherService {
 
   fetchLessons() {
     return this.http.get('https://api.librus.pl/2.0/Lessons').pipe(
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, { Lessons: [] });
+      }),
       map(response => {
         let lessons: LessonType[] = response['Lessons'];
         return getIdAsKeysObj(lessons);
@@ -153,7 +163,9 @@ export class FetcherService {
 
   fetchAttendanceTypes() {
     return this.http.get('https://api.librus.pl/2.0/Attendances/Types').pipe(
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, { Types: [] });
+      }),
       map(response => {
         let types: AttendanceTypeType[] = response['Types'];
         return getIdAsKeysObj(types);
@@ -163,7 +175,9 @@ export class FetcherService {
 
   fetchAttendances() {
     return this.http.get('https://api.librus.pl/2.0/Attendances').pipe(
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, { Attendances: [] });
+      }),
       map(response => {
         let attendances: AttendanceType[] = response['Attendances'];
         return attendances;
@@ -173,7 +187,9 @@ export class FetcherService {
 
   fetchLuckyNumber() {
     return this.http.get('https://api.librus.pl/2.0/LuckyNumbers').pipe(
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, { LuckyNumber: { } });
+      }),
       map(response => {
         let luckyNumber: LuckyNumberType = response['LuckyNumber'];
         return luckyNumber;
@@ -186,7 +202,9 @@ export class FetcherService {
       schools: this.http.get('https://api.librus.pl/2.0/Schools'),
       classes: this.http.get('https://api.librus.pl/2.0/Classes')
     }).pipe(
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, { schools: {School: {}}, classes: {Class:{}} });
+      }),
       map(({schools, classes}) => {
         let school: SchoolInfoType = schools['School'];
         let class_: ClassInfoType = classes['Class'];
@@ -197,7 +215,9 @@ export class FetcherService {
 
   fetchClassrooms() {
     return this.http.get('https://api.librus.pl/2.0/Classrooms').pipe(
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, { Classrooms: [] });
+      }),
       map(response => {
         let classrooms: ClassroomType[] = response['Classrooms'];
         let classroomsObj: {[key: number]: ClassroomType} = {};
@@ -214,7 +234,9 @@ export class FetcherService {
       switchMap(() => {
         return this.http.get('https://api.librus.pl/2.0/Timetables', {params: { weekStart }});
       }),
-      catchError(this.errorHandler.bind(this)),
+      catchError(err => {
+        return this.errorHandler(err, false);
+      }),
       map(response => {
         let timetableObj: TimetableType = response['Timetable'];
         return timetableObj;
@@ -225,7 +247,9 @@ export class FetcherService {
   fetchCalendar() {
     let requests = CalendarKinds.map(calendarKind => {
       return this.http.get<any>(`https://api.librus.pl/2.0/${calendarKind.name}`).pipe(
-          catchError(this.errorHandler.bind(this)),
+        catchError(err => {
+          return this.errorHandler(err, { [calendarKind.propName]: [] });
+        }),
           map(response => {
             return {
               kind: <CalendarKindType>calendarKind.propName,
@@ -240,12 +264,10 @@ export class FetcherService {
 
     return forkJoin({
       catList: this.http.get('https://api.librus.pl/2.0/HomeWorks/Categories').pipe(
-        catchError(this.errorHandler.bind(this)),
-        map(response => response['Categories'])
+        map(response => response['Categories'] ?? [])
       ),
       typesList: this.http.get('https://api.librus.pl/2.0/ClassFreeDays/Types').pipe(
-        catchError(this.errorHandler.bind(this)),
-        map(response => response['Types'])
+        map(response => response['Types'] ?? [])
       )
     }).pipe(
       switchMap(({catList, typesList}) => {
@@ -277,7 +299,14 @@ export class FetcherService {
     return this.http.get('https://portal.librus.pl/api/v3/Themes', { withCredentials: true });
   }
 
-  errorHandler(err) {
-    return throwError(err);
+  errorHandler(err, placeholder = null) {
+    console.error(err);
+    console.log(err.error?.Code);
+    if (err.error?.Code == "TokenIsExpired" && !placeholder) {
+      return throwError(err);
+    }
+    else {
+      return of(placeholder);
+    }
   }
 }

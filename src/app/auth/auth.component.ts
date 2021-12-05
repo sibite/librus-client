@@ -43,7 +43,7 @@ export class AuthComponent implements OnInit {
           response => {
             console.log(response);
             this.isLoading = false;
-            this.storeService.synchronize();
+            this.storeService.init();
             this.router.navigate(['/diary']);
           },
           error => {

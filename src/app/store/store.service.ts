@@ -52,8 +52,12 @@ const initialSyncState = {
 @Injectable({ providedIn: 'root' })
 export class StoreService {
   fetcherData: FetcherDataType = {};
-  data: StoreDataType = {};
+  data: StoreDataType = {
+    timetableDays: {},
+    timetablesLastSync: {}
+  };
   syncState: SyncStateType = initialSyncState;
+  scheduledTimeout;
 
   dataSyncSubject = new BehaviorSubject<StoreDataType>({});
   syncStateSubject = new BehaviorSubject<SyncStateType>(this.syncState);
@@ -66,10 +70,7 @@ export class StoreService {
     private authService: AuthService
   ) {
     this.restoreLocalStorage();
-    this.data.timetableDays ??= {};
-    this.data.timetablesLastSync ??= {};
-    this.dataSyncSubject.next(this.getData());
-    this.scheduleNextSync();
+    this.init();
 
     // network mode
     this.syncState.offline = !window.navigator.onLine;
@@ -89,7 +90,16 @@ export class StoreService {
     })
   }
 
+  init() {
+    this.data.timetableDays ??= {};
+    this.data.timetablesLastSync ??= {};
+    this.dataSyncSubject.next(this.getData());
+    this.scheduleNextSync();
+  }
+
   synchronize(isSecondAttempt = false) {
+    if (!this.authService.authState?.loggedIn) return;
+
     const queueMap = {
       subjects: this.fetcherService.fetchSubjects(),
       users: this.fetcherService.fetchUsers(),
@@ -116,7 +126,6 @@ export class StoreService {
       .subscribe(forkResponse => {
         this.fetcherData = forkResponse;
         this.transformFetcherData();
-        this.loadTimetable(new Date()).pipe(take(1)).subscribe();
         this.dataSyncSubject.next(this.getData());
         this.data.lastSyncTime = Date.now();
         this.scheduleNextSync();
@@ -124,6 +133,7 @@ export class StoreService {
         this.syncState.syncing = false;
         this.syncState.error = false;
         this.syncStateSubject.next(this.syncState);
+        this.loadTimetable(new Date()).pipe(take(1)).subscribe();
 
         console.log(this.getData());
         console.log(this.fetcherData)
@@ -132,8 +142,17 @@ export class StoreService {
 
   transformFetcherData() {
     // transform functions (tidying messy api responses)
+    let requireFields = function(fields: any[]): boolean {
+      let allPresent = true;
+      fields.forEach(field => {
+        if (!this.fetcherData[field]) allPresent = false;
+      });
+      return allPresent;
+    }.bind(this);
 
     let transformThemes = () => {
+      if (!requireFields(['themes', 'subjects'])) return;
+
       let targetTheme = this.fetcherData.themes[0];
       let subjectColors = {};
       for (let name in targetTheme.subjectColors) {
@@ -148,6 +167,8 @@ export class StoreService {
     }
 
     let transformGrades = () => {
+      if (!requireFields(['themes', 'subjects', 'grades'])) return;
+
       let gradesSubjects = { ...this.fetcherData.subjects };
       for (let subject of Object.values(gradesSubjects)) {
         subject.Color = this.data.subjectColors[subject.Id];
@@ -171,15 +192,21 @@ export class StoreService {
     }
 
     let transformUsers = () => {
+      if (!requireFields(['users'])) return;
+
       this.data.users = this.fetcherData.users;
     }
 
     let transformAttendanceTypes = () => {
+      if (!requireFields(['attendanceTypes'])) return;
+
       let attendanceTypes = this.fetcherData.attendanceTypes;
       this.data.attendanceTypes = attendanceTypes;
     }
 
     let transformAttendances = () => {
+      if (!requireFields(['users', 'attendances', 'attendanceTypes', 'lessons', 'subjects'])) return;
+
       let attendances = this.fetcherData.attendances;
       let attendancesObj = {};
       for (let attendance of attendances) {
@@ -202,10 +229,14 @@ export class StoreService {
     }
 
     let transformClassrooms = () => {
+      if (!requireFields(['classrooms'])) return;
+
       this.data.classrooms = this.fetcherData.classrooms;
     }
 
     let transformCalendar = () => {
+      if (!requireFields(['calendar', 'subjects', 'users'])) return;
+
       let calendarOrg = this.fetcherData.calendar;
       let calendarNew = {};
 
@@ -238,9 +269,12 @@ export class StoreService {
 
     let transformOthers = () => {
       // unit info
+      if (!requireFields(['unitInfo'])) return;
       this.data.unitInfo = this.fetcherData.unitInfo;
       delete this.data.unitInfo.school.LessonsRange[0];
+
       // subjects
+      if (!requireFields(['subjects'])) return;
       this.data.subjects = this.fetcherData.subjects;
     }
 
@@ -256,15 +290,11 @@ export class StoreService {
   }
 
   loadTimetable(date: Date, isSecondAttempt = false) {
-    this.syncState.timetableSyncing = true;
-    this.syncStateSubject.next(this.syncState);
 
     let weekStart = toWeekStartDate(date);
     let dateString = toDateString(weekStart);
 
     if (this.isTimetableDayUpToDate(date)) {
-      this.syncState.timetableSyncing = false;
-      this.syncStateSubject.next(this.syncState);
       return of(this.data.timetableDays);
     }
 
@@ -281,8 +311,6 @@ export class StoreService {
         }
         this.data.timetablesLastSync[dateString] = Date.now();
         this.timetableErrors[dateString] = false;
-        this.syncState.timetableSyncing = false;
-        this.syncStateSubject.next(this.syncState);
         this.dataSyncSubject.next(this.getData());
         this.saveLocalStorage();
         return this.data.timetableDays;
@@ -323,40 +351,49 @@ export class StoreService {
 
   scheduleNextSync(lastFailed = false) {
     const lastSyncTime = !lastFailed ? this.data.lastSyncTime || Date.now() - this.syncInterval : Date.now();
-    setTimeout(() => this.synchronize(), lastSyncTime + this.syncInterval - Date.now());
+    clearTimeout(this.scheduledTimeout);
+    this.scheduledTimeout = setTimeout(() => this.synchronize(), lastSyncTime + this.syncInterval - Date.now());
   }
 
   syncErrorHandler(err, isSecondAttempt) {
+    // temp
     console.error(err);
-    if (err.error?.Code == "TokenIsExpired" && !isSecondAttempt) {
+    console.log(err.error?.Code, isSecondAttempt);
+
+    const onError = () => {
+      console.log('dupa error ')
+      this.syncState.syncing = false;
+      this.syncState.error = true;
+      this.scheduleNextSync(true);
+      this.syncStateSubject.next(this.syncState);
+    }
+
+    if ((err.error?.Code == "TokenIsExpired" || err.status == 401) && !isSecondAttempt) {
+      this.syncState.syncing = false;
       this.authService.auth().pipe(take(1)).subscribe(
-        () => this.synchronize(true)
+        () => this.synchronize(true),
+        () => onError()
       )
     }
     else {
-      this.syncState.syncing = false;
-      this.syncState.error = true;
-      this.syncStateSubject.next(this.syncState);
-      this.scheduleNextSync(true);
+      onError();
     }
     return throwError(err);
   }
 
   timetableErrorHandler(err, date, isSecondAttempt) {
     console.error(err);
-    if (err.error?.Code == "TokenIsExpired" && !isSecondAttempt) {
+    if ((err.error?.Code == "TokenIsExpired" || err.status == 401) && !isSecondAttempt) {
       this.authService.auth().pipe(take(1)).subscribe(
-        () => this.loadTimetable(date, true).pipe(take(1)).subscribe()
+        () => this.loadTimetable(date, true).pipe(take(1)).subscribe(),
+        () => this.timetableErrors[toDateString(date)] = true
       )
     }
     else {
       this.timetableErrors[toDateString(date)] = true;
-      this.syncState.timetableSyncing = false;
-      this.syncStateSubject.next(this.syncState);
     }
     return throwError(err);
   }
-
   saveLocalStorage() {
     localStorage.setItem('app.store', JSON.stringify(this.data));
   }
@@ -365,6 +402,12 @@ export class StoreService {
     console.log('restoring storage');
     this.data = JSON.parse(localStorage.getItem('app.store')) || this.data;
     console.log('localStorage.app.store', this.data);
+  }
+
+  clearData() {
+    this.data = {};
+    clearTimeout(this.scheduledTimeout);
+    localStorage.removeItem('app.store');
   }
 
   getData() {

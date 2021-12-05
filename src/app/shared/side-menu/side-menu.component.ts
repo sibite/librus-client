@@ -54,6 +54,13 @@ export class SideMenuComponent implements OnInit {
     this.storeService.synchronize();
   }
 
+  onLogoutClick() {
+    this.authService.logout().subscribe(() => {
+      this.storeService.clearData();
+      this.router.navigate(['/auth']);
+    });
+  }
+
   getAuthState() {
     return this.authService.authState;
   }

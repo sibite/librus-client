@@ -5,7 +5,8 @@ import { environment } from "src/environments/environment";
 const corsHosts = {
   'https://portal.librus.pl/': 'portal-api',
   'https://personalschedule.librus.pl/': 'personalschedule-api',
-  'https://api.librus.pl/': 'main-api'
+  'https://api.librus.pl/': 'main-api',
+  'https://logoutthatbitch.please/': 'logout'
 }
 
 @Injectable()

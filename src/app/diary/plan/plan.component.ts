@@ -1,8 +1,7 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { convertLibrusDate, formatDate, toDateString, toMiddayDate, toWeekStartDate } from 'src/app/shared/date-utilities';
+import { formatDate, toDateString, toMiddayDate, toWeekStartDate } from 'src/app/shared/date-utilities';
 import { CalendarEntryType } from 'src/app/store/models/calendar.type';
 import { TimetableEntryType } from 'src/app/store/models/timetable.type';
 import { StoreService } from 'src/app/store/store.service';
@@ -26,19 +25,27 @@ export class PlanComponent implements OnInit, OnDestroy {
   public dayNames = [ 'pn', 'wt', 'śr', 'cz', 'pt', 'sb', 'nd' ];
 
   private storeSub: Subscription;
+  private syncSub: Subscription;
 
   constructor(
     private storeService: StoreService
   ) { }
 
   ngOnInit(): void {
+    this.pickDate(new Date());
+    // subscribing to calendar data changes
     this.storeSub = this.storeService.dataSyncSubject.subscribe(data => {
-      if (!data.timetableDays) return;
+      if (!data.timetableDays || !data.calendar) return;
       this.timetableDays = data.timetableDays;
       this.calendar = data.calendar;
       this.isUpToDate = this.storeService.isTimetableDayUpToDate(this.date);
     });
-    this.pickDate(new Date());
+    // refresh current week when syncing
+    this.syncSub = this.storeService.syncStateSubject.subscribe(state => {
+      if (state.syncing) {
+        this.loadTimetable(this.date);
+      }
+    })
     // set today to next day when reaches midnight
     let nextDay = new Date(Date.now() + 86400e3);
     nextDay.setHours(0, 0, 1);
@@ -55,7 +62,11 @@ export class PlanComponent implements OnInit, OnDestroy {
     this.dateString = toDateString(this.date);
     this.dateDisplayString = formatDate(date, 'long weekday-month');
     this.isUpToDate = this.storeService.isTimetableDayUpToDate(this.date);
-    this.storeService.loadTimetable(this.date)
+    this.loadTimetable(this.date);
+  }
+
+  loadTimetable(date: Date) {
+    this.storeService.loadTimetable(date)
       .pipe(take(1))
       .subscribe(timetableDays => {
         console.log('onDatePick dispatched');
@@ -80,6 +91,7 @@ export class PlanComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.storeSub.unsubscribe();
+    this.syncSub.unsubscribe();
   }
 
 }
