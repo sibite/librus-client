@@ -35,16 +35,18 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { DiaryGuard } from './diary/diary.guard';
 import { AuthGuard } from './auth/auth.guard';
+import { RefreshGestureDirective } from './shared/refresh-gesture.directive';
 
 
 @NgModule({
   declarations: [
+    ClickEffectDirective,
+    SideMenuOpenerDirective,
+    RefreshGestureDirective,
     AppComponent,
     AuthComponent,
-    ClickEffectDirective,
     TopbarComponent,
     SideMenuComponent,
-    SideMenuOpenerDirective,
     SideMenuItemComponent,
     DiaryComponent,
     NavBarComponent,

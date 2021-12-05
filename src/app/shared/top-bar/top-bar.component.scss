@@ -61,12 +61,23 @@ $sync-height: 24px;
     height: $sync-height;
   }
 
+  &.error {
+    height: 0px;
+    transition: height 600ms 5s, background-color 200ms;
+  }
+  &.uptodate {
+    height: 0px;
+    transition: height 600ms 2s, background-color 200ms;
+  }
+
   &.none {
+    transition: height 600ms, background-color 200ms 600ms;
     height: 0px;
   }
 
   &.offline {
     background-color: vars.$warning;
+    color: #000000;
   }
   &.syncing {
     background-color: var(--bg-color-2);
@@ -78,21 +89,6 @@ $sync-height: 24px;
   &.uptodate {
     background-color: var(--bg-color-2);
     color: var(--text-color-1);
-    animation: {
-      name: sync-hide;
-      duration: 1s;
-      fill-mode: forwards;
-      delay: 2s;
-    }
-  }
-}
-
-@keyframes sync-hide {
-  from {
-    height: $sync-height;
-  }
-  to {
-    height: 0px;
   }
 }
 

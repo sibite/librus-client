@@ -4,9 +4,13 @@ import * as Hammer from 'hammerjs';
 
 @Injectable()
 export class AppHammerConfig extends HammerGestureConfig {
+  overrides = <any> {
+    pan: { direction: Hammer.DIRECTION_HORIZONTAL }
+  }
+
   buildHammer(element: HTMLElement) {
       let config = new Hammer(element, {
-          touchAction: 'pan-y',
+          touchAction: 'pan-y'
       });
       return config;
   }

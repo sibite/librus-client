@@ -124,15 +124,15 @@ export class StoreService {
         })
       )
       .subscribe(forkResponse => {
+        this.syncState.syncing = false;
+        this.syncStateSubject.next(this.syncState);
         this.fetcherData = forkResponse;
         this.transformFetcherData();
+        this.syncState.error = false;
         this.dataSyncSubject.next(this.getData());
         this.data.lastSyncTime = Date.now();
         this.scheduleNextSync();
         this.saveLocalStorage();
-        this.syncState.syncing = false;
-        this.syncState.error = false;
-        this.syncStateSubject.next(this.syncState);
         this.loadTimetable(new Date()).pipe(take(1)).subscribe();
 
         console.log(this.getData());
@@ -185,7 +185,9 @@ export class StoreService {
             return this.fetcherData.grades.comments[grade.Kind][comment.Id];
           })
         }
-        gradesSubjects[grade.Subject.Id].Grades.push(grade);
+        if (gradesSubjects[grade.Subject.Id]) {
+          gradesSubjects[grade.Subject.Id].Grades.push(grade);
+        }
       }
       this.data.gradeSubjects = Object.values(gradesSubjects);
       this.data.gradeCategories = this.fetcherData.grades.categories;
@@ -289,12 +291,12 @@ export class StoreService {
     transformOthers();
   }
 
-  loadTimetable(date: Date, isSecondAttempt = false) {
+  loadTimetable(date: Date, isSecondAttempt = false, force = false) {
 
     let weekStart = toWeekStartDate(date);
     let dateString = toDateString(weekStart);
 
-    if (this.isTimetableDayUpToDate(date)) {
+    if (this.isTimetableDayUpToDate(date) && !force) {
       return of(this.data.timetableDays);
     }
 

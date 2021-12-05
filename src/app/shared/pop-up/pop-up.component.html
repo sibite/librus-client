@@ -4,7 +4,7 @@
     <div class="title">{{ windowTitle }}</div>
     <div class="content" [innerHTML]="windowContent"></div>
     <div class="toolbar">
-      <button class="ui button transparent" appClickEffect type="button" (click)="onClose.emit()">Zamknij</button>
+      <button class="ui button transparent" appClickEffect type="button" (pointerup)="onClose.emit()">Zamknij</button>
     </div>
   </div>
 </div>

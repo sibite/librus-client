@@ -4,7 +4,7 @@ import { take } from 'rxjs/operators';
 import { formatDate, toDateString, toMiddayDate, toWeekStartDate } from 'src/app/shared/date-utilities';
 import { CalendarEntryType } from 'src/app/store/models/calendar.type';
 import { TimetableEntryType } from 'src/app/store/models/timetable.type';
-import { StoreService } from 'src/app/store/store.service';
+import { StoreService, SyncStateType } from 'src/app/store/store.service';
 
 @Component({
   selector: 'app-plan',
@@ -24,6 +24,7 @@ export class PlanComponent implements OnInit, OnDestroy {
   public weekdates = [];
   public dayNames = [ 'pn', 'wt', 'śr', 'cz', 'pt', 'sb', 'nd' ];
 
+  private prevSyncState: SyncStateType;
   private storeSub: Subscription;
   private syncSub: Subscription;
 
@@ -42,9 +43,11 @@ export class PlanComponent implements OnInit, OnDestroy {
     });
     // refresh current week when syncing
     this.syncSub = this.storeService.syncStateSubject.subscribe(state => {
-      if (state.syncing) {
+      console.log('plan syncstate', this.prevSyncState, state);
+      if (state.syncing || !state.offline && this.prevSyncState?.offline) {
         this.loadTimetable(this.date);
       }
+      this.prevSyncState = { ...state };
     })
     // set today to next day when reaches midnight
     let nextDay = new Date(Date.now() + 86400e3);
@@ -65,14 +68,15 @@ export class PlanComponent implements OnInit, OnDestroy {
     this.loadTimetable(this.date);
   }
 
-  loadTimetable(date: Date) {
-    this.storeService.loadTimetable(date)
+  loadTimetable(date: Date, force = false) {
+    this.storeService.loadTimetable(date, false, force)
       .pipe(take(1))
-      .subscribe(timetableDays => {
-        console.log('onDatePick dispatched');
-        this.$onDatePick.next(this.date);
-        this.isUpToDate = true;
-      });
+      .subscribe(timetableDays =>
+        {
+          console.log('onDatePick dispatched');
+          this.$onDatePick.next(this.date);
+          this.isUpToDate = true;
+        });
   }
 
   setWeekDates(weekStart: Date) {
@@ -87,6 +91,11 @@ export class PlanComponent implements OnInit, OnDestroy {
     const offset = this.weekSlideOffset;
     const adjacentWeek = toWeekStartDate(new Date(this.date.getTime() + 86400e3 * 7 * offset));
     this.setWeekDates(adjacentWeek);
+  }
+
+  onRefreshGesture() {
+    console.log('refresh');
+    this.loadTimetable(this.date, true);
   }
 
   ngOnDestroy() {

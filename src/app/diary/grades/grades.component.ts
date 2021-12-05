@@ -52,6 +52,12 @@ export class GradesComponent implements OnInit, AfterViewInit {
     this.storeSubscription.unsubscribe();
   }
 
+  onRefreshGesture() {
+    if (!this.storeService.syncState.syncing) {
+      this.storeService.synchronize();
+    }
+  }
+
   ngAfterViewInit() {
     let savedScrollTop = this.viewService.state.gradesView.scroll;
     this.hostEl.nativeElement.scrollTop = savedScrollTop;

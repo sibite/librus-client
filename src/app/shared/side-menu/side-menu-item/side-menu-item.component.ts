@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-side-menu-item',
@@ -7,10 +8,18 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class SideMenuItemComponent implements OnInit {
   @Input() itemIcon: string;
+  @Input() routerLink: string;
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  navigate() {
+    this.router.navigate([this.routerLink], { relativeTo: this.route })
   }
 
 }

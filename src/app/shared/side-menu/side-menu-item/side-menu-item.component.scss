@@ -1,15 +1,11 @@
 @use '../../styles/vars';
 
-:host li {
-  color: var(--text-color-3);
-}
-
-:host.active li {
-  color: var(--accent-u1);
-  background-color: var(--accent-d2);
+:host {
+  display: block;
 }
 
 li {
+  color: var(--text-color-3);
   box-sizing: border-box;
   cursor: pointer;
   line-height: #{vars.$side-menu-item-height - vars.$side-menu-item-v-padding * 2};
@@ -18,6 +14,11 @@ li {
   * {
     vertical-align: middle;
   }
+}
+
+:host.active li {
+  color: var(--accent-u1);
+  background-color: var(--accent-d2);
 }
 
 i {

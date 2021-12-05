@@ -9,7 +9,9 @@
         <app-lessons-list
           [$onDatePick]="$onDatePick"
           [timetable]="timetableDays[dateString] || []"
-          [calendar]="calendar[dateString] || []"></app-lessons-list>
+          [calendar]="calendar[dateString] || []"
+          appRefreshGesture
+          (onRefreshGesture)="onRefreshGesture()"></app-lessons-list>
       </div>
     </div>
   </div>

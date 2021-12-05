@@ -122,6 +122,74 @@ input {
   }
 }
 
+.ui.refresh-indicator {
+  $size: 40px;
+  position: absolute;
+  z-index: 500;
+  width: $size;
+  height: $size;
+  text-align: center;
+  border-radius: 50%;
+  background-color: vars.$accent;
+  color: vars.$accent-contrast;
+  top: calc(-#{$size} - 20px);
+  left: calc(50% - #{$size} * 0.5);
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
+  transition: top 200ms;
+
+  &.pulled {
+    transition: none;
+    top: calc(var(--progress) * 1px - #{$size} - 20px);
+  }
+
+  i {
+    display: block;
+    position: relative;
+    top: 0rem;
+    transform-origin: calc(50% - 0.01rem) calc(50% + 0.01rem);
+    transform: rotate(calc(2deg * var(--progress)));
+    font-size: 2rem;
+    width: $size;
+    line-height: $size;
+  }
+
+  &.after-pull {
+    transition: top 300ms;
+    top: calc(var(--max-progress) * 1px - #{$size} - 20px);
+    i {
+      animation: {
+        name: arrow-finish;
+        timing-function: linear;
+        duration: 700ms;
+        fill-mode: forwards;
+      }
+    }
+    animation: {
+      name: indicator-finish;
+      duration: 700ms;
+      fill-mode: forwards;
+    }
+  }
+}
+
+@keyframes indicator-finish {
+  70% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes arrow-finish {
+  0% {
+    transform: rotate(calc(2deg * var(--progress)));
+  }
+  100% {
+    transform: rotate(650deg);
+  }
+}
+
 .ui.overlay {
   position: absolute;
   top: 0;

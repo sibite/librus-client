@@ -6,7 +6,7 @@ const syncTexts = {
   offline: 'Tryb offline',
   syncing: 'Synchronizowanie',
   error: 'Błąd synchronizacji',
-  uptodate: 'Dane są aktualne'
+  uptodate: 'Zakończono synchronizację'
 }
 
 @Component({

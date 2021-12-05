@@ -48,6 +48,12 @@ export class AttendancesComponent implements OnInit {
     clearInterval(this.scrollInterval);
   }
 
+  onRefreshGesture() {
+    if (!this.storeService.syncState.syncing) {
+      this.storeService.synchronize();
+    }
+  }
+
   ngAfterViewInit() {
     let savedScrollTop = this.viewService.state.attendancesView.scroll;
     this.hostEl.nativeElement.scrollTop = savedScrollTop;
