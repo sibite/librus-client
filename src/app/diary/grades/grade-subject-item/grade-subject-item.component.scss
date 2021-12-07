@@ -35,6 +35,7 @@ $margin-horizontal: 5px;
   background-color: var(--subject-color);
   color: #ffffff;
   font-size: 1.25rem;
+  font-weight: bold;
 
   &.final-or-proposed {
     font-weight: 900;
@@ -64,13 +65,11 @@ $margin-horizontal: 5px;
 .average-text {
   color: var(--text-color-3);
   margin-right: 6px;
-  font-weight: bold;
 }
 
 .average-value {
   color: var(--text-color-2);
   font-size: 1rem;
-  font-weight: 900;
 }
 
 .no-grades-text {

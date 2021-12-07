@@ -16,12 +16,13 @@ export interface GradeType {
   IsFinalProposition: boolean,
   IsSemester: boolean,
   IsSemesterProposition: boolean,
+  IsNormal: boolean, // not served by API
   Lesson: any, // {Id: id, Url: "https://api.librus.pl/2.0/Lessons/id"}
   Semester: number,
   ShowInGradesView?: boolean,
   Student: any, // {Id: id, Url: "https://api.librus.pl/2.0/Users/id"}
   Subject: SubjectType, // {Id: id, Url: "https://api.librus.pl/2.0/Subjects/id"}
-  Kind: GradeKindType
+  Kind: GradeKindType, // not served by API
 }
 
 export type GradeKindType = 'Grades'

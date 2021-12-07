@@ -44,7 +44,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
   }
 
   handleNewState(state: SyncStateType) {
-    console.log(state);
+    console.log('sync state:', state);
 
     if (state.offline) {
       this.syncState = 'offline';

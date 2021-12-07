@@ -34,10 +34,6 @@ export class GradeSubjectItemComponent implements OnInit {
     event.stopPropagation();
   }
 
-  isGradeNormal(grade: GradeType) {
-    return !(grade.IsFinalProposition || grade.IsFinal || grade.IsSemester || grade.IsSemesterProposition);
-  }
-
   formatGradeShort(grade: GradeType) {
     return formatGradeShort(grade);
   }

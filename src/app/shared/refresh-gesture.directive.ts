@@ -1,4 +1,4 @@
-import { AfterViewChecked, Directive, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, Renderer2 } from "@angular/core";
+import { AfterViewChecked, Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnInit, Output, Renderer2 } from "@angular/core";
 
 @Directive({
   selector: '[appRefreshGesture]'
@@ -14,20 +14,22 @@ export class RefreshGestureDirective implements OnInit {
   allowGesture = true;
   firstMoveWasDown: boolean = null;
   indicatorMaxTop = 90;
-  indicatorEl: ChildNode;
+  indicatorEl: HTMLElement;
 
   constructor(
     private elRef: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private zone: NgZone
   ) {}
 
   ngOnInit() {
+    this.zone.runOutsideAngular(() => {});
     let container = document.createElement('div');
     container.innerHTML = `<div class="ui refresh-indicator"><i class="bi-arrow-clockwise"></i></div>`;
-    this.indicatorEl = container.firstChild;
+    this.indicatorEl = <HTMLElement>container.firstChild;
 
     this.hostEl = this.mode == 'parent' ? this.elRef.nativeElement.parentNode : this.elRef.nativeElement;
-    this.hostEl.style.setProperty('--max-progress', '' + this.indicatorMaxTop);
+    this.indicatorEl.style.setProperty('--max-progress', '' + this.indicatorMaxTop);
     this.renderer.setStyle(this.hostEl, 'position', 'relative');
     this.renderer.appendChild(this.hostEl, this.indicatorEl);
   }
@@ -96,6 +98,6 @@ export class RefreshGestureDirective implements OnInit {
   }
 
   setProgress(progress: number) {
-    this.hostEl.style.setProperty('--progress', '' + progress);
+    this.indicatorEl.style.setProperty('--progress', '' + progress);
   }
 }

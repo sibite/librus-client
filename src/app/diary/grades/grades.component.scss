@@ -4,10 +4,12 @@
 :host {
   overflow-y: auto;
   overflow-x: hidden;
+  flex-grow: 1;
 }
 
 .ui.component {
   display: block;
+  height: 100%;
 }
 
 .options {

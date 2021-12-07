@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, forkJoin, of, throwError } from "rxjs";
-import { catchError, map, take } from "rxjs/operators";
+import { catchError, map, take, tap } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-utilities";
 import { FetcherDataType, FetcherService } from "./fetcher.service";
@@ -10,6 +10,7 @@ import { CalendarEntryType } from "./models/calendar.type";
 import { CategoriesType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
+import { GradeType } from "./models/grade.type";
 import { SchoolInfoType } from "./models/school-info.type";
 import { SubjectType } from "./models/subject.type";
 import { TimetableEntryType } from "./models/timetable.type";
@@ -61,8 +62,8 @@ export class StoreService {
 
   dataSyncSubject = new BehaviorSubject<StoreDataType>({});
   syncStateSubject = new BehaviorSubject<SyncStateType>(this.syncState);
-  syncInterval = 30 * 60e3;
-  timetableSyncMaxOffset = 5 * 60e3;
+  syncInterval = 60 * 60e3;
+  timetableSyncMaxOffset = 30 * 60e3;
   timetableErrors?: { [key: string]: boolean } = {};
 
   constructor(
@@ -129,6 +130,7 @@ export class StoreService {
         this.fetcherData = forkResponse;
         this.transformFetcherData();
         this.syncState.error = false;
+        this.syncStateSubject.next(this.syncState);
         this.dataSyncSubject.next(this.getData());
         this.data.lastSyncTime = Date.now();
         this.scheduleNextSync();
@@ -185,6 +187,7 @@ export class StoreService {
             return this.fetcherData.grades.comments[grade.Kind][comment.Id];
           })
         }
+        grade.IsNormal = !(grade.IsFinalProposition || grade.IsFinal || grade.IsSemester || grade.IsSemesterProposition);
         if (gradesSubjects[grade.Subject.Id]) {
           gradesSubjects[grade.Subject.Id].Grades.push(grade);
         }
@@ -366,20 +369,19 @@ export class StoreService {
       console.log('dupa error ')
       this.syncState.syncing = false;
       this.syncState.error = true;
-      this.scheduleNextSync(true);
       this.syncStateSubject.next(this.syncState);
+      this.scheduleNextSync(true);
     }
 
     if ((err.error?.Code == "TokenIsExpired" || err.status == 401) && !isSecondAttempt) {
       this.syncState.syncing = false;
+      this.syncStateSubject.next(this.syncState);
       this.authService.auth().pipe(take(1)).subscribe(
         () => this.synchronize(true),
         () => onError()
-      )
+      );
     }
-    else {
-      onError();
-    }
+    onError();
     return throwError(err);
   }
 
