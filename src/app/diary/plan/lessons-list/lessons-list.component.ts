@@ -1,12 +1,12 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { toMiddayDate } from 'src/app/shared/date-utilities';
 import { ViewService } from 'src/app/shared/view.service';
 import { AnyCalendarEntryType, CalendarEntryType, HomeWorkType } from 'src/app/store/models/calendar.type';
 import { LessonRangeType } from 'src/app/store/models/lesson-range.type';
-import { SubjectType } from 'src/app/store/models/subject.type';
 import { TimetableEntryType } from 'src/app/store/models/timetable.type';
 import { StoreService } from 'src/app/store/store.service';
-import { eventKindNames, getEventDetailsHTML } from '../event-properties';
+import { getEventDetailsHTML } from '../event-properties';
 import { getLessonDetailsHTML } from '../lesson-properties';
 
 @Component({
@@ -17,22 +17,23 @@ import { getLessonDetailsHTML } from '../lesson-properties';
 export class LessonsListComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   @Input() timetable: TimetableEntryType[][];
   @Input() calendar: CalendarEntryType[];
-  @Input() $onDatePick: Subject<Date>;
+  @Input() $onDatePick: BehaviorSubject<Date>;
   @ViewChild('lessonsContainer') lessonsContRef: ElementRef;
 
   private autoScrollRequested = false;
 
+  public date: Date;
+  public minutes: number;
   public homeworks: { [key: number]: HomeWorkType[] } = {};
   public lessonsRange: LessonRangeType[];
   public subjectColors: { [key: number]: string };
   public dayStartRange: number = 0;
   public dayEndRange: number = 1440
   public timeTags: string[] = [];
-  // for displaying events
-  public eventKindNames = eventKindNames;
 
   private storeSub: Subscription;
   private datePickSub: Subscription;
+  private minutesInterval;
 
   constructor(
     private storeService: StoreService,
@@ -51,14 +52,19 @@ export class LessonsListComponent implements OnInit, OnDestroy, AfterViewInit, A
     });
 
     // ONLY TEMPORARY UNTIL ARE GESTURES IMPLEMENTED
-    this.datePickSub = this.$onDatePick.subscribe(() => {
+    this.datePickSub = this.$onDatePick.subscribe(date => {
+      this.date = date;
       this.autoScrollRequested = true;
+      this.refreshMinutes();
     });
 
     // appending time tags behind the lessons plan
     for (let i = 0; i <= 24; i++) {
       this.timeTags.push(String(i).padStart(2, '0') + ':00');
     }
+
+    // displaying current time bar
+    this.minutesInterval = setInterval(() => this.refreshMinutes(), 10e3);
   }
 
   ngAfterViewInit() {
@@ -75,6 +81,15 @@ export class LessonsListComponent implements OnInit, OnDestroy, AfterViewInit, A
   ngOnDestroy() {
     this.storeSub.unsubscribe();
     this.datePickSub.unsubscribe();
+    clearInterval(this.minutesInterval);
+  }
+
+  refreshMinutes() {
+    let now = new Date();
+    this.minutes = now.getHours() * 60 + now.getMinutes();
+    if (toMiddayDate(now).getTime() !== toMiddayDate(this.date).getTime()) {
+      this.minutes = null;
+    }
   }
 
   autoScroll() {

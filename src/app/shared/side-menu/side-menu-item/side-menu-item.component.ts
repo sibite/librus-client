@@ -19,6 +19,7 @@ export class SideMenuItemComponent implements OnInit {
   }
 
   navigate() {
+    if (this.routerLink == undefined) return;
     this.router.navigate([this.routerLink], { relativeTo: this.route })
   }
 

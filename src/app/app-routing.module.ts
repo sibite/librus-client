@@ -8,6 +8,8 @@ import { DiaryComponent } from './diary/diary.component';
 import { DiaryGuard } from './diary/diary.guard';
 import { GradeSubjectDetailsComponent } from './diary/grades/grade-subject-details/grade-subject-details.component';
 import { GradesComponent } from './diary/grades/grades.component';
+import { MySchoolComponent } from './diary/my-school/my-school.component';
+// import { OverviewComponent } from './diary/overview/overview.component';
 import { PlanComponent } from './diary/plan/plan.component';
 
 const routes: Routes = [
@@ -21,9 +23,11 @@ const routes: Routes = [
     canActivate: [DiaryGuard],
     data: { title: 'Dziennik' },
     children: [
+      // { path: 'overview', component: OverviewComponent, data: { title: 'Przegląd' } },
       { path: 'grades', component: GradesComponent, data: { title: 'Oceny i zachowanie' } },
       { path: 'attendances', component: AttendancesComponent, data: { title: 'Frekwencja' } },
       { path: 'timetables', component: PlanComponent, data: { title: 'Plan lekcji' } },
+      { path: 'my-school', component: MySchoolComponent, data: { title: 'Szkoła i klasa' } },
       { path: '**', redirectTo: 'grades' }
     ]
   },

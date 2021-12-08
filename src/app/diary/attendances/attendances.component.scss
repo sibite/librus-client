@@ -1,8 +1,7 @@
 @use '../../shared/styles/vars';
 
 :host {
-  overflow-y: auto;
-  overflow-x: hidden;
+  @include vars.app-host-common();
 }
 
 .ui.component {

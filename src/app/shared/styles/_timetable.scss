@@ -1,0 +1,67 @@
+@use 'vars';
+
+@mixin entry-block($single: false) {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  flex: 1;
+
+  @if not $single {
+    &:not(:first-child) {
+      margin-left: vars.$lesson-margin;
+    }
+
+    &:not(:last-child) {
+      margin-right: vars.$lesson-margin;
+    }
+  }
+
+
+  .entry {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.entry {
+  border-radius: vars.$border-radius;
+  padding: 9px 9px;
+
+  &.canceled {
+    opacity: 0.5;
+    .entry-header {
+      text-decoration: line-through;
+    }
+  }
+
+  &.substitution {
+    .entry-header::before {
+      @include vars.dot();
+      background-color: #ffffff;
+    }
+  }
+}
+
+.entry-caption {
+  float: left;
+
+  .entry-header {
+    display: inline-block;
+    font-weight: bold;
+    &:not(:last-child) {
+      margin-bottom: 4px;
+    }
+    i {
+      margin: 0 2px;
+    }
+  }
+
+  .entry-sub {
+    display: inline-block;
+    max-width: 100%;
+    &:not(:last-child) {
+      margin-bottom: 2px;
+    }
+  }
+}

@@ -10,7 +10,7 @@ export class AuthInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     const bearerToken = this.authService.getBearerToken();
-    if (!req.url.startsWith('https://api.librus.pl/2.0') || !bearerToken) {
+    if (!req.url.startsWith('https://api.librus.pl') || !bearerToken) {
       return next.handle(req);
     }
     const authorizedReq = req.clone({

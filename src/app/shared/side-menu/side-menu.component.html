@@ -35,11 +35,11 @@
     <div class="ui sm-segment sm-body" *ngIf="getAuthState().loggedIn">
       <p class="ui sm-segment-title">Przeglądaj</p>
       <ul class="ui sm-list">
-        <!-- <app-side-menu-item itemIcon="bi-grid-1x2">Szybki podgląd</app-side-menu-item> -->
+        <!-- <app-side-menu-item itemIcon="bi-grid-1x2" routerLink="/main/overview" routerLinkActive="active">Przegląd</app-side-menu-item> -->
         <app-side-menu-item itemIcon="bi-journal" routerLink="/main/grades" routerLinkActive="active">Oceny i zachowanie</app-side-menu-item>
         <app-side-menu-item itemIcon="bi-ui-checks-grid" routerLink="/main/attendances" routerLinkActive="active">Frekwencja</app-side-menu-item>
         <app-side-menu-item itemIcon="bi-calendar-range" routerLink="/main/timetables" routerLinkActive="active">Plan lekcji</app-side-menu-item>
-        <!-- <app-side-menu-item itemIcon="bi-building">Szkoła i klasa</app-side-menu-item> -->
+        <app-side-menu-item itemIcon="bi-building" routerLink="/main/my-school" routerLinkActive="active">Szkoła i klasa</app-side-menu-item>
       </ul>
     </div>
     <div class="ui sm-segment sm-footer">

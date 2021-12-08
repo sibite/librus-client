@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, forkJoin, of, throwError } from "rxjs";
-import { catchError, map, take, tap } from "rxjs/operators";
+import { BehaviorSubject, forkJoin, of, Subject, throwError } from "rxjs";
+import { catchError, map, take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-utilities";
 import { FetcherDataType, FetcherService } from "./fetcher.service";
@@ -10,12 +10,13 @@ import { CalendarEntryType } from "./models/calendar.type";
 import { CategoriesType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
-import { GradeType } from "./models/grade.type";
 import { SchoolInfoType } from "./models/school-info.type";
+import { LuckyNumberType } from "./models/lucky-number.type";
 import { SubjectType } from "./models/subject.type";
 import { TimetableEntryType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
 import { assignProperties } from "./transform-utilities";
+import { GradeType } from "./models/grade.type";
 
 export interface StoreDataType {
   lastSyncTime?: number,
@@ -23,7 +24,8 @@ export interface StoreDataType {
   unitInfo?: {
     school: SchoolInfoType,
     class: ClassInfoType
-  }
+  },
+  luckyNumber?: LuckyNumberType,
   gradeSubjects?: SubjectType[],
   gradeCategories?: CategoriesType;
   subjects?: { [key: number]: SubjectType },
@@ -40,7 +42,7 @@ export interface SyncStateType {
   offline: boolean,
   syncing: boolean,
   timetableSyncing: boolean,
-  error: boolean
+  error: boolean | any
 }
 
 const initialSyncState = {
@@ -72,6 +74,7 @@ export class StoreService {
   ) {
     this.restoreLocalStorage();
     this.init();
+    console.log(this.getTimeline());
 
     // network mode
     this.syncState.offline = !window.navigator.onLine;
@@ -125,20 +128,28 @@ export class StoreService {
         })
       )
       .subscribe(forkResponse => {
-        this.syncState.syncing = false;
-        this.syncStateSubject.next(this.syncState);
+        console.log('received next');
         this.fetcherData = forkResponse;
         this.transformFetcherData();
         this.syncState.error = false;
+        this.loadTimetable(new Date()).pipe(take(1)).subscribe();
+      },
+      error => {
+        console.log('received error');
+        this.syncState.syncing = false;
+        this.syncState.error = error;
         this.syncStateSubject.next(this.syncState);
-        this.dataSyncSubject.next(this.getData());
+      },
+      () => {
+        console.log('received final');
+        this.syncState.syncing = false;
+        this.syncStateSubject.next(this.syncState);
         this.data.lastSyncTime = Date.now();
         this.scheduleNextSync();
         this.saveLocalStorage();
-        this.loadTimetable(new Date()).pipe(take(1)).subscribe();
-
+        this.dataSyncSubject.next(this.getData());
         console.log(this.getData());
-        console.log(this.fetcherData)
+        console.log(this.fetcherData);
       });
   }
 
@@ -274,13 +285,25 @@ export class StoreService {
 
     let transformOthers = () => {
       // unit info
-      if (!requireFields(['unitInfo'])) return;
-      this.data.unitInfo = this.fetcherData.unitInfo;
-      delete this.data.unitInfo.school.LessonsRange[0];
+      if (requireFields(['unitInfo'])) {
+        this.data.unitInfo = this.fetcherData.unitInfo;
+        delete this.data.unitInfo.school.LessonsRange[0];
+
+        if (requireFields(['users'])) {
+          const tutorId = this.data.unitInfo.class.ClassTutor.Id;
+          this.data.unitInfo.class.ClassTutor = this.data.users[tutorId];
+        }
+      }
 
       // subjects
-      if (!requireFields(['subjects'])) return;
-      this.data.subjects = this.fetcherData.subjects;
+      if (requireFields(['subjects'])) {
+        this.data.subjects = this.fetcherData.subjects;
+      }
+
+      // lucky number
+      if (requireFields(['luckyNumber'])) {
+        this.data.luckyNumber = this.fetcherData.luckyNumber
+      }
     }
 
     // transform functions execution
@@ -292,6 +315,35 @@ export class StoreService {
     transformClassrooms();
     transformCalendar();
     transformOthers();
+  }
+
+  getTimeline() {
+    let timeline = [];
+
+    let grades = []
+    this.data.gradeSubjects.forEach(subject => {
+      grades = grades.concat(subject.Grades);
+    });
+
+    let attendances = [];
+    Object.values(this.data.attendanceDays).forEach(day => {
+      attendances = attendances.concat(day.filter(attendance => attendance.Type.Id != 100));
+    });
+
+    let calendar = [];
+    Object.values(this.data.calendar).forEach(day => {
+      calendar = calendar.concat(day);
+    });
+
+    timeline = timeline.concat(grades, attendances, calendar)
+      .sort((a, b) => {
+        return convertLibrusDate(b.AddDate || b.Date).getTime()
+             > convertLibrusDate(a.AddDate || a.Date).getTime()
+             ? 1 : -1;
+      })
+      .slice(0, 40);
+
+    return timeline;
   }
 
   loadTimetable(date: Date, isSecondAttempt = false, force = false) {

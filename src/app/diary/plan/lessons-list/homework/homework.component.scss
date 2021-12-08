@@ -1,0 +1,19 @@
+@use '../../../../shared/styles/timetable';
+@use '../../../../shared/styles/vars';
+
+:host {
+  @include timetable.entry-block();
+}
+
+.entry.homework {
+  background-color: var(--bg-color-2);
+
+  .entry-caption {
+    color: var(--text-color-1);
+  }
+
+  .entry-header:first-child::before {
+    @include vars.dot();
+    background-color: vars.$event-homework;
+  }
+}

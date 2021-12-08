@@ -16,17 +16,9 @@
       <ul class="grades-list" [style.--subject-color]="color">
         <ng-container *ngFor="let grade of getGrades(); let i = index">
           <div class="date" *ngIf="grades[i-1]?.Date !== grade.Date"><span>{{ getGradeDateFormatted(grade) }}</span></div>
-          <li
-          class="grade"
-          appClickEffect
-          forceRippleTheme="dark"
-          (click)="showGradeDetails($event, grade)">
-          <div class="symbol">{{ formatGradeShort(grade) }}</div>
-          <div class="details">
-            <p class="added-by">{{ grade.AddedBy.FirstName }} {{ grade.AddedBy.LastName }}</p>
-            <p class="category">{{ grade.Category.Name | capitalize }}</p>
-          </div>
-          </li>
+          <app-grade
+          [grade]="grade"
+          (click)="showGradeDetails($event, grade)"></app-grade>
         </ng-container>
       </ul>
     </div>

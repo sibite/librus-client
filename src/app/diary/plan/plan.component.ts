@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { formatDate, toDateString, toMiddayDate, toWeekStartDate } from 'src/app/shared/date-utilities';
 import { CalendarEntryType } from 'src/app/store/models/calendar.type';
@@ -12,7 +12,7 @@ import { StoreService, SyncStateType } from 'src/app/store/store.service';
   styleUrls: ['./plan.component.scss']
 })
 export class PlanComponent implements OnInit, OnDestroy {
-  public $onDatePick = new Subject<Date>();
+  public $onDatePick = new BehaviorSubject<Date>(new Date());
   public isUpToDate = true;
   public today: Date;
   public date: Date;
@@ -56,7 +56,7 @@ export class PlanComponent implements OnInit, OnDestroy {
   }
 
   pickDate(date: Date) {
-    this.$onDatePick.next(this.date);
+    this.$onDatePick.next(date);
     this.today = toMiddayDate(new Date());
     const weekStart = toWeekStartDate(date);
     this.weekSlideOffset = 0;

@@ -1,11 +1,9 @@
 <div class="events-container ui offset">
-  <div
-    class="entry event single"
+  <app-event
     *ngFor="let event of getEvents()"
-    appClickEffect
-    (click)="showEventDetails($event, event)"
-    [attr.kind]="event.Kind">
-    <div class="entry-caption">
+    [event]="event"
+    (click)="showEventDetails($event, event)">
+    <!-- <div class="entry-caption">
       <span class="entry-header">{{ event.Name || eventKindNames[event.Kind] }}</span>
       <ng-container *ngIf="event.Kind == 'TeacherFreeDays'">
         <br>
@@ -25,8 +23,8 @@
         <br>
         <span class="entry-sub">Sala: {{ event.Room }}</span>
       </ng-container>
-    </div>
-  </div>
+    </div> -->
+  </app-event>
   <span class="no-events-text" *ngIf="getEvents().length == 0">Brak wydarzeń</span>
 </div>
 <div
@@ -35,6 +33,7 @@
   [style.--day-range-to]="dayEndRange">
   <div class="time-tags-container">
     <div *ngFor="let tag of timeTags">{{ tag }}</div>
+    <div class="now-bar" [style.--minutes]="minutes"></div>
   </div>
   <div class="lessons-container" #lessonsContainer>
     <ng-container  *ngFor="let rangeLessons of timetable; let rangeIndex = index">
@@ -43,38 +42,18 @@
         *ngIf="rangeLessons.length > 0"
         [style.--range-from]="lessonsRange[rangeIndex]?.RawFrom"
         [style.--range-to]="lessonsRange[rangeIndex]?.RawTo">
-        <div
-          class="entry lesson"
+        <app-lesson
           *ngFor="let lesson of rangeLessons"
-          appClickEffect
-          forceRippleTheme="dark"
           (click)="showLessonDetails($event, lesson)"
-          [style.--subject-color]="subjectColors[lesson.Subject.Id]"
-          [ngClass]="{canceled: lesson.IsCanceled, substitution: lesson.IsSubstitutionClass}">
-          <div class="entry-caption">
-            <span
-              class="entry-header"
-              *ngIf="!lesson.IsSubstitutionClass; else substitutionName">{{ lesson.Subject.Name | capitalize }}</span>
-            <ng-template #substitutionName>
-              <span class="entry-header">{{ lesson.OrgSubject.Name | capitalize }}
-                <i class="bi-arrow-right"></i>
-                {{ lesson.Subject.Name | capitalize }}</span>
-            </ng-template>
-            <br>
-            <span class="entry-sub">{{ lessonsRange[lesson.LessonNo].From }} &ndash; {{ lessonsRange[lesson.LessonNo].To }}</span>
-          </div>
-        </div>
-        <div
-          class="entry homework"
+          [lesson]="lesson"
+          [color]="subjectColors[lesson.Subject.Id]"
+          [range]="lessonsRange[lesson.LessonNo]">
+        </app-lesson>
+        <app-homework
+          *ngFor="let homework of getHomeworks(rangeIndex)"
+          [homework]="homework"
           (click)="showEventDetails($event, homework)"
-          appClickEffect
-          *ngFor="let homework of getHomeworks(rangeIndex)">
-          <div class="entry-caption">
-            <span class="entry-header">{{ homework.Category.Name | capitalize }}</span>
-            <br>
-            <span class="entry-sub">{{ homework.Content }}</span>
-          </div>
-        </div>
+          appClickEffect></app-homework>
       </div>
     </ng-container>
   </div>

@@ -1,0 +1,23 @@
+@use '../../../../shared/styles/timetable';
+@use '../../../../shared/styles/vars';
+
+:host {
+  @include timetable.entry-block(true);
+
+  &:not(:first-child) {
+    margin-top: 15px;
+  }
+  &:not(:last-child) {
+    margin-bottom: 15px;
+  }
+}
+
+.entry.event {
+  background-color: var(--bg-color-2);
+  @include vars.set-event-color();
+
+  .entry-header:first-child::before {
+    @include vars.dot();
+    background-color: var(--event-color);
+  }
+}

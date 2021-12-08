@@ -80,10 +80,6 @@ export class GradeSubjectDetailsComponent implements OnInit {
     event.stopPropagation();
   }
 
-  formatGradeShort(grade: GradeType) {
-    return formatGradeShort(grade);
-  }
-
   getGradeDateFormatted(grade: GradeType) {
     let localeDateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     return convertLibrusDate(grade.Date).toLocaleDateString('pl-PL', <{}>localeDateOptions);

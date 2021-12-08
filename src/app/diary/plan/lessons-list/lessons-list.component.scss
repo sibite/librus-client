@@ -19,7 +19,7 @@
   height: 100%;
   top: calc((-1) * (var(--day-range-from) - #{vars.$day-padding}) * #{vars.$minute-height});
 
-  > div {
+  > div:not(.now-bar) {
     box-sizing: border-box;
     position: relative;
     top: -0.5px;
@@ -31,6 +31,13 @@
     border-bottom: 1px solid var(--bg-color-2-shift-dark);
     font-size: 0.9rem;
     color: var(--text-color-4);
+  }
+
+  .now-bar {
+    box-sizing: border-box;
+    position: relative;
+    top: calc(#{vars.$hour-height} * (-25) + var(--minutes) * #{vars.$minute-height});
+    border-top: 1px solid vars.$danger;
   }
 }
 
@@ -56,105 +63,6 @@
   height: calc((var(--range-to) - var(--range-from)) * #{vars.$minute-height});
   width: 100%;
   padding-right: 8px;
-}
-
-@mixin dot() {
-  content: '';
-  display: inline-block;
-  height: 10px;
-  width: 10px;
-  position: relative;
-  margin-right: 5px;
-  border-radius: 100%;
-}
-
-.entry {
-  display: block;
-  overflow: hidden;
-  cursor: pointer;
-  flex: 1;
-  border-radius: vars.$border-radius;
-  padding: 9px 9px;
-
-  &:not(:first-child, .single) {
-    margin-left: vars.$lesson-margin;
-  }
-
-  &:not(:last-child, .single) {
-    margin-right: vars.$lesson-margin;
-  }
-
-  &.canceled {
-    opacity: 0.5;
-    .entry-header {
-      text-decoration: line-through;
-    }
-  }
-
-  &.substitution {
-    .entry-header::before {
-      @include dot();
-      background-color: #ffffff;
-    }
-  }
-}
-
-.entry.lesson {
-  color: #ffffff;
-  background-color: var(--subject-color);
-}
-
-.entry.homework {
-  background-color: var(--bg-color-2);
-
-  .entry-caption {
-    color: var(--text-color-1);
-  }
-
-  .entry-header:first-child::before {
-    @include dot();
-    background-color: vars.$event-homework;
-  }
-}
-
-.entry.event {
-  background-color: var(--bg-color-2);
-  @include vars.set-event-color();
-
-  .entry-header:first-child::before {
-    @include dot();
-    background-color: var(--event-color);
-  }
-
-  &:not(:first-child) {
-    margin-top: 15px;
-  }
-  &:not(:last-child) {
-    margin-bottom: 15px;
-  }
-}
-
-.entry-caption {
-  float: left;
-
-  .entry-header {
-    display: inline-block;
-    font-weight: bold;
-    &:not(:last-child) {
-      margin-bottom: 4px;
-    }
-    i {
-      margin: 0 2px;
-    }
-  }
-
-  .entry-sub {
-    display: inline-block;
-    max-width: 100%;
-    &:not(:last-child) {
-      margin-bottom: 2px;
-    }
-  }
 }
 
 .no-events-text {

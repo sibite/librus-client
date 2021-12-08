@@ -36,6 +36,12 @@ import { environment } from '../environments/environment';
 import { DiaryGuard } from './diary/diary.guard';
 import { AuthGuard } from './auth/auth.guard';
 import { RefreshGestureDirective } from './shared/refresh-gesture.directive';
+import { MySchoolComponent } from './diary/my-school/my-school.component';
+import { OverviewComponent } from './diary/overview/overview.component';
+import { GradeComponent } from './diary/grades/grade-subject-details/grade/grade.component';
+import { LessonComponent } from './diary/plan/lessons-list/lesson/lesson.component';
+import { HomeworkComponent } from './diary/plan/lessons-list/homework/homework.component';
+import { EventComponent } from './diary/plan/lessons-list/event/event.component';
 
 
 @NgModule({
@@ -65,7 +71,13 @@ import { RefreshGestureDirective } from './shared/refresh-gesture.directive';
     CapitalizePipe,
     KeepHtmlPipe,
     KeysPipe,
-    TimerangePipe
+    TimerangePipe,
+    MySchoolComponent,
+    OverviewComponent,
+    GradeComponent,
+    LessonComponent,
+    HomeworkComponent,
+    EventComponent
   ],
   imports: [
     BrowserModule,

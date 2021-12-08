@@ -1,0 +1,58 @@
+@use '../../../../shared/styles/vars';
+
+:host {
+  display: block;
+
+  &:not(:last-child) {
+    margin-bottom: vars.$card-margin;
+  }
+  &:not(:first-child) {
+    margin-top: vars.$card-margin;
+  }
+}
+
+.grade {
+  display: flex;
+  pointer-events: auto;
+  cursor: pointer;
+  background-color: var(--subject-color);
+  border-radius: vars.$border-radius;
+  border-radius: vars.$border-radius;
+  color: #000000;
+
+  .symbol {
+    width: 50px;
+    border-radius: vars.$border-radius;
+    height: 45px;
+    flex-shrink: 0;
+    font-size: 2.2rem;
+    font-weight: bold;
+    line-height: 45px;
+    text-align: center;
+    margin: 10px;
+    margin-right: 5px;
+    color: #ffffff;
+  }
+
+  .details {
+    flex-grow: 1;
+    padding: 10px 10px;
+    line-height: 1.25rem;
+    color: #ffffff;
+
+    p {
+      margin: 0;
+      padding: 3px 0;
+      word-break: break-word;
+    }
+  }
+
+  .added-by {
+    font-size: 1.06em;
+  }
+
+  .category {
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+}

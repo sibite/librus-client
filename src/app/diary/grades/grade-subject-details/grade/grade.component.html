@@ -1,0 +1,10 @@
+<li
+  class="grade"
+  appClickEffect
+  forceRippleTheme="dark">
+  <div class="symbol">{{ formatGradeShort(grade) }}</div>
+  <div class="details">
+    <p class="added-by">{{ grade.AddedBy.FirstName }} {{ grade.AddedBy.LastName }}</p>
+    <p class="category">{{ grade.Category.Name | capitalize }}</p>
+  </div>
+</li>

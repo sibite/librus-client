@@ -75,7 +75,8 @@
     display: inline-block;
     margin-top: 7px;
     line-height: 28px;
-    width: 28px;
+    max-width: 28px;
+    width: 100%;
     background-color: var(--bg-color-2);
     color: var(--text-color-1);
     border-radius: vars.$border-radius;

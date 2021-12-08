@@ -2,9 +2,7 @@
 @use '../../shared/styles/misc';
 
 :host {
-  overflow-y: auto;
-  overflow-x: hidden;
-  flex-grow: 1;
+  @include vars.app-host-common();
 }
 
 .ui.component {

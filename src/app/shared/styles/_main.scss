@@ -122,6 +122,7 @@ input {
   }
 }
 
+$rotation-rate: 2.5deg;
 .ui.refresh-indicator {
   $size: 40px;
   position: absolute;
@@ -147,7 +148,7 @@ input {
     position: relative;
     top: 0rem;
     transform-origin: calc(50% - 0.01rem) calc(50% + 0.01rem);
-    transform: rotate(calc(2deg * var(--progress)));
+    transform: rotate(calc(#{$rotation-rate} * var(--progress)));
     font-size: 2rem;
     width: $size;
     line-height: $size;
@@ -183,10 +184,10 @@ input {
 
 @keyframes arrow-finish {
   0% {
-    transform: rotate(calc(2deg * var(--progress)));
+    transform: rotate(calc(#{$rotation-rate} * var(--progress)));
   }
   100% {
-    transform: rotate(650deg);
+    transform: rotate(calc(#{$rotation-rate} * var(--progress) + 600deg));
   }
 }
 

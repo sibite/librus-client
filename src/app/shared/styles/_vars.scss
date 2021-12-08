@@ -83,6 +83,18 @@ $nav-bar-height: 64px;
   }
 }
 
+@mixin app-host-common() {
+  overflow-y: auto;
+  overflow-x: hidden;
+  touch-action: pan-y;
+  flex-grow: 1;
+
+  > .ui.component {
+    display: block;
+    height: 100%;
+  }
+}
+
 @mixin set-att-color-var() {
   &[att-type="1"] { // absence
     --att-color: #{$att-absence};
@@ -138,4 +150,14 @@ $nav-bar-height: 64px;
     width: $width;
     radius: 100%;
   }
+}
+
+@mixin dot() {
+  content: '';
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  position: relative;
+  margin-right: 5px;
+  border-radius: 100%;
 }

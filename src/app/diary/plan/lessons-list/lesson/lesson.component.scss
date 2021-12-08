@@ -1,0 +1,10 @@
+@use '../../../../shared/styles/timetable';
+
+:host {
+  @include timetable.entry-block();
+}
+
+.entry.lesson {
+  color: #ffffff;
+  background-color: var(--subject-color);
+}
