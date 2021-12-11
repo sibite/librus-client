@@ -56,7 +56,6 @@ export class PlanComponent implements OnInit, OnDestroy {
   }
 
   pickDate(date: Date) {
-    this.$onDatePick.next(date);
     this.today = toMiddayDate(new Date());
     const weekStart = toWeekStartDate(date);
     this.weekSlideOffset = 0;
@@ -65,17 +64,17 @@ export class PlanComponent implements OnInit, OnDestroy {
     this.dateString = toDateString(this.date);
     this.dateDisplayString = formatDate(date, 'long weekday-month');
     this.isUpToDate = this.storeService.isTimetableDayUpToDate(this.date);
+    this.$onDatePick.next(date);
     this.loadTimetable(this.date);
   }
 
   loadTimetable(date: Date, force = false) {
     this.storeService.loadTimetable(date, false, force)
       .pipe(take(1))
-      .subscribe(timetableDays =>
-        {
+      .subscribe(timetableDays => {
           console.log('onDatePick dispatched');
-          this.$onDatePick.next(this.date);
           this.isUpToDate = true;
+          this.$onDatePick.next(this.date);
         });
   }
 

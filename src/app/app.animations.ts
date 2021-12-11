@@ -16,7 +16,7 @@ export var appAnimations = [
         style({
           position: 'absolute',
           top: 0,
-          left: 0,
+          left: '0%',
           width: '100%',
           background: 'var(--bg-color-1)'
         })
@@ -25,7 +25,7 @@ export var appAnimations = [
         style({
           left: '100%',
           zIndex: 1,
-          //boxShadow: '-101vw 0 0 1vw rgba(0, 0, 0, 0)'
+          boxShadow: '-101vw 0 0 1vw rgba(0, 0, 0, 0)'
         })
       ]),
       query(':leave', [
@@ -37,14 +37,13 @@ export var appAnimations = [
       group([
         query(':leave', [
           animate(transitionStyle, style({
-            left: '-20%',
-            zIndex: 0
+            left: '-20%'
           }))
         ]),
         query(':enter', [
           animate(transitionStyle, style({
             left: '0%',
-            //boxShadow: '-101vw 0 0 1vw rgba(0, 0, 0, 0.7)'
+            boxShadow: '-101vw 0 0 1vw rgba(0, 0, 0, 0.7)'
           }))
         ])
       ]),
@@ -67,7 +66,7 @@ export var appAnimations = [
         style({
           position: 'absolute',
           top: 0,
-          left: 0,
+          left: '0%',
           width: '100%',
           background: 'var(--bg-color-1)'
         })

@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { toMiddayDate } from 'src/app/shared/date-utilities';
 import { ViewService } from 'src/app/shared/view.service';
@@ -54,8 +54,8 @@ export class LessonsListComponent implements OnInit, OnDestroy, AfterViewInit, A
     // ONLY TEMPORARY UNTIL ARE GESTURES IMPLEMENTED
     this.datePickSub = this.$onDatePick.subscribe(date => {
       this.date = date;
-      this.autoScrollRequested = true;
       this.refreshMinutes();
+      this.autoScrollRequested = true;
     });
 
     // appending time tags behind the lessons plan
@@ -73,7 +73,7 @@ export class LessonsListComponent implements OnInit, OnDestroy, AfterViewInit, A
 
   ngAfterViewChecked() {
     if (this.autoScrollRequested) {
-      this.autoScroll();
+      setTimeout(() => this.autoScroll(), 0);
       this.autoScrollRequested = false;
     }
   }

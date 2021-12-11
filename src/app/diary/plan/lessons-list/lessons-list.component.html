@@ -15,7 +15,7 @@
     <div class="now-bar" [style.--minutes]="minutes"></div>
   </div>
   <div class="lessons-container" #lessonsContainer>
-    <ng-container  *ngFor="let rangeLessons of timetable; let rangeIndex = index">
+    <ng-container *ngFor="let rangeLessons of timetable; let rangeIndex = index">
       <div
         class="range-block"
         *ngIf="rangeLessons.length > 0"
