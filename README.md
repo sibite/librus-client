@@ -38,13 +38,28 @@ Run `ng serve` and `npm run proxy` then navigate to `http://localhost:4200/`
 
 ## Screenshots
 
-![Login page](/readme_assets/auth.jpg "Login page")
-![Grades](/readme_assets/grades.jpg "Grades")
-![Attendances](/readme_assets/attendances.jpg "Attendances")
-![Lessons plan](/readme_assets/lessons_plan.jpg "Lessons plan")
-![Timeline](/readme_assets/timeline.jpg "Timeline")
-![Settings](/readme_assets/settings.jpg "Settings")
-
+<table>
+  <tr>
+    <td>Login page</td>
+     <td>Grades</td>
+     <td>Attendances</td>
+  </tr>
+  <tr>
+    <td><img src="/readme_assets/auth.jpg" width=270></td>
+    <td><img src="/readme_assets/grades.jpg" width=270></td>
+    <td><img src="/readme_assets/attendances.jpg" width=270></td>
+  </tr>
+  <tr>
+    <td>Lessons plan</td>
+     <td>Timeline</td>
+     <td>Settings</td>
+  </tr>
+  <tr>
+    <td><img src="/readme_assets/lessons_plan.jpg" width=270></td>
+    <td><img src="/readme_assets/timeline.jpg" width=270></td>
+    <td><img src="/readme_assets/settings.jpg" width=270></td>
+  </tr>
+ </table>
 
 ## Further help
 
