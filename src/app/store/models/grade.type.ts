@@ -61,3 +61,5 @@ export const GradeKinds = [
     propName: 'Grades'
   },
 ]
+
+export const GradeKindNames = GradeKinds.map(kind => kind.name);

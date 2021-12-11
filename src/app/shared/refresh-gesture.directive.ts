@@ -66,6 +66,7 @@ export class RefreshGestureDirective implements OnInit {
       return;
     }
 
+    event.preventDefault();
     this.pointerEndY = event.touches[0].screenY;
     const progress = this.getProgress(diffY);
     this.setProgress(progress);

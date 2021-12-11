@@ -3,3 +3,55 @@
 :host {
   @include vars.app-host-common();
 }
+
+.timeline-component {
+  flex-direction: column;
+}
+
+.timeline-container {
+  .date:not(:first-child) {
+    margin-top: #{vars.$card-margin * 2};
+  }
+
+  app-event,
+  app-homework,
+  app-attendance,
+  app-grade {
+    margin: 18px 0;
+  }
+}
+
+.lucky-number-container {
+  background-color: var(--bg-color-2);
+
+  .group {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.lucky-number-label {
+  flex-grow: 1;
+
+  h2, p {
+    margin: 0.83rem 0;
+  }
+}
+
+.lucky-number-symbol {
+  box-sizing: border-box;
+  margin-left: 20px;
+  width: 56px;
+  height: 56px;
+  line-height: 56px;
+  font-size: 1.7rem;
+  text-align: center;
+  background-color: vars.$accent;
+  color: vars.$accent-contrast;
+  font-weight: bold;
+  border-radius: 50%;
+}
+
+.date {
+  @include vars.date-bar();
+}

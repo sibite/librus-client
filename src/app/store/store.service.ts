@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, forkJoin, of, Subject, throwError } from "rxjs";
+import { BehaviorSubject, forkJoin, of, throwError } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-utilities";
@@ -10,13 +10,12 @@ import { CalendarEntryType } from "./models/calendar.type";
 import { CategoriesType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
-import { SchoolInfoType } from "./models/school-info.type";
 import { LuckyNumberType } from "./models/lucky-number.type";
+import { SchoolInfoType } from "./models/school-info.type";
 import { SubjectType } from "./models/subject.type";
 import { TimetableEntryType } from "./models/timetable.type";
 import { UserType } from "./models/user.type";
 import { assignProperties } from "./transform-utilities";
-import { GradeType } from "./models/grade.type";
 
 export interface StoreDataType {
   lastSyncTime?: number,
@@ -35,7 +34,8 @@ export interface StoreDataType {
   attendanceTypes?: { [key: number]: AttendanceTypeType },
   timetableDays?: { [key: string]: TimetableEntryType[][] },
   classrooms?: { [key: number]: ClassroomType },
-  calendar?: { [key: string]: CalendarEntryType[] }
+  calendar?: { [key: string]: CalendarEntryType[] },
+  timeline?: any[];
 };
 
 export interface SyncStateType {
@@ -74,7 +74,6 @@ export class StoreService {
   ) {
     this.restoreLocalStorage();
     this.init();
-    console.log(this.getTimeline());
 
     // network mode
     this.syncState.offline = !window.navigator.onLine;
@@ -114,6 +113,7 @@ export class StoreService {
       classrooms: this.fetcherService.fetchClassrooms(),
       calendar: this.fetcherService.fetchCalendar(),
       unitInfo: this.fetcherService.fetchUnitInfo(),
+      luckyNumber: this.fetcherService.fetchLuckyNumber(),
       themes: this.fetcherService.fetchThemes()
     };
 
@@ -304,6 +304,8 @@ export class StoreService {
       if (requireFields(['luckyNumber'])) {
         this.data.luckyNumber = this.fetcherData.luckyNumber
       }
+
+      this.data.timeline = this.getTimeline();
     }
 
     // transform functions execution
@@ -321,18 +323,21 @@ export class StoreService {
     let timeline = [];
 
     let grades = []
-    this.data.gradeSubjects.forEach(subject => {
+    this.data.gradeSubjects?.forEach(subject => {
       grades = grades.concat(subject.Grades);
     });
 
     let attendances = [];
-    Object.values(this.data.attendanceDays).forEach(day => {
+    Object.values(this.data.attendanceDays || {}).forEach(day => {
       attendances = attendances.concat(day.filter(attendance => attendance.Type.Id != 100));
     });
 
     let calendar = [];
-    Object.values(this.data.calendar).forEach(day => {
-      calendar = calendar.concat(day);
+    Object.values(this.data.calendar || {}).forEach(day => {
+      calendar = calendar.concat(day.filter(entry =>
+           entry.Kind !== 'Substitutions'
+        && entry.Kind !== 'ParentTeacherConferences'
+        ));
     });
 
     timeline = timeline.concat(grades, attendances, calendar)
@@ -340,8 +345,7 @@ export class StoreService {
         return convertLibrusDate(b.AddDate || b.Date).getTime()
              > convertLibrusDate(a.AddDate || a.Date).getTime()
              ? 1 : -1;
-      })
-      .slice(0, 40);
+      });
 
     return timeline;
   }

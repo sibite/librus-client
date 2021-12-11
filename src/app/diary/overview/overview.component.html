@@ -1,10 +1,77 @@
-<div class="ui component">
-  <div class="ui group align-width offset">
-    <h2>Szczęśliwy numerek</h2>
+<div
+  class="ui component"
+  appRefreshGesture="parent"
+  (onRefreshGesture)="onRefreshGesture()"
+
+  infiniteScroll
+  [infiniteScrollThrottle]="50"
+  [infiniteScrollDistance]="0.7"
+  [infiniteScrollContainer]="hostElRef.nativeElement"
+  [fromRoot]="true"
+  [scrollWindow]="false"
+  (scrolled)="onReachTimelineEnd()">
+  <div class="ui component lucky-number-container" *ngIf="luckyNumber">
+    <div class="ui group align-width offset">
+      <div class="lucky-number-label">
+        <h2>Szczęśliwy numerek</h2>
+        <p> {{ getLuckyNumberDateStr(luckyNumber) | capitalize }}</p>
+      </div>
+      <div class="lucky-number-symbol">{{ luckyNumber.LuckyNumber }}</div>
+    </div>
   </div>
-  <div class="ui group align-width offset">
+  <div class="ui group align-width offset" *ngIf="currentLesson">
+    <h2>Obecna lekcja</h2>
     <app-lesson
-    [lesson]="currentLesson"
-    ></app-lesson>
+      class="single"
+      (click)="showLessonDetails($event, currentLesson)"
+      [lesson]="currentLesson"
+      [color]="subjectColors[currentLesson.Subject.Id]"
+      [range]="lessonsRange[currentLesson.LessonNo]">
+    </app-lesson>
+  </div>
+  <div class="ui group align-width offset" *ngIf="nextLesson">
+    <h2>Następna lekcja</h2>
+    <app-lesson
+      class="single"
+      (click)="showLessonDetails($event, nextLesson)"
+      [lesson]="nextLesson"
+      [color]="subjectColors[nextLesson.Subject.Id]"
+      [range]="lessonsRange[nextLesson.LessonNo]">
+    </app-lesson>
+  </div>
+  <div class="ui component align-width offset timeline-component">
+    <h2>Aktualności</h2>
+    <div class="timeline-container">
+      <ng-container *ngFor="let entry of timeline; let i = index">
+        <div
+          *ngIf="timelineDates[i] != timelineDates[i - 1]"
+          class="date">
+          <span>Dodano {{ timelineDates[i] }}</span>
+        </div>
+        <app-grade
+          *ngIf="gradeKindNames.indexOf(entry.Kind) != -1"
+          [grade]="entry"
+          [style.--subject-color]="subjectColors[entry.Subject.Id]"
+          (click)="showGradeDetails(entry)">
+        </app-grade>
+        <app-homework
+          *ngIf="entry.Kind == 'HomeWorks'"
+          class="single"
+          [homework]="entry"
+          (click)="showEventDetails(entry)">
+        </app-homework>
+        <app-event
+          *ngIf="calendarKindNames.indexOf(entry.Kind) != -1 && entry.Kind != 'HomeWorks'"
+          [event]="entry"
+          (click)="showEventDetails(entry)">
+        </app-event>
+        <app-attendance
+          *ngIf="!entry.Kind"
+          [attendance]="entry"
+          [style.--subject-color]="subjectColors[entry.Lesson.Subject.Id]"
+          (click)="showAttendanceDetails(entry)">
+        </app-attendance>
+      </ng-container>
+    </div>
   </div>
 </div>

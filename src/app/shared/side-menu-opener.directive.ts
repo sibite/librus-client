@@ -1,4 +1,4 @@
-import { Directive, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, Renderer2 } from '@angular/core';
+import { Directive, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 
 @Directive({
   selector: '[appSideMenuOpener]'
@@ -21,8 +21,6 @@ export class SideMenuOpenerDirective implements OnInit {
   }
 
   constructor(
-    private elRef: ElementRef,
-    private renderer: Renderer2,
   ) { }
 
   ngOnInit() {

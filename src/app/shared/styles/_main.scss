@@ -4,10 +4,10 @@
 html, body {
   color: var(--text-color-1);
   font-size: 13px;
+  overscroll-behavior: contain;
 }
 
 body * {
-  overscroll-behavior: auto;
   outline: none;
 }
 

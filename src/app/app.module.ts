@@ -42,6 +42,8 @@ import { GradeComponent } from './diary/grades/grade-subject-details/grade/grade
 import { LessonComponent } from './diary/plan/lessons-list/lesson/lesson.component';
 import { HomeworkComponent } from './diary/plan/lessons-list/homework/homework.component';
 import { EventComponent } from './diary/plan/lessons-list/event/event.component';
+import { AttendanceComponent } from './diary/attendances/attendances-day-details/attendance/attendance.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 
 @NgModule({
@@ -77,7 +79,8 @@ import { EventComponent } from './diary/plan/lessons-list/event/event.component'
     GradeComponent,
     LessonComponent,
     HomeworkComponent,
-    EventComponent
+    EventComponent,
+    AttendanceComponent
   ],
   imports: [
     BrowserModule,
@@ -85,6 +88,7 @@ import { EventComponent } from './diary/plan/lessons-list/event/event.component'
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
+    InfiniteScrollModule,
     HammerModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,

@@ -7,11 +7,11 @@
   flex: 1;
 
   @if not $single {
-    &:not(:first-child) {
+    &:not(:first-child):not(.single) {
       margin-left: vars.$lesson-margin;
     }
 
-    &:not(:last-child) {
+    &:not(:last-child):not(.single) {
       margin-right: vars.$lesson-margin;
     }
   }

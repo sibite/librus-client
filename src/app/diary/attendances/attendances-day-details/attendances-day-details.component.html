@@ -9,7 +9,12 @@
     <div class="ui group offset align-width">
       <ul class="attendances-list">
         <ng-container *ngFor="let attendance of attendances; let i = index">
-          <li
+          <app-attendance
+            [style.--subject-color]="attendance.Lesson?.Subject?.Color"
+            [attendance]="attendance"
+            (click)="showAttendanceDetails($event, attendance)">>
+          </app-attendance>
+          <!-- <li
           class="attendance"
           appClickEffect
           [attr.att-type]="attendance.Type?.Id"
@@ -23,7 +28,7 @@
             <p class="name">{{ attendance.Type?.Name }}</p>
             <p class="subject">{{ attendance.Lesson?.Subject?.Name | capitalize }}</p>
           </div>
-          </li>
+          </li> -->
         </ng-container>
       </ul>
     </div>

@@ -3,27 +3,6 @@
     *ngFor="let event of getEvents()"
     [event]="event"
     (click)="showEventDetails($event, event)">
-    <!-- <div class="entry-caption">
-      <span class="entry-header">{{ event.Name || eventKindNames[event.Kind] }}</span>
-      <ng-container *ngIf="event.Kind == 'TeacherFreeDays'">
-        <br>
-        <span class="entry-sub">{{ event.Teacher.FirstName }} {{ event.Teacher.LastName }}</span>
-        <br>
-        <span class="entry-sub">{{ event | timerange:'Cały dzień' }}</span>
-      </ng-container>
-      <ng-container *ngIf="event.Kind == 'ClassFreeDays'">
-        <br>
-        <span class="entry-sub">{{ event.Type.Name }}</span>
-        <br>
-        <span class="entry-sub">{{ event | timerange:'Cały dzień' }}</span>
-      </ng-container>
-      <ng-container *ngIf="event.Kind == 'ParentTeacherConferences'">
-        <br>
-        <span class="entry-sub">{{ event.Time.substr(0, 5) }}</span>
-        <br>
-        <span class="entry-sub">Sala: {{ event.Room }}</span>
-      </ng-container>
-    </div> -->
   </app-event>
   <span class="no-events-text" *ngIf="getEvents().length == 0">Brak wydarzeń</span>
 </div>

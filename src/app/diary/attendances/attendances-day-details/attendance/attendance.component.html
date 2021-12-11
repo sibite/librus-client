@@ -1,0 +1,13 @@
+<li
+  class="attendance"
+  appClickEffect
+  [attr.att-type]="attendance.Type?.Id">
+  <div class="lesson-no">
+    <span class="caption">Lekcja</span><br>
+    <span class="number">{{ attendance.LessonNo }}</span>
+  </div>
+  <div class="details">
+    <p class="name">{{ attendance.Type?.Name }}</p>
+    <p class="subject">{{ attendance.Lesson?.Subject?.Name | capitalize }}</p>
+  </div>
+  </li>

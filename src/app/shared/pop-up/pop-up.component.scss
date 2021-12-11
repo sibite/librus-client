@@ -48,3 +48,7 @@
 .toolbar {
   box-shadow: 0px -1px 1px var(--bar-shadow-color);
 }
+
+.ui.button {
+  border-radius: 0;
+}

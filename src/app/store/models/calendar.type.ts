@@ -152,3 +152,5 @@ export const CalendarKinds = [
     propName: 'ParentTeacherConferences'
   }
 ];
+
+export const CalendarKindNames = CalendarKinds.map(kind => kind.propName);

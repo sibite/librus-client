@@ -19,7 +19,6 @@ export class MySchoolComponent implements OnInit {
     if (this.storeService.data?.unitInfo) {
       this.classDetailsHTML = getClassDetailsHTML(this.storeService.data.unitInfo.class);
       this.schoolDetailsHTML = getSchoolDetailsHTML(this.storeService.data.unitInfo.school);
-      console.log(this.classDetailsHTML);
     }
   }
 

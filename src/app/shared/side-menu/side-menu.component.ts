@@ -1,9 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { AuthService } from '../../auth/auth.service';
-import { ViewService } from '../view.service';
-import { StoreService } from '../../store/store.service';
-import * as moment from 'moment';
 import { NavigationStart, Router } from '@angular/router';
+import * as moment from 'moment';
+import { AuthService } from '../../auth/auth.service';
+import { StoreService } from '../../store/store.service';
+import { ViewService } from '../view.service';
 
 @Component({
   selector: 'app-side-menu',
