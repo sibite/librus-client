@@ -144,7 +144,7 @@ input[type="radio"], input[type="checkbox"] {
   --active-inner: #{vars.$accent-contrast};
   --border: var(--accent-d2);
   --border-hover: var(--accent);
-  --background: #{vars.$accent-contrast};
+  --background: var(--bg-color-2);
   --disabled: #F8F8F8;
   --disabled-inner: #E1E6F9;
   -webkit-appearance: none;

@@ -1,5 +1,8 @@
-<router-outlet class="ui app-component"></router-outlet>
+<div [@routerAnimation]="getRouteAnimation(outlet)">
+  <router-outlet #outlet="outlet" class="ui app-component"></router-outlet>
+</div>
 <app-pop-up
+  @popUpAnimation
   *ngIf="popUpContent"
   [windowTitle]="popUpTitle"
   [windowContent]="popUpContent | keepHtml"

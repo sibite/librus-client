@@ -15,21 +15,21 @@ import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'main/overview', pathMatch: 'full' },
-  { path: 'auth', component: AuthComponent, canActivate: [AuthGuard],  data: { title: 'Logowanie' } },
-  { path: 'settings', component: SettingsComponent, data: { title: 'Ustawienia'} },
-  { path: 'grades/subject/:id', component: GradeSubjectDetailsComponent, canActivate: [DiaryGuard] },
-  { path: 'attendances/day/:day', component: AttendancesDayDetailsComponent, canActivate: [DiaryGuard] },
+  { path: 'auth', component: AuthComponent, canActivate: [AuthGuard],  data: { title: 'Logowanie', animation: 0 } },
+  { path: 'settings', component: SettingsComponent, data: { title: 'Ustawienia', animation: 20 } },
+  { path: 'grades/subject/:id', component: GradeSubjectDetailsComponent, canActivate: [DiaryGuard], data: { animation: 11 } },
+  { path: 'attendances/day/:day', component: AttendancesDayDetailsComponent, canActivate: [DiaryGuard], data: { animation: 12 } },
   {
     path: 'main',
     component: DiaryComponent,
     canActivate: [DiaryGuard],
-    data: { title: 'Dziennik' },
+    data: { title: 'Dziennik', animation: 10 },
     children: [
-      { path: 'overview', component: OverviewComponent, data: { title: 'Przegląd' } },
-      { path: 'grades', component: GradesComponent, data: { title: 'Oceny i zachowanie' } },
-      { path: 'attendances', component: AttendancesComponent, data: { title: 'Frekwencja' } },
-      { path: 'timetables', component: PlanComponent, data: { title: 'Plan lekcji' } },
-      { path: 'my-school', component: MySchoolComponent, data: { title: 'Szkoła i klasa' } },
+      { path: 'overview', component: OverviewComponent, data: { title: 'Przegląd', animation: 0 } },
+      { path: 'grades', component: GradesComponent, data: { title: 'Oceny i zachowanie', animation: 1 } },
+      { path: 'attendances', component: AttendancesComponent, data: { title: 'Frekwencja', animation: 2 } },
+      { path: 'timetables', component: PlanComponent, data: { title: 'Plan lekcji', animation: 3 } },
+      { path: 'my-school', component: MySchoolComponent, data: { title: 'Szkoła i klasa', animation: 4 } },
       { path: '**', redirectTo: 'grades' }
     ]
   },

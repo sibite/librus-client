@@ -1,26 +1,50 @@
 # LibrusClient
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.12.
+This project is an independent Librus Diary app created for learning purposes.
 
-## Development server
+## Working parts
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Grades
+- Attendances
+- Lessons plan (with everything working)
+- Events and homeworks
+- Timeline (grades, attendances, homeworks)
+- Lucky number
+- School and class details
+- Current and next lesson
 
-## Code scaffolding
+## Not existing parts (and not planned)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Timeline (substitutions and canceled lessons)
+- Announcements
+- Messages
+- Notes
+- Homeworks
 
-## Build
+## Running
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng serve` and `npm run proxy` then navigate to `http://localhost:4200/`
 
-## Running unit tests
+## Deployment
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+1. Duplicate app/environments/environment.prod.template.ts
+2. Rename file to environment.prod.ts
+3. Replace proxy url
+4. In proxy_server/index.js under `Configuration` comment, replace needed constants with your configuration
+5. Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory
+6. Deploy files to your server
 
-## Running end-to-end tests
+**Important note: proxy server is neccessary for API to work properly because of CORS**
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Screenshots
+
+![Login page](/readme_assets/auth.jpg "Login page")
+![Grades](/readme_assets/grades.jpg "Grades")
+![Attendances](/readme_assets/attendances.jpg "Attendances")
+![Lessons plan](/readme_assets/lessons_plan.jpg "Lessons plan")
+![Timeline](/readme_assets/timeline.jpg "Timeline")
+![Settings](/readme_assets/settings.jpg "Settings")
+
 
 ## Further help
 

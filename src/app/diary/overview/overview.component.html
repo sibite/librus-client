@@ -51,6 +51,7 @@
         <app-grade
           *ngIf="gradeKindNames.indexOf(entry.Kind) != -1"
           [grade]="entry"
+          [showSubject]="true"
           [style.--subject-color]="subjectColors[entry.Subject.Id]"
           (click)="showGradeDetails(entry)">
         </app-grade>

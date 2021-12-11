@@ -1,15 +1,17 @@
 import { Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
+import { Component, HostBinding, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { ActivatedRoute, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { appAnimations } from './app.animations';
 import { ViewService } from './shared/view.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: appAnimations
 })
 export class AppComponent implements OnInit, OnDestroy {
   popUpSubscription: Subscription;
@@ -52,6 +54,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.popUpSubscription.unsubscribe();
+  }
+
+  getRouteAnimation(outlet: RouterOutlet) {
+    return outlet?.activatedRouteData?.animation;
   }
 
   onUrlRequest(url) {

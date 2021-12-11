@@ -4,7 +4,8 @@
   forceRippleTheme="dark">
   <div class="symbol">{{ formatGradeShort(grade) }}</div>
   <div class="details">
-    <p class="added-by">{{ grade.AddedBy.FirstName }} {{ grade.AddedBy.LastName }}</p>
+    <p class="added-by" *ngIf="!showSubject">{{ grade.AddedBy.FirstName }} {{ grade.AddedBy.LastName }}</p>
+    <p class="added-by" *ngIf="showSubject">{{ grade.Subject.Name | capitalize }}</p>
     <p class="category">{{ grade.Category.Name | capitalize }}</p>
   </div>
 </li>

@@ -1,14 +1,16 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, ChildActivationEnd, Router } from '@angular/router';
-import { ViewService } from '../shared/view.service';
-import { SideMenuComponent } from '../shared/side-menu/side-menu.component';
-import { StoreService } from '../store/store.service';
+import { ActivatedRoute, ChildActivationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { SideMenuComponent } from '../shared/side-menu/side-menu.component';
+import { ViewService } from '../shared/view.service';
+import { StoreService } from '../store/store.service';
+import { diaryAnimations } from './diary.animations';
 
 @Component({
   selector: 'app-diary',
   templateUrl: './diary.component.html',
-  styleUrls: ['./diary.component.scss']
+  styleUrls: ['./diary.component.scss'],
+  animations: diaryAnimations
 })
 export class DiaryComponent implements OnInit {
   @ViewChild(SideMenuComponent, {read: ElementRef, static: true}) sidemenuElRef: ElementRef;
@@ -41,6 +43,10 @@ export class DiaryComponent implements OnInit {
 
   onOpenSidemenu() {
     this.isSidemenuOpened = true;
+  }
+
+  getRouteAnimation(outlet: RouterOutlet) {
+    return outlet?.activatedRouteData?.animation;
   }
 
 }

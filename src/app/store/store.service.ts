@@ -192,6 +192,8 @@ export class StoreService {
         assignProperties(grade.AddedBy, this.fetcherData.users, ['FirstName', 'LastName']);
         // attaching categories
         assignProperties(grade.Category, this.fetcherData.grades.categories[grade.Kind], ['Name', 'Weight']);
+        // attaching subject name
+        assignProperties(grade.Subject, this.fetcherData.subjects, ['Name']);
         // attaching comments
         if (grade.Comments) {
           grade.Comments = grade.Comments.map(comment => {

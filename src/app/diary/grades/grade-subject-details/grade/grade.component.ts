@@ -9,6 +9,7 @@ import { formatGradeShort } from '../../grades.utilities';
 })
 export class GradeComponent implements OnInit {
   @Input() grade: GradeType;
+  @Input() showSubject: boolean = false;
 
   constructor() { }
 

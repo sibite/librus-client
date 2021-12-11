@@ -14,6 +14,8 @@
     [isOpened]="isSidemenuOpened"
     (onClose)="onCloseSidemenu()"
     #sidemenuRef></app-side-menu>
-  <router-outlet></router-outlet>
+  <div class="router-outlet-container" [@routerAnimation]="getRouteAnimation(outlet)">
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
   <app-nav-bar></app-nav-bar>
 </div>
