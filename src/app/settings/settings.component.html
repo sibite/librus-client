@@ -1,0 +1,32 @@
+<div
+  class="ui view-wrapper"
+  [style.height.px]="viewService.windowHeight">
+  <app-top-bar
+    uiTitle="Ustawienia"
+    appIcon="bi-arrow-left"
+    [showSyncState]="false"
+    (onButtonClick)="onBack()"></app-top-bar>
+  <div class="ui component">
+    <div class="ui group">
+      <h2>Oceny</h2>
+      <label class="setting-entry" appClickEffect>
+        <input type="checkbox" name="show-averages" id="show-averages" [formControl]="showAverages">
+        <span>Pokaż średnie ocen</span>
+      </label>
+      <br>
+      <h2>Motyw</h2>
+      <label class="setting-entry" appClickEffect>
+        <input type="radio" name="theme" id="theme" value="light" [formControl]="theme">
+        <span>Jasny</span>
+      </label>
+      <label class="setting-entry" appClickEffect>
+        <input type="radio" name="theme" id="theme" value="dark" [formControl]="theme">
+        <span>Ciemny</span>
+      </label>
+      <label class="setting-entry" appClickEffect>
+        <input type="radio" name="theme" id="theme" value="auto" [formControl]="theme">
+        <span>Systemowy</span>
+      </label>
+    </div>
+  </div>
+</div>

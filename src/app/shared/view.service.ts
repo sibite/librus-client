@@ -32,6 +32,12 @@ export class ViewService {
 
   get theme() { return this._theme; }
   get windowHeight() { return this._windowHeight; }
+  get showAverages() {
+    return Boolean(Number(localStorage.getItem('app.showAverages') ?? '1'));
+  }
+  set showAverages(value) {
+    localStorage.setItem('app.showAverages', '' + Number(value));
+  }
 
   constructor() {
     this.refreshTheme();

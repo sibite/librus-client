@@ -16,6 +16,7 @@ export class GradeSubjectItemComponent implements OnInit {
   @Input() semester: number;
   @Input() color: string;
   grades: GradeType[] = [];
+  showAverages: boolean = true;
 
   constructor(
     private viewService: ViewService
@@ -23,6 +24,7 @@ export class GradeSubjectItemComponent implements OnInit {
 
   ngOnInit(): void {
     this.grades = this.subject.Grades.sort(gradesByDateSorter);
+    this.showAverages = this.viewService.showAverages;
   }
 
   showGradeDetails(event: MouseEvent, grade: GradeType) {

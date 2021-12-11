@@ -140,11 +140,11 @@ $group-ver-margin: 30px;
 // Author: Aaron Iker
 
 input[type="radio"], input[type="checkbox"] {
-  --active: var(--accent);
-  --active-inner: #fff;
+  --active: #{vars.$accent};
+  --active-inner: #{vars.$accent-contrast};
   --border: var(--accent-d2);
   --border-hover: var(--accent);
-  --background: #fff;
+  --background: #{vars.$accent-contrast};
   --disabled: #F8F8F8;
   --disabled-inner: #E1E6F9;
   -webkit-appearance: none;
@@ -155,7 +155,7 @@ input[type="radio"], input[type="checkbox"] {
   vertical-align: top;
   position: relative;
   margin: 0;
-  margin-right: 7px;
+  margin-right: 16px;
   cursor: pointer;
   border: 1px solid var(--bc, var(--border));
   background: var(--b, var(--background));
@@ -235,5 +235,48 @@ input[type="radio"] {
   }
   &:checked {
     --s: .5;
+  }
+}
+
+input[type='checkbox'] {
+  &:not(.switch) {
+    border-radius: 7px;
+    &:after {
+      width: 5px;
+      height: 9px;
+      border: 2px solid var(--active-inner);
+      border-top: 0;
+      border-left: 0;
+      left: 6px;
+      top: 3px;
+      transform: rotate(var(--r, 20deg));
+    }
+    &:checked {
+      --r: 43deg;
+    }
+  }
+  &.switch {
+    width: 38px;
+    border-radius: 11px;
+    &:after {
+      left: 2px;
+      top: 2px;
+      border-radius: 50%;
+      width: 15px;
+      height: 15px;
+      background: var(--ab, var(--border));
+      transform: translateX(var(--x, 0));
+    }
+    &:checked {
+      --ab: var(--active-inner);
+      --x: 17px;
+    }
+    &:disabled {
+      &:not(:checked) {
+        &:after {
+          opacity: .6;
+        }
+      }
+    }
   }
 }

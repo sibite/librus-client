@@ -44,6 +44,7 @@ import { HomeworkComponent } from './diary/plan/lessons-list/homework/homework.c
 import { EventComponent } from './diary/plan/lessons-list/event/event.component';
 import { AttendanceComponent } from './diary/attendances/attendances-day-details/attendance/attendance.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { SettingsComponent } from './settings/settings.component';
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     LessonComponent,
     HomeworkComponent,
     EventComponent,
-    AttendanceComponent
+    AttendanceComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

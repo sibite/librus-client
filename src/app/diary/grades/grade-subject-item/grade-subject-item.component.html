@@ -15,7 +15,7 @@
     </div>
     <div
     class="average"
-    *ngIf="getAverage()">
+    *ngIf="showAverages && getAverage()">
       <span class="average-text">Średnia:</span><span class="average-value">{{ getAverage() | number: '1.2-2' }}</span>
     </div>
   </div>

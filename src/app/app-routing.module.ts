@@ -11,10 +11,12 @@ import { GradesComponent } from './diary/grades/grades.component';
 import { MySchoolComponent } from './diary/my-school/my-school.component';
 import { OverviewComponent } from './diary/overview/overview.component';
 import { PlanComponent } from './diary/plan/plan.component';
+import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'main/grades', pathMatch: 'full' },
+  { path: '', redirectTo: 'main/overview', pathMatch: 'full' },
   { path: 'auth', component: AuthComponent, canActivate: [AuthGuard],  data: { title: 'Logowanie' } },
+  { path: 'settings', component: SettingsComponent, data: { title: 'Ustawienia'} },
   { path: 'grades/subject/:id', component: GradeSubjectDetailsComponent, canActivate: [DiaryGuard] },
   { path: 'attendances/day/:day', component: AttendancesDayDetailsComponent, canActivate: [DiaryGuard] },
   {
@@ -31,7 +33,7 @@ const routes: Routes = [
       { path: '**', redirectTo: 'grades' }
     ]
   },
-  { path: '**', redirectTo: 'main/grades' }
+  { path: '**', redirectTo: 'main/overview' }
 ];
 
 @NgModule({

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, forkJoin, of, throwError } from "rxjs";
+import { BehaviorSubject, concat, forkJoin, of, throwError } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-utilities";
@@ -332,13 +332,11 @@ export class StoreService {
       attendances = attendances.concat(day.filter(attendance => attendance.Type.Id != 100));
     });
 
-    let calendar = [];
-    Object.values(this.data.calendar || {}).forEach(day => {
-      calendar = calendar.concat(day.filter(entry =>
-           entry.Kind !== 'Substitutions'
-        && entry.Kind !== 'ParentTeacherConferences'
-        ));
-    });
+    let fetcherCalendar = [].concat(...Object.values(this.fetcherData.calendar))
+    let calendar = fetcherCalendar.filter(entry =>
+          entry.Kind !== 'Substitutions'
+      && entry.Kind !== 'ParentTeacherConferences'
+      );
 
     timeline = timeline.concat(grades, attendances, calendar)
       .sort((a, b) => {

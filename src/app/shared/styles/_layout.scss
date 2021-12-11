@@ -1,6 +1,6 @@
 @use 'vars';
 
-$content-offset: 24px;
+$content-offset: vars.$content-offset;
 
 .ui.view-wrapper {
   width: 100vw;
