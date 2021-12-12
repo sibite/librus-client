@@ -35,7 +35,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   public gradeKindNames = GradeKindNames;
 
   private storeSub: Subscription;
-  private lessonsRefreshInterval;
+  private refreshInterval;
 
   constructor(
     public hostElRef: ElementRef,
@@ -54,20 +54,27 @@ export class OverviewComponent implements OnInit, OnDestroy {
       this.lessonsRange = data.unitInfo?.school?.LessonsRange || [];
       this.timelineSrc  = data.timeline || [];
       // generate date strings
-      this.timelineDates = [];
-      for (let entry of this.timelineSrc) {
-        this.timelineDates.push(this.getEntryDateStr(entry));
-      }
+      this.genTimelineDates();
       this.timeline = this.timelineSrc.slice(0, 10);
     });
 
     this.refreshLessons();
-    this.lessonsRefreshInterval = setInterval(() => this.refreshLessons(), 10e3);
+    this.refreshInterval = setInterval(() => {
+      this.refreshLessons();
+      this.genTimelineDates();
+    }, 10e3);
   }
 
   ngOnDestroy() {
     this.storeSub.unsubscribe();
-    clearInterval(this.lessonsRefreshInterval);
+    clearInterval(this.refreshInterval);
+  }
+
+  genTimelineDates() {
+    this.timelineDates = [];
+    for (let entry of this.timelineSrc) {
+      this.timelineDates.push(this.getEntryDateStr(entry));
+    }
   }
 
   refreshLessons() {

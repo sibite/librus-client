@@ -1,6 +1,6 @@
 {
-  "name": "librus-client",
-  "short_name": "librus-client",
+  "name": "Librus Client",
+  "short_name": "LC",
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",

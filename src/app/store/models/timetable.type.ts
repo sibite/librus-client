@@ -21,14 +21,14 @@ export interface TimetableEntryType {
   VirtualClass: any,
   VirtualClassName: string,
 
-  OrgClassroom?: ClassroomType,
+  OrgClassroom?: ClassroomType | any,
   OrgDate?: string,
   OrgHourFrom?: string,
   OrgHourTo?: string,
   OrgLesson?: LessonType,
   OrgLessonNo?: string,
-  OrgSubject?: SubjectType,
-  OrgTeacher?: UserType
+  OrgSubject?: SubjectType | any,
+  OrgTeacher?: UserType | any
 }
 
 export interface TimetableType {

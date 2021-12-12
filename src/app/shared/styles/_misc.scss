@@ -83,43 +83,41 @@ body {
   user-select: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  body:not(.light) {
-    --bg-color-1: #000000;
-    --bg-color-2: #1d1d1d;
-    --bg-color-3: #323232;
-    --bg-color-4: #444444;
-    --bg-color-1-reverse: var(--bg-color-1);
-    --bg-color-2-reverse: var(--bg-color-2);
-    --bg-color-3-reverse: var(--bg-color-3);
-    --bg-color-4-reverse: var(--bg-color-4);
-    --bg-color-1-shift-dark: var(--bg-color-2);
-    --bg-color-2-shift-dark: var(--bg-color-3);
-    --bg-color-3-shift-dark: var(--bg-color-4);
-    --bg-color-4-shift-dark: var(--bg-color-4);
+body.dark {
+  --bg-color-1: #000000;
+  --bg-color-2: #1d1d1d;
+  --bg-color-3: #323232;
+  --bg-color-4: #444444;
+  --bg-color-1-reverse: var(--bg-color-1);
+  --bg-color-2-reverse: var(--bg-color-2);
+  --bg-color-3-reverse: var(--bg-color-3);
+  --bg-color-4-reverse: var(--bg-color-4);
+  --bg-color-1-shift-dark: var(--bg-color-2);
+  --bg-color-2-shift-dark: var(--bg-color-3);
+  --bg-color-3-shift-dark: var(--bg-color-4);
+  --bg-color-4-shift-dark: var(--bg-color-4);
 
-    --accent-d2: #{vars.$accent-darkest};
-    --accent-d1: #{vars.$accent};
-    --accent: #{vars.$accent-lighter};
-    --accent-u1: #{vars.$accent-lightest};
-    --accent-u2: #{vars.$accent-lightest};
+  --accent-d2: #{vars.$accent-darkest};
+  --accent-d1: #{vars.$accent};
+  --accent: #{vars.$accent-lighter};
+  --accent-u1: #{vars.$accent-lightest};
+  --accent-u2: #{vars.$accent-lightest};
 
-    --btn-color-default: #333333;
-    --btn-color-default-darker: #3c3c3c;
-    --link-color: #{vars.$accent-lighter};
-    --form-el-bg-color: #1e1e1e;
-    --form-el-bg-color-focus: #2f2f2f;
-    --form-el-text-color: #dddddd;
-    --form-el-border-color: rgba(255, 255, 255, 0.3);
+  --btn-color-default: #333333;
+  --btn-color-default-darker: #3c3c3c;
+  --link-color: #{vars.$accent-lighter};
+  --form-el-bg-color: #1e1e1e;
+  --form-el-bg-color-focus: #2f2f2f;
+  --form-el-text-color: #dddddd;
+  --form-el-border-color: rgba(255, 255, 255, 0.3);
 
-    --text-color-1: #ffffff;
-    --text-color-2: #dddddd;
-    --text-color-3: #b1b1b1;
-    --text-color-4: #7c7c7c;
-    --text-color-5: #5a5a5a;
+  --text-color-1: #ffffff;
+  --text-color-2: #dddddd;
+  --text-color-3: #b1b1b1;
+  --text-color-4: #7c7c7c;
+  --text-color-5: #5a5a5a;
 
-    --bar-shadow-color: hsl(0, 0%, 20%);
-    --ripple-color: var(--ripple-color-light);
-    --ripple-color-revert: var(--ripple-color-dark);
-  }
+  --bar-shadow-color: hsl(0, 0%, 20%);
+  --ripple-color: var(--ripple-color-light);
+  --ripple-color-revert: var(--ripple-color-dark);
 }

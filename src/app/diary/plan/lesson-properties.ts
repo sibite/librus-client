@@ -34,7 +34,7 @@ export function getLessonDetailsHTML(lesson: TimetableEntryType) {
   if (!lesson.OrgClassroom || lesson.OrgClassroom.Name == lesson.Classroom.Name) {
     classroom = lesson.Classroom.Name;
   } else {
-    classroom = `${lesson.OrgClassroom.Name} <i class="bi-arrow-right"></i> ${lesson.Classroom.Name || 'Brak'}`;
+    classroom = `${lesson.OrgClassroom.Name || 'Brak'} <i class="bi-arrow-right"></i> ${lesson.Classroom.Name || 'Brak'}`;
   }
 
   let properties = [

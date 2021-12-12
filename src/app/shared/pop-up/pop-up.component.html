@@ -1,5 +1,5 @@
 <div class="ui view-wrapper" [style.height.px]="viewService.windowHeight">
-  <div class="ui overlay"></div>
+  <div class="ui overlay" (pointerup)="onClose.emit()"></div>
   <div class="window">
     <div class="title">{{ windowTitle }}</div>
     <div class="content" [innerHTML]="windowContent"></div>

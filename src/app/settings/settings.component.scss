@@ -6,6 +6,10 @@
   align-items: stretch;
 }
 
+.ui.component {
+  @include vars.app-host-common();
+}
+
 .group {
   width: 100%;
   padding: vars.$content-offset 0;

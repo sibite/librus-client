@@ -388,11 +388,13 @@ export class StoreService {
           Name: classroom?.Name
         }
         if (lesson.IsSubstitutionClass) {
-          const orgClassroom = this.data.classrooms[lesson.OrgClassroom.Id];
+          const orgClassroom = this.data.classrooms[lesson.OrgClassroom?.Id];
           const orgSubject = this.data.subjects[lesson.OrgSubject.Id];
           const orgTeacher = this.data.users[lesson.OrgTeacher.Id];
-          lesson.OrgClassroom.Name = orgClassroom.Name;
-          lesson.OrgSubject.Name = orgSubject.Name;
+          lesson.OrgClassroom ??= {};
+          lesson.OrgClassroom.Name = orgClassroom?.Name;
+          lesson.OrgSubject ??= {};
+          lesson.OrgSubject.Name = orgSubject?.Name;
           lesson.OrgTeacher = {
             ...lesson.OrgTeacher,
             FirstName: orgTeacher.FirstName,
