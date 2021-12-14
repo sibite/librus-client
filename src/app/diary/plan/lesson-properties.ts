@@ -41,8 +41,7 @@ export function getLessonDetailsHTML(lesson: TimetableEntryType) {
     { name: 'Przedmiot', content: subject },
     { name: 'Nauczyciel', content: teacher },
     { name: 'Sala', content: classroom },
-    { name: 'Numer lekcji', content: lessonNo },
-    { name: 'Data', content: reFormatDate(lesson.DateFrom) },
+    { name: 'Numer lekcji', content: lessonNo }
   ]
 
   return generateDetailsListHTML(properties);

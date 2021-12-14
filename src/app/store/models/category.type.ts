@@ -23,3 +23,9 @@ export interface CategoriesType {
   'BehaviourGrades/Points': { [ key: number]: CategoryType },
   'PointGrades': { [ key: number]: CategoryType }
 }
+
+export interface BehaviourType {
+  Id: number,
+  Name: string,
+  Shortcut: string
+}

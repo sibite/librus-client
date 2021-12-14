@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, concat, forkJoin, of, throwError } from "rxjs";
-import { catchError, map, take } from "rxjs/operators";
+import { BehaviorSubject, concat, forkJoin, of, Subject, throwError } from "rxjs";
+import { catchError, map, take, tap } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-utilities";
 import { FetcherDataType, FetcherService } from "./fetcher.service";
@@ -51,6 +51,8 @@ const initialSyncState = {
   timetableSyncing: false,
   error: false
 }
+
+const BEHAVIOUR_POLYFILL_ID = 999999999;
 
 @Injectable({ providedIn: 'root' })
 export class StoreService {
@@ -125,17 +127,22 @@ export class StoreService {
       .pipe(
         catchError(err => {
           return this.syncErrorHandler(err, isSecondAttempt);
+        }),
+        tap(forkResponse => {
+          this.fetcherData = forkResponse;
+          this.transformFetcherData();
+          this.loadTimetable(new Date()).pipe(take(1)).subscribe();
         })
       )
       .subscribe(forkResponse => {
         console.log('received next');
-        this.fetcherData = forkResponse;
-        this.transformFetcherData();
+        this.syncState.syncing = false;
         this.syncState.error = false;
-        this.loadTimetable(new Date()).pipe(take(1)).subscribe();
+        this.syncStateSubject.next(this.syncState);
       },
       error => {
         console.log('received error');
+        console.error(error);
         this.syncState.syncing = false;
         this.syncState.error = error;
         this.syncStateSubject.next(this.syncState);
@@ -176,24 +183,47 @@ export class StoreService {
         const id = subjectMatching.Id;
         subjectColors[id] = targetTheme.subjectColors[name];
       }
+      subjectColors[BEHAVIOUR_POLYFILL_ID] = '#303461'
       this.data.subjectColors = subjectColors;
     }
 
     let transformGrades = () => {
       if (!requireFields(['themes', 'subjects', 'grades'])) return;
 
-      let gradesSubjects = { ...this.fetcherData.subjects };
+      let behaviorSubject: SubjectType = {
+        Id: BEHAVIOUR_POLYFILL_ID,
+        IsBlockLesson: false,
+        IsExtracurricular: true,
+        Name: 'zachowanie',
+        No: BEHAVIOUR_POLYFILL_ID,
+        Short: 'z',
+        Grades: []
+      };
+
+      let gradesSubjects = { ...this.fetcherData.subjects, [BEHAVIOUR_POLYFILL_ID]: behaviorSubject };
       for (let subject of Object.values(gradesSubjects)) {
         subject.Color = this.data.subjectColors[subject.Id];
         subject.Grades = [];
       }
+
       for (let grade of this.fetcherData.grades.list) {
+        const isBehavioral = grade.Kind?.startsWith('BehaviourGrades');
+        grade.AddedBy ??= grade.Teacher;
         // attaching added by
         assignProperties(grade.AddedBy, this.fetcherData.users, ['FirstName', 'LastName']);
-        // attaching categories
-        assignProperties(grade.Category, this.fetcherData.grades.categories[grade.Kind], ['Name', 'Weight']);
         // attaching subject name
-        assignProperties(grade.Subject, this.fetcherData.subjects, ['Name']);
+        if (isBehavioral) {
+          let type = this.fetcherData.grades.behaviourTypes.find(type => type.Id == grade.GradeType.Id);
+          grade.Subject = { ...grade.Subject, Id: BEHAVIOUR_POLYFILL_ID };
+          grade.GradeType = { ...grade.GradeType, Name: type.Name };
+          grade.Semester = +grade.Semester;
+          grade.Grade = type.Shortcut;
+        }
+        else {
+          // attaching categories
+          assignProperties(grade.Category, this.fetcherData.grades.categories[grade.Kind], ['Name', 'Weight']);
+        }
+        assignProperties(grade.Subject, gradesSubjects, ['Name']);
         // attaching comments
         if (grade.Comments) {
           grade.Comments = grade.Comments.map(comment => {
@@ -201,8 +231,18 @@ export class StoreService {
           })
         }
         grade.IsNormal = !(grade.IsFinalProposition || grade.IsFinal || grade.IsSemester || grade.IsSemesterProposition);
-        if (gradesSubjects[grade.Subject.Id]) {
+        if (gradesSubjects[grade.Subject.Id] && !isBehavioral) {
           gradesSubjects[grade.Subject.Id].Grades.push(grade);
+        }
+        else if (isBehavioral) {
+          grade.Category = { ...grade.Category };
+          if (+grade.IsProposal) {
+            grade.Category.Name = 'proponowana śródroczna';
+          }
+          else {
+            grade.Category.Name = 'śródroczna'
+          }
+          gradesSubjects[BEHAVIOUR_POLYFILL_ID].Grades.push(grade)
         }
       }
       this.data.gradeSubjects = Object.values(gradesSubjects);

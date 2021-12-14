@@ -1,4 +1,4 @@
-import { CategoryType } from "./category.type";
+import { BehaviourType, CategoryType } from "./category.type";
 import { CommentType } from "./comment.type";
 import { SubjectType } from "./subject.type";
 import { UserType } from "./user.type";
@@ -6,7 +6,9 @@ import { UserType } from "./user.type";
 export interface GradeType {
   AddDate: string, // YYYY-MM-DD HH-MM-SS
   AddedBy: UserType, // {Id: id, Url: "https://api.librus.pl/2.0/Users/id"}
+  Teacher?: UserType,
   Category: CategoryType, // {Id: 771471, Url: "https://api.librus.pl/2.0/Grades/Categories/id"}
+  GradeType?: BehaviourType,
   Comments?: CommentType[],
   Date: string, // YYYY-MM-DD
   Grade: string,
@@ -16,9 +18,10 @@ export interface GradeType {
   IsFinalProposition: boolean,
   IsSemester: boolean,
   IsSemesterProposition: boolean,
+  IsProposal?: string,
   IsNormal: boolean, // not served by API
   Lesson: any, // {Id: id, Url: "https://api.librus.pl/2.0/Lessons/id"}
-  Semester: number,
+  Semester: number | string,
   ShowInGradesView?: boolean,
   Student: any, // {Id: id, Url: "https://api.librus.pl/2.0/Users/id"}
   Subject: SubjectType, // {Id: id, Url: "https://api.librus.pl/2.0/Subjects/id"}

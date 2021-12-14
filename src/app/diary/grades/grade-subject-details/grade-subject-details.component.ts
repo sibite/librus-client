@@ -82,6 +82,6 @@ export class GradeSubjectDetailsComponent implements OnInit {
 
   getGradeDateFormatted(grade: GradeType) {
     let localeDateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-    return convertLibrusDate(grade.Date).toLocaleDateString('pl-PL', <{}>localeDateOptions);
+    return convertLibrusDate(grade.Date || grade.AddDate).toLocaleDateString('pl-PL', <{}>localeDateOptions);
   }
 }

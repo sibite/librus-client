@@ -5,7 +5,7 @@ import { catchError, map, switchMap } from "rxjs/operators";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
 import { CalendarKinds, CalendarKindType, CalendarType } from "./models/calendar.type";
-import { CategoriesType } from "./models/category.type";
+import { BehaviourType, CategoriesType } from "./models/category.type";
 import { ClassInfoType } from "./models/class-info.type";
 import { ClassroomType } from "./models/classroom.type";
 import { CommentType } from './models/comment.type';
@@ -26,6 +26,7 @@ export type FetcherDataType = {
   grades?: {
     categories: CategoriesType,
     comments: CommentType[],
+    behaviourTypes: BehaviourType[],
     list: GradeType[],
   },
   users?: { [key: number]: UserType },
@@ -107,7 +108,7 @@ export class FetcherService {
           let categoryIds = new Set();
           // Iterating through all grades in group to get all used Categories
           for (let grade of response.grades) {
-            categoryIds.add(grade.Category.Id);
+            grade.Category ? categoryIds.add(grade.Category?.Id) : null;
             grade.Kind = response.kind;
           }
           let categoryIdsArr = Array.from(categoryIds.values());
@@ -125,12 +126,13 @@ export class FetcherService {
           'DescriptiveGrades': this.http.get('https://api.librus.pl/2.0/DescriptiveGrades/Comments').pipe(map(response => response['Comments'] ?? [])),
           'Grades': this.http.get('https://api.librus.pl/2.0/Grades/Comments').pipe(map(response => response['Comments'] ?? []))
         };
-        return forkJoin([forkJoin(categoryRequests), forkJoin(commentsRequests)]);
+        let behaviourTypes = this.http.get('https://api.librus.pl/2.0/BehaviourGrades/Types').pipe(map(response => response['Types'] ?? []))
+        return forkJoin([forkJoin(categoryRequests), forkJoin(commentsRequests), behaviourTypes]);
       }),
       catchError(err => {
         return this.errorHandler(err, [ {}, {} ]);
       }),
-      map(([categoryRequests, commentsRequests]) => {
+      map(([categoryRequests, commentsRequests, behaviourTypes]) => {
         let categories = {};
         let comments = {};
         for (let categoryKind of Object.keys(categoryRequests)) {
@@ -143,6 +145,7 @@ export class FetcherService {
         return {
           categories: categories,
           comments: comments,
+          behaviourTypes: behaviourTypes,
           list: grades
         };
       })

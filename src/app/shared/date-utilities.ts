@@ -34,7 +34,7 @@ export function toWeekStartDate(date: Date): Date {
 }
 
 
-type dateStyle = 'long month' | 'long weekday' | 'long weekday-month' | 'normal';
+type dateStyle = 'long month' | 'long weekday' | 'long weekday-month' | 'normal' | 'time';
 
 export function formatDate(date: Date, style: dateStyle = 'normal') {
   let options;
@@ -62,7 +62,18 @@ export function formatDate(date: Date, style: dateStyle = 'normal') {
         day: 'numeric'
       }
       break;
+    case 'time':
+      options = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+      }
+      break;
     case 'normal':
+    default:
       options = {
         year: 'numeric',
         month: 'numeric',
@@ -71,7 +82,7 @@ export function formatDate(date: Date, style: dateStyle = 'normal') {
     break;
   }
 
-  return date.toLocaleDateString('pl-PL', options);
+  return date.toLocaleString('pl-PL', options);
 }
 
 
