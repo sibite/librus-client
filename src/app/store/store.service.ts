@@ -207,19 +207,19 @@ export class StoreService {
       }
 
       for (let grade of this.fetcherData.grades.list) {
-        const isBehavioral = grade.Kind?.startsWith('BehaviourGrades');
+        const isBehavioral = grade.Kind.startsWith('BehaviourGrades');
         grade.AddedBy ??= grade.Teacher;
         // attaching added by
         assignProperties(grade.AddedBy, this.fetcherData.users, ['FirstName', 'LastName']);
         // attaching subject name
-        if (isBehavioral) {
+        if (grade.Kind == 'BehaviourGrades') {
           let type = this.fetcherData.grades.behaviourTypes.find(type => type.Id == grade.GradeType.Id);
           grade.Subject = { ...grade.Subject, Id: BEHAVIOUR_POLYFILL_ID };
           grade.GradeType = { ...grade.GradeType, Name: type.Name };
           grade.Semester = +grade.Semester;
           grade.Grade = type.Shortcut;
         }
-        else {
+        else if (!isBehavioral) {
           // attaching categories
           assignProperties(grade.Category, this.fetcherData.grades.categories[grade.Kind], ['Name', 'Weight']);
         }
