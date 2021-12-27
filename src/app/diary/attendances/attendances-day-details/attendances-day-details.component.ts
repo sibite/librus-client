@@ -7,8 +7,6 @@ import { CapitalizePipe } from 'src/app/shared/pipes/capitalize.pipe';
 import { ViewService } from 'src/app/shared/view.service';
 import { AttendanceType } from 'src/app/store/models/attendance.type';
 import { StoreService } from 'src/app/store/store.service';
-import { getGradeDetailsHTML } from '../../grades/grade-properties';
-import { formatGradeShort } from '../../grades/grades.utilities';
 import { getAttendanceDetailsHTML } from '../attendance-properties';
 import { attendancesByLessonSorter } from '../attendances.utilities';
 
@@ -44,7 +42,7 @@ export class AttendancesDayDetailsComponent implements OnInit, OnDestroy {
     this.storeSub = this.storeService.dataSyncSubject.subscribe(data => {
       if (!data?.attendanceDays) return;
       this.attendances = data.attendanceDays[this.activatedDay]
-        .filter(a => a.Type.Id !== 100)
+        .filter(a => a.Type.Id !== 100 || this.viewService.showPresent)
         .sort(attendancesByLessonSorter);
       console.log(this.attendances);
     });

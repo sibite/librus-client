@@ -1,13 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ViewService } from 'src/app/shared/view.service';
 import { AttendanceType } from 'src/app/store/models/attendance.type';
 import { getAttendanceDetailsHTML } from '../attendance-properties';
-import { attendancesByLessonSorter } from '../attendances.utilities';
 
 @Component({
   selector: 'app-attendances-day-item',
   templateUrl: './attendances-day-item.component.html',
-  styleUrls: ['./attendances-day-item.component.scss']
+  styleUrls: ['./attendances-day-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AttendancesDayItemComponent implements OnInit {
   @Input() day: string;
@@ -27,10 +27,6 @@ export class AttendancesDayItemComponent implements OnInit {
       content: getAttendanceDetailsHTML(attendance)
     })
     event.stopPropagation();
-  }
-
-  getAttendances() {
-    return this.attendances.filter(a => a.Type.Id !== 100).sort(attendancesByLessonSorter);
   }
 
 }

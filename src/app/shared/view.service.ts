@@ -38,6 +38,12 @@ export class ViewService {
   set showAverages(value) {
     localStorage.setItem('app.showAverages', '' + Number(value));
   }
+  get showPresent() {
+    return Boolean(Number(localStorage.getItem('app.showPresent') ?? '0'));
+  }
+  set showPresent(value) {
+    localStorage.setItem('app.showPresent', '' + Number(value));
+  }
 
   constructor() {
     this.refreshTheme();

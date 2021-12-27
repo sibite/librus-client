@@ -138,22 +138,24 @@ export class StoreService {
         console.log('received next');
         this.syncState.syncing = false;
         this.syncState.error = false;
+        this.data.lastSyncTime = Date.now();
+        this.scheduleNextSync();
+        this.saveLocalStorage();
         this.syncStateSubject.next(this.syncState);
       },
       error => {
         console.log('received error');
         console.error(error);
-        this.syncState.syncing = false;
-        this.syncState.error = error;
-        this.syncStateSubject.next(this.syncState);
+        if (error.status !== 401) {
+          this.syncState.syncing = false;
+          this.syncState.error = error;
+          this.syncStateSubject.next(this.syncState);
+        }
       },
       () => {
         console.log('received final');
         this.syncState.syncing = false;
         this.syncStateSubject.next(this.syncState);
-        this.data.lastSyncTime = Date.now();
-        this.scheduleNextSync();
-        this.saveLocalStorage();
         this.dataSyncSubject.next(this.getData());
         console.log(this.getData());
         console.log(this.fetcherData);
@@ -472,14 +474,13 @@ export class StoreService {
     }
 
     if ((err.error?.Code == "TokenIsExpired" || err.status == 401) && !isSecondAttempt) {
-      this.syncState.syncing = false;
-      this.syncStateSubject.next(this.syncState);
       this.authService.auth().pipe(take(1)).subscribe(
         () => this.synchronize(true),
         () => onError()
       );
+    } else {
+      onError();
     }
-    onError();
     return throwError(err);
   }
 

@@ -10,6 +10,7 @@ import { ViewService } from '../shared/view.service';
 })
 export class SettingsComponent implements OnInit {
   showAverages = new FormControl(this.viewService.showAverages);
+  showPresent = new FormControl(this.viewService.showPresent);
   theme = new FormControl(this.viewService.getLocalThemePreference());
 
   constructor(
@@ -25,6 +26,10 @@ export class SettingsComponent implements OnInit {
 
     this.showAverages.valueChanges.subscribe(value => {
       this.viewService.showAverages = value;
+    })
+
+    this.showPresent.valueChanges.subscribe(value => {
+      this.viewService.showPresent = value;
     })
   }
 

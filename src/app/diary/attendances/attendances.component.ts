@@ -1,9 +1,10 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { convertLibrusDate, formatDate } from 'src/app/shared/date-utilities';
 import { ViewService } from 'src/app/shared/view.service';
 import { AttendanceType } from 'src/app/store/models/attendance.type';
 import { StoreService } from 'src/app/store/store.service';
+import { attendancesByLessonSorter } from './attendances.utilities';
 
 @Component({
   selector: 'app-attendances',
@@ -27,7 +28,13 @@ export class AttendancesComponent implements OnInit {
   ngOnInit() {
     this.storeSubscription = this.storeService.dataSyncSubject.subscribe(
       data => {
-        this.attendances = data.attendanceDays;
+        this.attendances = { ...data.attendanceDays };
+        console.log(this.viewService.showPresent);
+        Object.entries(this.attendances)
+          .forEach(([key, day]) => {
+            this.attendances[key] = day.filter(a => a.Type.Id !== 100 || this.viewService.showPresent)
+              .sort(attendancesByLessonSorter);
+          });
         if (!this.attendances) return;
         this.attendanceDates = Object.keys(this.attendances).reverse();
         for (let attendanceDate of this.attendanceDates) {
@@ -60,7 +67,7 @@ export class AttendancesComponent implements OnInit {
   }
 
   isDisplayed(attendances: AttendanceType[]) {
-    return attendances.find(a => a.Type.Id !== 100);
+    return attendances.find(a => a.Type.Id !== 100 || this.viewService.showPresent);
   }
 
 }

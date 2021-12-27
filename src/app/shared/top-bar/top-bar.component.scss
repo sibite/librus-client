@@ -63,16 +63,28 @@ $sync-height: 24px;
 
   &.error {
     height: 0px;
-    transition: height 600ms 5s, background-color 200ms;
+    transition: height 600ms, background-color 200ms;
+    animation: {
+      name: collapse;
+      duration: 600ms;
+      delay: 5s;
+      fill-mode: backwards;
+    }
   }
   &.uptodate {
     height: 0px;
-    transition: height 600ms 2s, background-color 200ms;
+    transition: height 600ms, background-color 200ms;
+    animation: {
+      name: collapse;
+      duration: 600ms;
+      delay: 2s;
+      fill-mode: backwards;
+    }
   }
 
   &.none {
-    transition: height 600ms, background-color 200ms 600ms;
     height: 0px;
+    transition: height 600ms, background-color 200ms 600ms;
   }
 
   &.offline {
@@ -89,6 +101,15 @@ $sync-height: 24px;
   &.uptodate {
     background-color: var(--bg-color-2);
     color: var(--text-color-1);
+  }
+}
+
+@keyframes collapse {
+  0% {
+    height: $sync-height;
+  }
+  100% {
+    height: 0px;
   }
 }
 

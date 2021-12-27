@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "gitlog": "git log --oneline --decorate --graph --all",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "proxy": "node proxy_server/index.js",

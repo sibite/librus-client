@@ -304,9 +304,12 @@ export class FetcherService {
 
   errorHandler(err, placeholder = null) {
     console.error(err);
-    if (err.error?.Code == "TokenIsExpired") {
+    if (err.error?.Code == "TokenIsExpired" || err.status == 401) {
       console.log(err.error?.Code);
       return throwError(err);
+    }
+    else if (err.status == 0) {
+      return throwError(err.statusText);
     }
     else {
       return of(placeholder);

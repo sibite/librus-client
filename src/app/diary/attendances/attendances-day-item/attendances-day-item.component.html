@@ -10,7 +10,7 @@ appClickEffect>
     forceRippleTheme="light"
     (click)="showAttendanceDetails($event, attendance)"
     [attr.att-type]="attendance.Type.Id"
-    *ngFor="let attendance of getAttendances()">
+    *ngFor="let attendance of attendances">
     {{ attendance.Type.Short }}
   </div>
 </div>

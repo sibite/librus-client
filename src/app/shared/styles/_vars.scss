@@ -111,7 +111,7 @@ $nav-bar-height: 64px;
     --att-color: #{$att-exempt};
   }
   &[att-type="100"] { // presence
-    --att-color: var(--bg-color-3);
+    --att-color: #{lighten($accent, 14%)};
   }
 }
 
