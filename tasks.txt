@@ -1,0 +1,68 @@
+# API / StoreService
+- [x] Oceny
+- [x] Frekwencja
+- [x] Szczęśliwy numerek
+- [x] Plan lekcji
+- [x] Sprawdziany i dni wolne
+- [x] Informacje o klasie i szkole
+- [?] Usuwanie właściwości Url ze wszystkich danych
+
+# Autoryzacja
+- [x] Odświeżanie tokenu
+
+# GUI
+- [x] Logowanie
+- [x] Dyrektywa naciśnięcia przycisku
+- [x] Menu boczne
+- [x] Pasek nawigacji
+
+# Synchronizacja
+
+## Sposób ładowania danych
+1. Serwis z danymi
+  a) [x] Komunikuje się z serwisem API i przekształca dane
+  b) [x] Zarządza stanem synchronizacji
+  c) [x] Jeśli otrzyma błąd wygaśnięcia tokenu to próbuje go odświeżyć
+         za pomocą serwisu Auth
+  d) [?] Zanim zacznie pobierać wszystkie dane, niech wyśle jedno zapytanie
+         w celu sprawdzenia ważności tokenu lub sprawdzi czas wygaśnięcia tokenu
+  e) [?] Serwis Auth, jeśli nadal token nie ma ważności, wyrzuca błąd
+         "Sesja wygasła"
+  f) [x] W przypadku innego błędu serwis wyrzuca błąd synchronizacji
+2. Komponent => ngOnInit()
+  a) [x] Subskrybuje Subject serwisu z danymi
+  b) [x] Przypisuje swojej właściwości nowe dane przy każdym callbacku
+  c) [x] Szablon HTML po prostu na bieżąco czyta te dane z właściwości
+
+# Oceny
+- [x] Wyświetlanie z danego semestru
+- [x] Wyświetlanie komentarza oceny
+- [x] Wyświetlanie średnich
+- [x] Rozróżnianie typów ocen i ocen końcowych
+- [x] Po zaimplementowaniu pobierania informacji o szkole, ustawiaj domyślny semestr
+
+# Frekwencja
+- [x] Wyświetlanie frekwencji
+
+# Plan lekcji
+- [x] Zarządzanie danymi
+- [x] Wyświetlanie
+      a) [x] Lekcji
+      b) [x] Odwołania lekcji
+      c) [x] Zastępstwa
+      d) [x] Sprawdziany
+      e) [x] Nieobecności nauczycieli i dni wolne
+- [x] Zmienianie dnia
+- [x] Auto scroll
+- [?] Gesty przesuwania    <====== NASTĘPNE
+
+# Wizualizacja synchronizacji
+- [x] Pasek informacyjny
+- [x] Przycisk odświeżania
+- [x] Gest odświeżania
+- [?] Informacja o wygaśnięciu sesji
+
+# Aktualności
+- [x] Szczęśliwy numerek
+- [x] Obecna i następna lekcja
+- [x] Aktualności
