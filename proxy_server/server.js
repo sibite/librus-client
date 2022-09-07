@@ -2,17 +2,19 @@ const express = require('express');
 const morgan = require("morgan");
 const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const env = require('./environments');
+const path = require('path');
 
 // Create Express Server
 const app = express();
 
 // Configuration
-const HOST = '0.0.0.0';
-const PORT = process.env.PORT || 3000;
-const HOST_PROTOCOL = 'http';
-const ABS_HOST = 'localhost';
-const ABS_PORT = `:${PORT}`;
-const APP_HOST = 'http://localhost:4200';
+const HOST = env.HOST;
+const PORT = env.PORT;
+const HOST_PROTOCOL = env.HOST_PROTOCOL;
+const ABS_HOST = env.ABS_HOST;
+const ABS_PORT = env.ABS_PORT;
+const APP_HOST = env.APP_HOST;
 
 app.use(morgan('dev'));
 
@@ -98,9 +100,18 @@ app.get('/logout', cors({ origin: APP_HOST, credentials: true }), function (req,
       res.cookie(match[2], '', { sameSite: 'none', secure: true, expires: new Date(0) });
     }
   }
-  res.json({message: 'Author is being fucked by Librus'});
+  res.json({message: 'Logged out'});
 })
 
+// SPA
+app.use(express.static(path.join(__dirname, '../dist/librus-client')));
+
+// Default path
+
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/librus-client/index.html'));
+});
+
 app.listen(PORT, HOST, () => {
-  console.log(`Starting Proxy at ${HOST}:${PORT}`);
+  console.log(`Starting Server at ${HOST}:${PORT}`);
 });

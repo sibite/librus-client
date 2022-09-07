@@ -2,6 +2,7 @@
 
 # user defined
 /src/environments/environment.prod.ts
+/proxy_server/environments.prod.js
 
 # firebase
 /.firebase
