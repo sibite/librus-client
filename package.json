@@ -8,7 +8,7 @@
     "gitlog": "git log --oneline --decorate --graph --all",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "proxy": "node proxy_server/index.js",
+    "proxy": "node proxy_server/server.js",
     "deploy": "ng build",
     "postdeploy": "firebase deploy"
   },
