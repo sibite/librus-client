@@ -4,7 +4,7 @@ import { UserType } from "./user.type";
 export interface LessonType {
   Class?: any,
   Id: number,
-  Subject: SubjectType,
-  Teacher: UserType
+  Subject: Partial<SubjectType>,
+  Teacher?: Partial<UserType>,
   Url?: string
 }

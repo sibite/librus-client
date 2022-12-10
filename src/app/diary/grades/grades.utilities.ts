@@ -14,7 +14,7 @@ export function gradesByDateSorter(a, b) {
   return addDate1.getTime() - addDate2.getTime();
 }
 
-export function formatGradeShort(grade: GradeType) {
+export function formatGradeShort(grade: Partial<GradeType>) {
   switch (grade.Kind) {
     case 'TextGrades':
       return 'T';

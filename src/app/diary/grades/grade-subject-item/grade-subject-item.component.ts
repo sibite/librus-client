@@ -15,7 +15,7 @@ export class GradeSubjectItemComponent implements OnInit {
   @Input() subject: SubjectType;
   @Input() semester: number;
   @Input() color: string;
-  grades: GradeType[] = [];
+  grades: Partial<GradeType>[] = [];
   showAverages: boolean = true;
 
   constructor(
@@ -27,7 +27,7 @@ export class GradeSubjectItemComponent implements OnInit {
     this.showAverages = this.viewService.showAverages;
   }
 
-  showGradeDetails(event: MouseEvent, grade: GradeType) {
+  showGradeDetails(event: MouseEvent, grade: Partial<GradeType>) {
     console.log(grade);
     this.viewService.popUpSubject.next({
       title: 'Szczegóły',
@@ -36,7 +36,7 @@ export class GradeSubjectItemComponent implements OnInit {
     event.stopPropagation();
   }
 
-  formatGradeShort(grade: GradeType) {
+  formatGradeShort(grade: Partial<GradeType>) {
     return formatGradeShort(grade);
   }
 

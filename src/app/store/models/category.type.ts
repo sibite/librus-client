@@ -1,16 +1,23 @@
+import { UserType } from "./user.type"
+
 export interface CategoryType {
   AdultsDaily: boolean,
   AdultsExtramural: boolean,
   BlockAnyGrades: boolean,
-  Color: {Id: number},
+  Teacher?: Partial<UserType>,
+  Color: {Id: number, Url?: string},
   CountToTheAverage: boolean,
   Id: number,
   IsReadOnly: string,
   Name: string,
   ObligationToPerform: boolean,
   Standard: boolean,
-  Weight: number
-  Url?: string
+  Weight?: number,
+  Short?: string,
+  Url?: string,
+  IsSemestral?: boolean,
+  IsFinalProposition?: boolean,
+  ForLessons?: any,
 }
 
 export interface CategoriesType {
@@ -27,5 +34,6 @@ export interface CategoriesType {
 export interface BehaviourType {
   Id: number,
   Name: string,
-  Shortcut: string
+  Shortcut: string,
+  Url?: string,
 }

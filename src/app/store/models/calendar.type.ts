@@ -17,7 +17,8 @@ export interface CalendarEntryBaseType {
   DateTo: string, // YYYY-MM-DD
   Id: number,
   Name: string,
-  Kind?: CalendarKindType
+  Kind?: CalendarKindType,
+  Classroom?: any,
 }
 
 export interface SchoolFreeDayType extends CalendarEntryBaseType {}
@@ -49,27 +50,27 @@ export interface SubstitutionType {
   IsShifted: boolean,
   OrgDate: string, // YYYY-MM-DD
   OrgLessonNo: string,
-  OrgSubject: SubjectType,
-  OrgTeacher: UserType,
+  OrgSubject: Partial<SubjectType>,
+  OrgTeacher: Partial<UserType>,
   Date: string, // YYYY-MM-DD
   LessonNo: string,
-  Subject: SubjectType,
+  Subject: Partial<SubjectType>,
   Teacher: UserType,
   Kind?: CalendarKindType
 }
 
 export interface HomeWorkType {
   AddDate: string, // YYYY-MM-DD HH:MM:SS
-  Category: {Id: number, Name: string},
+  Category: {Id: number, Name: string, Color?: any},
   Content: string,
   CreatedBy: UserType,
   Date: string, // YYYY-MM-DD
   Id: number,
   LessonNo: string,
-  Subject: SubjectType,
+  Subject?: Partial<SubjectType>,
   TimeFrom: string, // HH:MM:SS
   TimeTo: string, // HH:MM:SS
-  VirtualClass: any,
+  VirtualClass?: any,
   Kind?: CalendarKindType
 }
 
@@ -93,7 +94,7 @@ export interface AnyCalendarEntryType {
   Date?: string, // YYYY-MM-DD
   Id?: number,
   LessonNo?: string,
-  Subject?: SubjectType,
+  Subject?: Partial<SubjectType>,
   TimeFrom?: string, // HH:MM:SS
   TimeTo?: string, // HH:MM:SS
   VirtualClass?: any,

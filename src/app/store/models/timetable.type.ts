@@ -4,7 +4,8 @@ import { SubjectType } from "./subject.type";
 import { UserType } from "./user.type";
 
 export interface TimetableEntryType {
-  Classroom: ClassroomType,
+  Classroom: Partial<ClassroomType>,
+  Class?: any,
   DateFrom: string, // YYYY-MM-DD
   DateTo: string, // YYYY-MM-DD
   DayNo: string,
@@ -12,20 +13,21 @@ export interface TimetableEntryType {
   HourTo: string, // HH:MM
   IsCanceled: boolean,
   IsSubstitutionClass: boolean,
-  Lesson: LessonType,
+  Lesson: Partial<LessonType>,
   LessonNo: string,
-  Subject: SubjectType,
+  Subject: Partial<SubjectType>,
   SubstitutionNote: any,
-  Teacher: UserType,
+  SubstitutionClassUrl?: any,
+  Teacher: Partial<UserType>,
   TimetableEntry: any,
-  VirtualClass: any,
-  VirtualClassName: string,
+  VirtualClass?: any,
+  VirtualClassName?: string,
 
   OrgClassroom?: ClassroomType | any,
   OrgDate?: string,
   OrgHourFrom?: string,
   OrgHourTo?: string,
-  OrgLesson?: LessonType,
+  OrgLesson?: Partial<LessonType>,
   OrgLessonNo?: string,
   OrgSubject?: SubjectType | any,
   OrgTeacher?: UserType | any

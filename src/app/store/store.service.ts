@@ -1,8 +1,10 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, concat, forkJoin, of, Subject, throwError } from "rxjs";
+import { BehaviorSubject, concat, forkJoin, Observable, of, Subject, throwError } from "rxjs";
 import { catchError, map, take, tap } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { convertLibrusDate, toDateString, toMiddayDate, toWeekStartDate } from "../shared/date-utilities";
+import { DEMO_STORE } from "./demo-data";
+import getDemoWeek from "./demo-week";
 import { FetcherDataType, FetcherService } from "./fetcher.service";
 import { AttendanceTypeType } from "./models/attendance-type.type";
 import { AttendanceType } from "./models/attendance.type";
@@ -26,7 +28,7 @@ export interface StoreDataType {
   },
   luckyNumber?: LuckyNumberType,
   gradeSubjects?: SubjectType[],
-  gradeCategories?: CategoriesType;
+  gradeCategories?: Partial<CategoriesType>;
   subjects?: { [key: number]: SubjectType },
   subjectColors?: { [key: number]: string },
   users?: { [key: number]: UserType },
@@ -104,6 +106,20 @@ export class StoreService {
 
   synchronize(isSecondAttempt = false) {
     if (!this.authService.authState?.loggedIn) return;
+
+    if (this.authService.authState.isDemo) {
+      this.syncState.syncing = true;
+      this.syncStateSubject.next(this.syncState);
+      setTimeout(() => {
+        this.data = DEMO_STORE;
+        this.syncState.syncing = false;
+        this.data.lastSyncTime = Date.now();
+        this.dataSyncSubject.next(this.getData());
+        this.syncStateSubject.next(this.syncState);
+        this.saveLocalStorage();
+      }, 1500)
+      return;
+    }
 
     const queueMap = {
       subjects: this.fetcherService.fetchSubjects(),
@@ -397,6 +413,25 @@ export class StoreService {
     let weekStart = toWeekStartDate(date);
     let dateString = toDateString(weekStart);
 
+    if (this.authService.authState.isDemo) {
+      return new Observable((sub) => {
+        function load() {
+          if (!this.data.timetableDays[dateString]) {
+            const demoWeek = getDemoWeek(weekStart);
+            for (let day of Object.keys(demoWeek)) {
+              this.data.timetableDays[day] = demoWeek[day];
+            }
+          };
+          this.data.timetablesLastSync[dateString] = Date.now();
+          this.timetableErrors[dateString] = false;
+          this.dataSyncSubject.next(this.getData());
+          this.saveLocalStorage();
+          sub.next();
+        }
+        setTimeout(load.bind(this), 1000)
+      });
+    }
+
     if (this.isTimetableDayUpToDate(date) && !force) {
       return of(this.data.timetableDays);
     }
@@ -461,12 +496,7 @@ export class StoreService {
   }
 
   syncErrorHandler(err, isSecondAttempt) {
-    // temp
-    console.error(err);
-    console.log(err.error?.Code, isSecondAttempt);
-
     const onError = () => {
-      console.log('dupa error ')
       this.syncState.syncing = false;
       this.syncState.error = true;
       this.syncStateSubject.next(this.syncState);

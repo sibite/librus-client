@@ -8,7 +8,7 @@ import { formatGradeShort } from '../../grades.utilities';
   styleUrls: ['./grade.component.scss']
 })
 export class GradeComponent implements OnInit {
-  @Input() grade: GradeType;
+  @Input() grade: Partial<GradeType>;
   @Input() showSubject: boolean = false;
 
   constructor() { }
@@ -16,7 +16,7 @@ export class GradeComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  formatGradeShort(grade: GradeType) {
+  formatGradeShort(grade: Partial<GradeType>) {
     return formatGradeShort(grade);
   }
 }

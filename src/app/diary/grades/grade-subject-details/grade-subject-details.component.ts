@@ -23,9 +23,9 @@ export class GradeSubjectDetailsComponent implements OnInit {
   public semester: number;
   public semesterOptions = semesterOptions;
 
-  public grades: GradeType[] = [];
+  public grades: Partial<GradeType>[] = [];
   public users: { [key: number]: UserType };
-  public categories: CategoriesType;
+  public categories: Partial<CategoriesType>;
 
   constructor(
     public viewService: ViewService,
@@ -71,7 +71,7 @@ export class GradeSubjectDetailsComponent implements OnInit {
     this.semester = optionKey;
   }
 
-  showGradeDetails(event: MouseEvent, grade: GradeType) {
+  showGradeDetails(event: MouseEvent, grade: Partial<GradeType>) {
     console.log(grade);
     this.viewService.popUpSubject.next({
       title: 'Szczegóły',
@@ -80,7 +80,7 @@ export class GradeSubjectDetailsComponent implements OnInit {
     event.stopPropagation();
   }
 
-  getGradeDateFormatted(grade: GradeType) {
+  getGradeDateFormatted(grade: Partial<GradeType>) {
     let localeDateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
     return convertLibrusDate(grade.Date || grade.AddDate).toLocaleDateString('pl-PL', <{}>localeDateOptions);
   }

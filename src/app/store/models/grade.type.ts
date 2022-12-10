@@ -5,10 +5,10 @@ import { UserType } from "./user.type";
 
 export interface GradeType {
   AddDate: string, // YYYY-MM-DD HH-MM-SS
-  AddedBy: UserType, // {Id: id, Url: "https://api.librus.pl/2.0/Users/id"}
-  Teacher?: UserType,
-  Category: CategoryType, // {Id: 771471, Url: "https://api.librus.pl/2.0/Grades/Categories/id"}
-  GradeType?: BehaviourType,
+  AddedBy: Partial<UserType>, // {Id: id, Url: "https://api.librus.pl/2.0/Users/id"}
+  Teacher?: Partial<UserType>,
+  Category: Partial<CategoryType>, // {Id: 771471, Url: "https://api.librus.pl/2.0/Grades/Categories/id"}
+  GradeType?: Partial<BehaviourType>,
   Comments?: CommentType[],
   Date: string, // YYYY-MM-DD
   Grade: string,
@@ -24,7 +24,7 @@ export interface GradeType {
   Semester: number | string,
   ShowInGradesView?: boolean,
   Student: any, // {Id: id, Url: "https://api.librus.pl/2.0/Users/id"}
-  Subject: SubjectType, // {Id: id, Url: "https://api.librus.pl/2.0/Subjects/id"}
+  Subject: Partial<SubjectType>, // {Id: id, Url: "https://api.librus.pl/2.0/Subjects/id"}
   Kind: GradeKindType, // not served by API
 }
 

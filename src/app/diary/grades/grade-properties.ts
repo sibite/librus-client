@@ -3,7 +3,7 @@ import { generateDetailsListHTML } from "src/app/shared/generate-details-list";
 import { CapitalizePipe } from "src/app/shared/pipes/capitalize.pipe";
 import { GradeType } from "src/app/store/models/grade.type";
 
-export function getGradeDetailsHTML(grade: GradeType) {
+export function getGradeDetailsHTML(grade: Partial<GradeType>) {
   let properties = [
     { name: 'Ocena', content: grade.Kind == 'BehaviourGrades' && grade.GradeType?.Name ? CapitalizePipe.prototype.transform(grade.GradeType.Name) : grade.Grade },
     { name: 'Kategoria', content: CapitalizePipe.prototype.transform( grade.Category?.Name || '' ) || null },

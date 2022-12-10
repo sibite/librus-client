@@ -7,7 +7,7 @@ export interface SubjectType {
   Name: string,
   No: number,
   Short: string,
-  Grades?: GradeType[], // not served by API
+  Grades?: Partial<GradeType>[], // not served by API
   Color?: string, // not served by API
   Url?: string
 }

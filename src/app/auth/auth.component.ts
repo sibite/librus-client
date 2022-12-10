@@ -53,6 +53,12 @@ export class AuthComponent implements OnInit {
     }
   }
 
+  onStartDemo() {
+    this.authService.startDemo();
+    this.storeService.init();
+    this.router.navigate(['/diary']);
+  }
+
   onCloseSidemenu() {
     this.isSidemenuOpened = false;
   }

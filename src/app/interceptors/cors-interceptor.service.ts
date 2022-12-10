@@ -6,7 +6,7 @@ const corsHosts = {
   'https://portal.librus.pl/': 'portal-api',
   'https://personalschedule.librus.pl/': 'personalschedule-api',
   'https://api.librus.pl/': 'main-api',
-  'https://logoutthatbitch.please/': 'logout'
+  'https://logout.please/': 'logout'
 }
 
 @Injectable()
@@ -26,7 +26,7 @@ export class CorsInterceptorService implements HttpInterceptor {
       return next.handle(req);
     }
     // if it is, then redirect the request to proxy server
-    console.log('Request is CORS-allowed', req.url);
+    console.log('Request is in CORS-allowed list', req.url);
     const corsEnabledReq = req.clone({
       url: req.url.replace(corsHost, `${environment.proxyHost}/${corsHosts[corsHost]}/`),
     })

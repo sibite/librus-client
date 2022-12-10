@@ -13,5 +13,5 @@ export interface SchoolInfoType {
   Street: string,
   SurnameHeadTeacher: string,
   Town: string,
-  VocationalSchool: string
+  VocationalSchool: number,
 }

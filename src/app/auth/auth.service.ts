@@ -1,12 +1,13 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Subject, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { MeType } from '../store/models/me.model';
 import { SynergiaAccountType } from '../store/models/synergia-accounts.type';
 import { StoreService } from '../store/store.service';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
+import { DEMO_AUTH } from '../store/demo-data';
 
 export type AuthStateType = {
   account: SynergiaAccountType,
@@ -14,7 +15,8 @@ export type AuthStateType = {
   loggedIn: boolean,
   loading: boolean,
   authorized: boolean,
-  error: string
+  error: string,
+  isDemo?: boolean,
 }
 
 const initialAuthState = {
@@ -45,6 +47,12 @@ export class AuthService {
     });
   }
 
+  startDemo() {
+    this.authState = DEMO_AUTH;
+    this.authStateSubject.next(this.authState);
+    this.authSuccessSubject.next();
+  }
+
   login(email: string, password: string) {
     this.authState.loading = true;
     this.authStateSubject.next(this.authState);
@@ -65,13 +73,13 @@ export class AuthService {
         if (!csrfToken) {
           throw new Error('Could not scrap tokens');
         }
-        return {xsrfToken, csrfToken};
+        return { xsrfToken, csrfToken };
       }),
       catchError(this.errorHandler.bind(this)),
       switchMap(tokens => {
         return this.http.post(
           'https://portal.librus.pl/rodzina/login/action',
-          {email, password},
+          { email, password },
           {
             headers: new HttpHeaders({
               'X-CSRF-TOKEN': tokens.csrfToken,
@@ -87,14 +95,14 @@ export class AuthService {
       }),
       catchError(this.errorHandler.bind(this)),
       tap(() => {
-      this.authState = {
-        ...this.authState,
-        loggedIn: true,
-        loading: false,
-        authorized: false,
-        error: null
-      };
-      this.authStateSubject.next(this.authState);
+        this.authState = {
+          ...this.authState,
+          loggedIn: true,
+          loading: false,
+          authorized: false,
+          error: null
+        };
+        this.authStateSubject.next(this.authState);
       })
     );
   }
@@ -169,7 +177,13 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.get('https://logoutthatbitch.please/', {
+    if (this.authState.isDemo) {
+      this.authState = initialAuthState;
+      this.authStateSubject.next(this.authState);
+      this.saveLocalStorage();
+      return new Observable((subscriber) => subscriber.next());
+    }
+    return this.http.get('https://logout.please/', {
       withCredentials: true
     }).pipe(tap(() => {
       this.authStateSubject.next(this.authState);
