@@ -1,5 +1,7 @@
 # LibrusClient
 
+**The API has been updated and logging in does not work anymore. You can test the app anyway using demo mode**
+
 This project is an independent Librus Diary app created for learning purposes.
 
 ## Working parts
